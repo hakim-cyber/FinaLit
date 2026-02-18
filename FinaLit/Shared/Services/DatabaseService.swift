@@ -19,7 +19,7 @@ import FirebaseFirestore
 @Observable
 class DatabaseService {
 
-    private let db = Firestore.firestore()
+    private var db: Firestore { Firestore.firestore() }
 
     // MARK: - User
 

@@ -108,7 +108,7 @@ enum AuthError: LocalizedError {
         case .wrongPassword:     return "Incorrect password. Please try again."
         case .userNotFound:      return "No account found with this email."
         case .emailAlreadyInUse: return "An account with this email already exists."
-        case .weakPassword:      return "Password must be at least 6 characters."
+        case .weakPassword:      return "Password must be at least 8 characters."
         case .networkError:      return "Network error. Please check your connection."
         case .unknown(let msg):  return msg
         }

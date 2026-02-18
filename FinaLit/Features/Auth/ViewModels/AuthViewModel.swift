@@ -31,14 +31,26 @@ class AuthViewModel {
     var successMessage: String?
 
     // MARK: - Validation
+    private var trimmedName: String {
+        name.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var trimmedEmail: String {
+        email.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    var isEmailValid: Bool {
+        trimmedEmail.contains("@") && trimmedEmail.contains(".")
+    }
+
     var isLoginFormValid: Bool {
-        !email.isEmpty && !password.isEmpty
+        isEmailValid && !password.isEmpty
     }
 
     var isRegisterFormValid: Bool {
-        !name.isEmpty &&
-        !email.isEmpty &&
-        password.count >= 6 &&
+        !trimmedName.isEmpty &&
+        isEmailValid &&
+        password.count >= 8 &&
         password == confirmPassword
     }
 
@@ -56,9 +68,17 @@ class AuthViewModel {
     // MARK: - Register
     func register() async {
         guard isRegisterFormValid else {
-            errorMessage = password != confirmPassword
-                ? "Passwords do not match."
-                : "Please fill in all fields."
+            if trimmedName.isEmpty {
+                errorMessage = "Please enter your name."
+            } else if !isEmailValid {
+                errorMessage = "Please enter a valid email address."
+            } else if password.count < 8 {
+                errorMessage = "Password must be at least 8 characters."
+            } else if password != confirmPassword {
+                errorMessage = "Passwords do not match."
+            } else {
+                errorMessage = "Please fill in all fields."
+            }
             return
         }
 
@@ -68,13 +88,13 @@ class AuthViewModel {
 
         do {
             // 1. Create Firebase Auth account → get UID
-            let uid = try await authService.register(email: email, password: password)
+            let uid = try await authService.register(email: trimmedEmail, password: password)
 
             // 2. Build minimal User — profiles filled during onboarding
             let user = User(
                 id: uid,
-                email: email,
-                name: name.trimmingCharacters(in: .whitespaces),
+                email: trimmedEmail,
+                name: trimmedName,
                 createdAt: .now,
                 profile: nil,
                 financialProfile: nil,
@@ -95,7 +115,7 @@ class AuthViewModel {
     // MARK: - Login
     func login() async {
         guard isLoginFormValid else {
-            errorMessage = "Please enter your email and password."
+            errorMessage = "Please enter a valid email and password."
             return
         }
 
@@ -105,7 +125,7 @@ class AuthViewModel {
 
         do {
             // 1. Firebase Auth → get UID
-            let uid = try await authService.login(email: email, password: password)
+            let uid = try await authService.login(email: trimmedEmail, password: password)
 
             // 2. Fetch full User from Firestore
             //    This includes any saved profiles → hasCompletedOnboarding computed correctly

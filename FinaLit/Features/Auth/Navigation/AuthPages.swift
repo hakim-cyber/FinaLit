@@ -31,8 +31,8 @@ enum AuthPages: Coordinatable {
     @ViewBuilder
     var body: some View {
         switch self {
-        case .login:    Text("Login View")      // replace with LoginView()
-        case .register: Text("Register View")   // replace with RegisterView()
+        case .login:    LoginView()
+        case .register: RegisterView()
         }
     }
 }
