@@ -7,7 +7,7 @@ struct OnboardingPersonalInfoView: View {
     @Environment(Coordinator<OnboardingPages>.self) private var coordinator
 
     private let countries = [
-        "United States", "Canada", "United Kingdom", "Germany", "India", "Australia"
+        "Azerbaijan","Turkey","United States", "Canada", "United Kingdom", "Germany"
     ]
 
     var body: some View {
@@ -108,7 +108,7 @@ struct OnboardingEmploymentStatusView: View {
                 ForEach(EmploymentStatus.allCases) { status in
                     SelectableRowCard(
                         title: status.rawValue,
-                        subtitle: status == viewModel.employmentStatus ? "Selected" : "",
+                        subtitle: status.description,
                         isSelected: viewModel.employmentStatus == status,
                         accent: .blue,
                         icon: "briefcase.fill"
@@ -952,6 +952,7 @@ private struct SelectableRowCard: View {
                     if !subtitle.isEmpty {
                         Text(subtitle)
                             .font(.caption)
+                            .minimumScaleFactor(0.6)
                             .foregroundStyle(.secondary)
                     }
                 }

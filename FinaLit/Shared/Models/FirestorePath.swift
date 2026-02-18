@@ -15,7 +15,8 @@ Firestore structure:
 
 users/
   {userID}/
-    ── (fields): id, email, name, createdAt
+    ── (fields): email, name, createdAt
+    ── (documentID): userID (same as Firebase Auth UID)
     ── profile/          → UserProfile      (after onboarding step 1)
     ── financialProfile/ → FinancialProfile (after onboarding step 2+3)
     ── behaviorProfile/  → BehaviorProfile  (after onboarding step 4)
