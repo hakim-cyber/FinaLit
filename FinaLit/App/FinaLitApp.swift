@@ -47,17 +47,20 @@ struct FinaLitApp: App {
                 .environment(authViewModel)
                 .environment(onboardingViewModel)
                 .task {
-                                   await restoreSession()
-                               }
+                    await restoreSession()
+                }
         }
     }
+
     private func restoreSession() async {
-           guard let uid = authService.currentUID else { return }
-           // Firebase says user is logged in — fetch their data
-           if let user = try? await dbService.fetchUser(uid: uid) {
-               session.setUser(user)
-               // RootView reacts → skips auth, goes to onboarding or main
-           }
-       }
-   
+        defer { session.finishSessionRestore() }
+
+        guard let uid = authService.currentUID else { return }
+
+        // Firebase says user is logged in — fetch their data
+        if let user = try? await dbService.fetchUser(uid: uid) {
+            session.setUser(user)
+            // RootView reacts → skips auth, goes to onboarding or main
+        }
+    }
 }

@@ -16,7 +16,10 @@ struct RootView: View {
 
     var body: some View {
         Group {
-            if !session.isAuthenticated {
+            if session.isRestoringSession {
+                AppLoadingView()
+
+            } else if !session.isAuthenticated {
                 // ── Auth Flow ──────────────────────────────────
                 CoordinatorStack(AuthPages.login)
 
@@ -30,6 +33,7 @@ struct RootView: View {
             }
         }
         // Animate the switch between flows
+        .animation(.easeInOut(duration: 0.3), value: session.isRestoringSession)
         .animation(.easeInOut(duration: 0.3), value: session.isAuthenticated)
         .animation(.easeInOut(duration: 0.3), value: session.hasCompletedOnboarding)
     }

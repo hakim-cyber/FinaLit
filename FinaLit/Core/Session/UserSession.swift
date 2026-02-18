@@ -14,6 +14,7 @@ import Foundation
 @Observable
 class UserSession {
     var user: User?
+    var isRestoringSession: Bool = true
     
     var isAuthenticated: Bool { user != nil }
     
@@ -41,5 +42,9 @@ class UserSession {
     
     func signOut() {
         self.user = nil
+    }
+
+    func finishSessionRestore() {
+        isRestoringSession = false
     }
 }
