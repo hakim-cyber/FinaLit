@@ -102,7 +102,7 @@ class AuthViewModel {
             )
 
             // 3. Persist to Firestore
-            try await dbService.createUser(user)
+            try dbService.createUser(user)
 
             // 4. Set session → RootView reacts → shows onboarding
             session.setUser(user)

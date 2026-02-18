@@ -10,6 +10,7 @@
 // Core/Session/
 
 import Foundation
+import Observation
 
 @Observable
 class UserSession {

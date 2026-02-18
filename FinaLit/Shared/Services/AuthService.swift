@@ -5,7 +5,6 @@
 //  Created by aplle on 2/18/26.
 //
 
-
 // AuthService.swift
 // Shared/Services/
 //
@@ -14,26 +13,39 @@
 // ViewModels call this — never call Firebase directly from ViewModels.
 
 import Foundation
+import Observation
 import FirebaseAuth
 
 @Observable
-class AuthService {
+final class AuthService {
 
     // MARK: - Current Session
 
+    /// The currently authenticated Firebase user.
+    private(set) var currentUser: FirebaseAuth.User?
+    private var authListener: AuthStateDidChangeListenerHandle?
+
+    init() {
+        currentUser = Auth.auth().currentUser
+        authListener = Auth.auth().addStateDidChangeListener { [weak self] _, user in
+            self?.currentUser = user
+        }
+    }
+
     /// Returns Firebase UID if a user is already logged in (persisted across launches)
     var currentUID: String? {
-        Auth.auth().currentUser?.uid
+        currentUser?.uid
     }
 
     var isLoggedIn: Bool {
-        Auth.auth().currentUser != nil
+        currentUser != nil
     }
 
     // MARK: - Register
 
     /// Creates a new Firebase Auth account.
     /// Returns the new user's UID — caller is responsible for saving to Firestore.
+    @MainActor
     func register(email: String, password: String) async throws -> String {
         do {
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
@@ -47,6 +59,7 @@ class AuthService {
 
     /// Signs in with email + password.
     /// Returns UID — caller fetches full User from Firestore.
+    @MainActor
     func login(email: String, password: String) async throws -> String {
         do {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
@@ -68,11 +81,18 @@ class AuthService {
 
     // MARK: - Password Reset
 
+    @MainActor
     func sendPasswordReset(email: String) async throws {
         do {
             try await Auth.auth().sendPasswordReset(withEmail: email)
         } catch let error as NSError {
             throw AuthError.map(error)
+        }
+    }
+
+    deinit {
+        if let authListener {
+            Auth.auth().removeStateDidChangeListener(authListener)
         }
     }
 }

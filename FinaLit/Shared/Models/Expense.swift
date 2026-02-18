@@ -10,9 +10,10 @@
 // Shared/Models/
 
 import Foundation
+import FirebaseFirestore
 
 struct Expense: Codable, Identifiable {
-    let id: String              // UUID string, Firestore document ID
+    @DocumentID var id: String? // Firestore document ID, not stored as a field
     var amount: Double
     var category: SpendingCategory
     var note: String

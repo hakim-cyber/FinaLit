@@ -5,7 +5,6 @@
 //  Created by aplle on 2/18/26.
 //
 
-
 // DatabaseService.swift
 // Shared/Services/
 //
@@ -14,30 +13,47 @@
 // ViewModels call this — never touch Firestore directly from ViewModels.
 
 import Foundation
+import Observation
 import FirebaseFirestore
 
 @Observable
-class DatabaseService {
+final class DatabaseService {
+    private let db = Firestore.firestore()
 
-    private var db: Firestore { Firestore.firestore() }
+    private var usersCollection: CollectionReference {
+        db.collection(FirestorePath.users)
+    }
+
+    private func userDocument(_ uid: String) -> DocumentReference {
+        usersCollection.document(uid)
+    }
+
+    private struct UserProfilePatch: Codable {
+        let profile: UserProfile
+    }
+
+    private struct FinancialProfilePatch: Codable {
+        let financialProfile: FinancialProfile
+    }
+
+    private struct BehaviorProfilePatch: Codable {
+        let behaviorProfile: BehaviorProfile
+    }
 
     // MARK: - User
 
     /// Called once after register — creates the user document in Firestore
-    func createUser(_ user: User) async throws {
-        let data = try Firestore.Encoder().encode(user)
-        try await db
-            .collection(FirestorePath.users)
-            .document(user.id)
-            .setData(data)
+    func createUser(_ user: User) throws {
+        guard let uid = user.id, !uid.isEmpty else {
+            throw DBError.invalidDocumentID
+        }
+
+        try userDocument(uid).setData(from: user)
     }
 
     /// Called on login + app launch restore — fetches full User document
     func fetchUser(uid: String) async throws -> User {
-        let snapshot = try await db
-            .collection(FirestorePath.users)
-            .document(uid)
-            .getDocument()
+        let snapshot = try await userDocument(uid).getDocument()
 
         guard snapshot.exists else { throw DBError.userNotFound }
 
@@ -57,29 +73,29 @@ class DatabaseService {
     // Each onboarding step saves its own profile independently.
     // This way if user quits mid-onboarding, progress is not lost.
 
-    func saveUserProfile(_ profile: UserProfile, uid: String) async throws {
-        let data = try Firestore.Encoder().encode(profile)
-        try await updateUser(uid: uid, data: ["profile": data])
+    func saveUserProfile(_ profile: UserProfile, uid: String) throws {
+        try userDocument(uid).setData(from: UserProfilePatch(profile: profile), merge: true)
     }
 
-    func saveFinancialProfile(_ profile: FinancialProfile, uid: String) async throws {
-        let data = try Firestore.Encoder().encode(profile)
-        try await updateUser(uid: uid, data: ["financialProfile": data])
+    func saveFinancialProfile(_ profile: FinancialProfile, uid: String) throws {
+        try userDocument(uid).setData(from: FinancialProfilePatch(financialProfile: profile), merge: true)
     }
 
-    func saveBehaviorProfile(_ profile: BehaviorProfile, uid: String) async throws {
-        let data = try Firestore.Encoder().encode(profile)
-        try await updateUser(uid: uid, data: ["behaviorProfile": data])
+    func saveBehaviorProfile(_ profile: BehaviorProfile, uid: String) throws {
+        try userDocument(uid).setData(from: BehaviorProfilePatch(behaviorProfile: profile), merge: true)
     }
 
     // MARK: - Expenses
 
-    func addExpense(_ expense: Expense, uid: String) async throws {
-        let data = try Firestore.Encoder().encode(expense)
-        try await db
-            .collection(FirestorePath.expenses(uid))
-            .document(expense.id)
-            .setData(data)
+    func addExpense(_ expense: Expense, uid: String) throws {
+        let expensesCollection = db.collection(FirestorePath.expenses(uid))
+        let targetDocument = if let expenseID = expense.id, !expenseID.isEmpty {
+            expensesCollection.document(expenseID)
+        } else {
+            expensesCollection.document()
+        }
+
+        try targetDocument.setData(from: expense)
     }
 
     func fetchExpenses(uid: String) async throws -> [Expense] {
@@ -98,6 +114,33 @@ class DatabaseService {
             .collection(FirestorePath.expenses(uid))
             .document(expenseID)
             .delete()
+    }
+
+    /// Streams real-time expense updates sorted by most recent.
+    func streamExpenses(uid: String) -> AsyncStream<[Expense]> {
+        let query = db
+            .collection(FirestorePath.expenses(uid))
+            .order(by: "date", descending: true)
+
+        return AsyncStream { continuation in
+            let listener = query.addSnapshotListener { snapshot, error in
+                if let error {
+                    #if DEBUG
+                    print("Expense stream failed: \(error.localizedDescription)")
+                    #endif
+                    continuation.finish()
+                    return
+                }
+
+                let documents = snapshot?.documents ?? []
+                let expenses = documents.compactMap { try? $0.data(as: Expense.self) }
+                continuation.yield(expenses)
+            }
+
+            continuation.onTermination = { _ in
+                listener.remove()
+            }
+        }
     }
 
 //    // MARK: - Chat History
@@ -170,6 +213,7 @@ enum DBError: LocalizedError {
     case userNotFound
     case notFound
     case encodingFailed
+    case invalidDocumentID
     case unknown(String)
 
     var errorDescription: String? {
@@ -177,6 +221,7 @@ enum DBError: LocalizedError {
         case .userNotFound:    return "User data not found."
         case .notFound:        return "Requested data not found."
         case .encodingFailed:  return "Failed to process data."
+        case .invalidDocumentID: return "Missing document ID."
         case .unknown(let m):  return m
         }
     }

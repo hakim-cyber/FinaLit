@@ -255,8 +255,8 @@ class OnboardingViewModel {
                 spendingWeaknesses: spendingWeaknesses
             )
 
-            try await dbService.saveFinancialProfile(financialProfile, uid: uid)
-            try await dbService.saveBehaviorProfile(behaviorProfile, uid: uid)
+            try dbService.saveFinancialProfile(financialProfile, uid: uid)
+            try dbService.saveBehaviorProfile(behaviorProfile, uid: uid)
 
             session.updateFinancialProfile(financialProfile)
             session.updateBehaviorProfile(behaviorProfile)
@@ -289,7 +289,7 @@ class OnboardingViewModel {
                 incomeStability: incomeStability
             )
 
-            try await dbService.saveUserProfile(profile, uid: uid)
+            try dbService.saveUserProfile(profile, uid: uid)
             session.updateProfile(profile)
 
             return true
@@ -311,7 +311,7 @@ class OnboardingViewModel {
 
         do {
             let profile = makeFinancialProfile()
-            try await dbService.saveFinancialProfile(profile, uid: uid)
+            try dbService.saveFinancialProfile(profile, uid: uid)
             session.updateFinancialProfile(profile)
             return true
         } catch {

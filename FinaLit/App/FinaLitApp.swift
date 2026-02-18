@@ -6,15 +6,16 @@
 //
 
 import SwiftUI
-
-import Firebase
+import FirebaseCore
 
 @main
 struct FinaLitApp: App {
-    @State private var session        = UserSession()
-    @State private var appCoordinator = AppCoordinator()
-    @State private var authService    = AuthService()
-    @State private var dbService      = DatabaseService()
+   
+
+    @State private var session: UserSession
+    @State private var appCoordinator: AppCoordinator
+    @State private var authService: AuthService
+    @State private var dbService: DatabaseService
 
     // ✅ Created here — dependencies are already @State so they exist immediately
     @State private var authViewModel: AuthViewModel
@@ -23,13 +24,15 @@ struct FinaLitApp: App {
     init() {
         FirebaseApp.configure()
         let authService = AuthService()
-        let dbService   = DatabaseService()
-        let session     = UserSession()
+        let dbService = DatabaseService()
+        let session = UserSession()
+        let appCoordinator = AppCoordinator()
 
-        _authService    = State(initialValue: authService)
-        _dbService      = State(initialValue: dbService)
-        _session        = State(initialValue: session)
-        _authViewModel  = State(initialValue: AuthViewModel(
+        _authService = State(initialValue: authService)
+        _dbService = State(initialValue: dbService)
+        _session = State(initialValue: session)
+        _appCoordinator = State(initialValue: appCoordinator)
+        _authViewModel = State(initialValue: AuthViewModel(
             authService: authService,
             dbService: dbService,
             session: session
