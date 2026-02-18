@@ -18,6 +18,7 @@ struct FinaLitApp: App {
 
     // ✅ Created here — dependencies are already @State so they exist immediately
     @State private var authViewModel: AuthViewModel
+    @State private var onboardingViewModel: OnboardingViewModel
 
     init() {
         FirebaseApp.configure()
@@ -33,6 +34,7 @@ struct FinaLitApp: App {
             dbService: dbService,
             session: session
         ))
+        _onboardingViewModel = State(initialValue: OnboardingViewModel(dbService: dbService, session: session))
     }
 
     var body: some Scene {
@@ -43,6 +45,7 @@ struct FinaLitApp: App {
                 .environment(authService)
                 .environment(dbService)
                 .environment(authViewModel)
+                .environment(onboardingViewModel)
                 .task {
                                    await restoreSession()
                                }
