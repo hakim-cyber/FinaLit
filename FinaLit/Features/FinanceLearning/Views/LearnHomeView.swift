@@ -48,14 +48,38 @@ struct LearnHomeView: View {
                             .foregroundStyle(Color(hex: "4B5563"))
                             .padding(.horizontal, 20)
 
-                        ForEach(learnVM.publishedWeeks) { week in
-                            WeekRowCard(
-                                week: week,
-                                progress: learnVM.weekProgress(for: week.id ?? "")
-                            )
-                            .onTapGesture {
-                                guard learnVM.weekProgress(for: week.id ?? "")?.isUnlocked == true else { return }
-                                coordinator.push(.weekDetail(week.id ?? ""))
+                        if let errorMessage = learnVM.errorMessage,
+                           learnVM.publishedWeeks.isEmpty,
+                           !learnVM.isLoadingHome {
+                            LearnErrorView(message: errorMessage) {
+                                await learnVM.onTabAppear()
+                                await learnVM.loadHome()
+                            }
+                            .padding(.horizontal, 20)
+                        } else if learnVM.publishedWeeks.isEmpty && !learnVM.isLoadingHome {
+                            VStack(spacing: 12) {
+                                Text("📚")
+                                    .font(.system(size: 48))
+                                Text("No lessons yet")
+                                    .font(.system(size: 20, design: .serif))
+                                    .foregroundStyle(.white)
+                                Text("Check back soon — content is being added.")
+                                    .font(.system(size: 13, design: .monospaced))
+                                    .foregroundStyle(Color(hex: "4B5563"))
+                                    .multilineTextAlignment(.center)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(40)
+                        } else {
+                            ForEach(learnVM.publishedWeeks) { week in
+                                WeekRowCard(
+                                    week: week,
+                                    progress: learnVM.weekProgress(for: week.id ?? "")
+                                )
+                                .onTapGesture {
+                                    guard learnVM.weekProgress(for: week.id ?? "")?.isUnlocked == true else { return }
+                                    coordinator.push(.weekDetail(week.id ?? ""))
+                                }
                             }
                         }
                     }
@@ -74,11 +98,6 @@ struct LearnHomeView: View {
         .task {
             await learnVM.onTabAppear()
             await learnVM.loadHome()
-        }
-        .alert("Error", isPresented: .constant(learnVM.errorMessage != nil)) {
-            Button("OK") { learnVM.clearError() }
-        } message: {
-            Text(learnVM.errorMessage ?? "")
         }
     }
 

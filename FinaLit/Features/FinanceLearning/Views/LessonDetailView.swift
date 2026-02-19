@@ -119,14 +119,16 @@ struct LessonDetailView: View {
 
     // MARK: - Header
     private func lessonHeader(_ lesson: Lesson) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        let difficulty = DifficultyLevel(rawValue: lesson.difficultyLevel) ?? .beginner
+
+      return  VStack(alignment: .leading, spacing: 12) {
             // Difficulty badge
-            Text(lesson.difficultyLevel.rawValue.uppercased())
+            Text(lesson.difficultyLevel.uppercased())
                 .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                .foregroundStyle(difficultyColor(lesson.difficultyLevel))
+                .foregroundStyle(difficultyColor(difficulty))
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
-                .background(difficultyColor(lesson.difficultyLevel).opacity(0.15))
+                .background(difficultyColor(difficulty).opacity(0.15))
                 .clipShape(Capsule())
 
             Text(lesson.title)

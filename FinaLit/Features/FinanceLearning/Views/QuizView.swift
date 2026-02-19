@@ -56,7 +56,7 @@ struct QuizView: View {
                     ScrollView(showsIndicators: false) {
                         VStack(alignment: .leading, spacing: 24) {
                             // Question type badge
-                            Text(question.type == .scenario ? "SCENARIO" : "CONCEPT CHECK")
+                            Text(question.type.uppercased())
                                 .font(.system(size: 10, weight: .semibold, design: .monospaced))
                                 .foregroundStyle(Color(hex: "6366F1"))
 
@@ -134,6 +134,9 @@ struct QuizView: View {
         .navigationBarBackButtonHidden(true) // can't go back mid quiz
         .task { await learnVM.loadQuiz(quizID: quizID) }
         .alert("Error", isPresented: .constant(learnVM.errorMessage != nil)) {
+            Button("Try again") {
+                Task { await learnVM.loadQuiz(quizID: quizID) }
+            }
             Button("OK") { learnVM.clearError() }
         } message: {
             Text(learnVM.errorMessage ?? "")

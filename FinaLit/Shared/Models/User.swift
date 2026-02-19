@@ -14,6 +14,7 @@ struct User: Codable, Identifiable {
     var name: String
     var createdAt: Date
     var profile: UserProfile?
+    var isAdmin:          Bool = false
     var financialProfile: FinancialProfile?
     var behaviorProfile: BehaviorProfile?
 

@@ -50,14 +50,27 @@ struct WeekDetailView: View {
 
                     // ── Days list ──────────────────────────────────────────
                     VStack(spacing: 10) {
-                        ForEach(learnVM.days(for: weekID)) { day in
-                            DayRowCard(
-                                day: day,
-                                weekID: weekID,
-                                progress: learnVM.dayProgress(for: day.id ?? "", in: weekID)
-                            )
-                            .onTapGesture {
-                                handleDayTap(day: day)
+                        if let errorMessage = learnVM.errorMessage,
+                           learnVM.days(for: weekID).isEmpty {
+                            LearnErrorView(message: errorMessage) {
+                                await learnVM.loadWeek(weekID: weekID)
+                            }
+                        } else if learnVM.days(for: weekID).isEmpty {
+                            Text("Days coming soon...")
+                                .font(.system(size: 14, design: .monospaced))
+                                .foregroundStyle(Color(hex: "4B5563"))
+                                .padding(40)
+                                .frame(maxWidth: .infinity)
+                        } else {
+                            ForEach(learnVM.days(for: weekID)) { day in
+                                DayRowCard(
+                                    day: day,
+                                    weekID: weekID,
+                                    progress: learnVM.dayProgress(for: day.id ?? "", in: weekID)
+                                )
+                                .onTapGesture {
+                                    handleDayTap(day: day)
+                                }
                             }
                         }
                     }

@@ -163,6 +163,18 @@ struct ReflectionView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .alert("Error", isPresented: .constant(learnVM.errorMessage != nil)) {
+            Button("Try again") {
+                Task {
+                    let success = await learnVM.submitReflection(
+                        weekID: weekID,
+                        weekTitle: weekTitle,
+                        content: content
+                    )
+                    if success {
+                        coordinator.popToRoot()
+                    }
+                }
+            }
             Button("OK") { learnVM.clearError() }
         } message: {
             Text(learnVM.errorMessage ?? "")
@@ -442,4 +454,3 @@ struct ReflectionHistoryCard: View {
         .padding(.horizontal, 20)
     }
 }
-
