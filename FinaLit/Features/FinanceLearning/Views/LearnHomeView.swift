@@ -105,10 +105,10 @@ struct LearnHomeView: View {
     private var headerSection: some View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Learn")
+                Text("FinaLit")
                     .font(.system(size: 34, weight: .light, design: .serif))
                     .foregroundStyle(.white)
-                Text("financial literacy")
+                Text("Learn Financial Literacy")
                     .font(.system(size: 14, design: .monospaced))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
