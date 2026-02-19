@@ -6,14 +6,14 @@
 import Foundation
 import FirebaseFirestore
 
-struct Quiz: Codable {
+struct Quiz: Codable,Identifiable  {
     @DocumentID var id: String?
     var weekNumber: Int
     var dayNumber: Int
     var questions: [QuizQuestion]
 }
 
-struct QuizQuestion: Codable {
+struct QuizQuestion: Codable,Identifiable  {
     @DocumentID var id: String?
     var questionText: String
     var type: String

@@ -6,7 +6,7 @@
 import Foundation
 import FirebaseFirestore
 
-struct DailyTip: Codable {
+struct DailyTip: Codable ,Identifiable {
     @DocumentID var id: String?
     var title: String
     var body: String

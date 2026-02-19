@@ -62,6 +62,11 @@ final class LearnViewModel {
         self.session = session
     }
 
+    func onTabAppear() async {
+        guard let uid else { return }
+        // Touch the summary to update lastActiveDate + streak
+        try? await db.recalculateAndSaveLearningSummary(uid: uid)
+    }
     // MARK: - Computed: current user ID
     private var uid: String? { session.user?.id }
 

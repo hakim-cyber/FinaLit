@@ -6,7 +6,7 @@
 import Foundation
 import FirebaseFirestore
 
-struct Lesson: Codable {
+struct Lesson: Codable,Identifiable  {
     @DocumentID var id: String?
     var weekNumber: Int
     var dayNumber: Int
