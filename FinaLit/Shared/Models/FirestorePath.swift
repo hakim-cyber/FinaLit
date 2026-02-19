@@ -47,4 +47,12 @@ enum FirestorePath {
     static func user(_ uid: String) -> String { "users/\(uid)" }
     static func expenses(_ uid: String) -> String { "users/\(uid)/expenses" }
     static func chat(_ uid: String) -> String { "users/\(uid)/chatHistory" }
+
+    static func weeks() -> String { "weeks" }
+    static func days(weekID: String) -> String { "weeks/\(weekID)/days" }
+    static func dailyTips() -> String { "dailyTips" }
+    static func weekProgress(uid: String) -> String { "users/\(uid)/weekProgress" }
+    static func dayProgress(uid: String, weekID: String) -> String { "users/\(uid)/weekProgress/\(weekID)/dayProgress" }
+    static func reflections(uid: String) -> String { "users/\(uid)/reflections" }
+    static func learningSummaryDoc(uid: String) -> String { "users/\(uid)/learningSummary/summary" }
 }
