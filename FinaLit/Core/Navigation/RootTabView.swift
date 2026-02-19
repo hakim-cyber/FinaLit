@@ -20,27 +20,28 @@ struct RootTabView: View {
         @Bindable var appCoordinator = appCoordinator
 
         TabView(selection: $appCoordinator.selectedTab) {
-
-            // ── Tab 1: Main ────────────────────────────────────
+           
+            CoordinatorStack(LearnPages.home) { coordinator in
+                appCoordinator.register(coordinator)
+            }
+            .tabItem { Label("Learn", systemImage: "book.fill") }
+            .tag(AppTab.learn)
+          
+            
             CoordinatorStack(MainPages.dashboard) { coordinator in
                 appCoordinator.register(coordinator)    // hand coordinator to AppCoordinator
             }
             .tabItem { Label("Main", systemImage: "chart.pie.fill") }
             .tag(AppTab.main)
 
-            // ── Tab 2: Chat ────────────────────────────────────
+         
             CoordinatorStack(ChatPages.chat) { coordinator in
                 appCoordinator.register(coordinator)
             }
             .tabItem { Label("AI Chat", systemImage: "brain.head.profile") }
             .tag(AppTab.chat)
 
-            // ── Tab 3: Learn ───────────────────────────────────
-            CoordinatorStack(LearnPages.home) { coordinator in
-                appCoordinator.register(coordinator)
-            }
-            .tabItem { Label("Learn", systemImage: "book.fill") }
-            .tag(AppTab.learn)
+            
         }
         .tint(.blue)
     }
