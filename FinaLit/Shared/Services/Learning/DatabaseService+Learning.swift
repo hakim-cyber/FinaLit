@@ -16,27 +16,27 @@ extension DatabaseService {
         return DBError.unknown(error.localizedDescription)
     }
 
-    private var dailyTipsCollection: CollectionReference {
+     var dailyTipsCollection: CollectionReference {
         db.collection(FirestorePath.dailyTips())
     }
 
-    private var weeksCollection: CollectionReference {
+     var weeksCollection: CollectionReference {
         db.collection(FirestorePath.weeks())
     }
 
-    private var lessonsCollection: CollectionReference {
+     var lessonsCollection: CollectionReference {
         db.collection(FirestorePath.lessons)
     }
 
-    private var quizzesCollection: CollectionReference {
+     var quizzesCollection: CollectionReference {
         db.collection(FirestorePath.quizzes)
     }
 
-    private func daysCollection(_ weekID: String) -> CollectionReference {
+     func daysCollection(_ weekID: String) -> CollectionReference {
         db.collection(FirestorePath.days(weekID: weekID))
     }
 
-    private func weekProgressCollection(_ uid: String) -> CollectionReference {
+     func weekProgressCollection(_ uid: String) -> CollectionReference {
         db.collection(FirestorePath.weekProgress(uid: uid))
     }
 

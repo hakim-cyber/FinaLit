@@ -21,6 +21,7 @@ struct FinaLitApp: App {
     @State private var authViewModel: AuthViewModel
     @State private var onboardingViewModel: OnboardingViewModel
     @State private var learnViewModel: LearnViewModel
+    @State private var adminViewModel: AdminViewModel
 
     init() {
         FirebaseApp.configure()
@@ -40,6 +41,7 @@ struct FinaLitApp: App {
         ))
         _onboardingViewModel = State(initialValue: OnboardingViewModel(dbService: dbService, session: session))
         _learnViewModel = State(initialValue: LearnViewModel(db: dbService, session: session))
+        _adminViewModel  = State(initialValue: AdminViewModel(db: dbService))
     }
 
     var body: some Scene {
@@ -52,6 +54,7 @@ struct FinaLitApp: App {
                 .environment(authViewModel)
                 .environment(onboardingViewModel)
                 .environment(learnViewModel)
+                .environment(adminViewModel)
                 .task {
                     await restoreSession()
                 }

@@ -15,7 +15,8 @@ import SwiftUI
 
 struct RootTabView: View {
     @Environment(AppCoordinator.self) private var appCoordinator
-
+    @Environment(UserSession.self) private var session
+    
     var body: some View {
         @Bindable var appCoordinator = appCoordinator
 
@@ -41,7 +42,12 @@ struct RootTabView: View {
             .tabItem { Label("AI Chat", systemImage: "brain.head.profile") }
             .tag(AppTab.chat)
 
-            
+            // RootTabView.swift
+            if session.user?.isAdmin == true {
+                CoordinatorStack(AdminPages.home)
+                    .tabItem { Label("Admin", systemImage: "gearshape.fill") }
+                    .tag(AppTab.admin)
+            }
         }
         .tint(.blue)
     }
@@ -52,4 +58,5 @@ enum AppTab {
     case main
     case chat
     case learn
+    case admin
 }
