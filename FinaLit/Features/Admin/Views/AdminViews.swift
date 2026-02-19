@@ -10,6 +10,9 @@
 // Features/Admin/Views/
 
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 // MARK: - Admin Home
 struct AdminHomeView: View {
@@ -64,6 +67,13 @@ struct AdminHomeView: View {
                             subtitle: "Create a quiz with questions",
                             color:   "FACC15"
                         ) { coordinator.push(.addQuiz("")) }
+
+                        AdminMenuRow(
+                            icon:    "doc.text.fill",
+                            title:   "Bulk JSON Import",
+                            subtitle: "Paste one JSON payload to create everything",
+                            color:   "22D3EE"
+                        ) { coordinator.push(.bulkImport) }
                     }
 
                     AdminSection(title: "DAILY TIPS") {
@@ -235,6 +245,7 @@ struct AddLessonView: View {
     let dayID: String
     @Environment(AdminViewModel.self)          private var adminVM
     @Environment(Coordinator<AdminPages>.self) private var coordinator
+    @State private var savedLessonID: String?
 
     var body: some View {
         var adminVM = Bindable(adminVM)
@@ -274,7 +285,7 @@ struct AddLessonView: View {
                 Task {
                     let (saved, id) = await self.adminVM.saveLesson()
                     if saved {
-                        // Show ID so admin can copy it into Day
+                        savedLessonID = id
                     }
                 }
             }
@@ -293,6 +304,14 @@ struct AddLessonView: View {
                 .background(Color(hex: "10B981").opacity(0.08))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             }
+
+            if let savedLessonID {
+                AdminCreatedIDCard(
+                    title: "Lesson ID",
+                    value: savedLessonID,
+                    hint: "Paste this into Add Day → LESSON ID"
+                )
+            }
         }
         .adminFeedback(success: nil, error: self.adminVM.errorMessage) {
             self.adminVM.clearMessages()
@@ -305,6 +324,7 @@ struct AddQuizView: View {
     let dayID: String
     @Environment(AdminViewModel.self)          private var adminVM
     @Environment(Coordinator<AdminPages>.self) private var coordinator
+    @State private var savedQuizID: String?
 
     var body: some View {
         var adminVM = Bindable(adminVM)
@@ -339,7 +359,12 @@ struct AddQuizView: View {
             }
 
             AdminSaveButton(label: "Save Quiz", isLoading: self.adminVM.isLoading) {
-                Task { let _ = await self.adminVM.saveQuiz() }
+                Task {
+                    let (saved, id) = await self.adminVM.saveQuiz()
+                    if saved {
+                        savedQuizID = id
+                    }
+                }
             }
 
             if let success = self.adminVM.successMessage {
@@ -349,6 +374,14 @@ struct AddQuizView: View {
                     .padding(14)
                     .background(Color(hex: "10B981").opacity(0.08))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+
+            if let savedQuizID {
+                AdminCreatedIDCard(
+                    title: "Quiz ID",
+                    value: savedQuizID,
+                    hint: "Paste this into Add Day → QUIZ ID"
+                )
             }
         }
         .adminFeedback(success: nil, error: self.adminVM.errorMessage) {
@@ -482,6 +515,75 @@ struct AddDailyTipView: View {
                     let saved = await self.adminVM.saveDailyTip()
                     if saved { coordinator.pop() }
                 }
+            }
+        }
+        .adminFeedback(success: self.adminVM.successMessage, error: self.adminVM.errorMessage) {
+            self.adminVM.clearMessages()
+        }
+    }
+}
+
+// MARK: - Bulk Import View
+struct AddBulkImportView: View {
+    @Environment(AdminViewModel.self)          private var adminVM
+    @State private var copiedTemplate = false
+    @State private var pastedPayload = false
+
+    var body: some View {
+        var adminVM = Bindable(adminVM)
+        AdminFormView(title: "Bulk JSON Import", icon: "doc.text.fill") {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("PASTE AI JSON")
+                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(Color(hex: "4B5563"))
+                Text("Use one universal JSON payload to create weeks, lessons, quizzes, days, and tips in one action.")
+                    .font(.system(size: 12, design: .monospaced))
+                    .foregroundStyle(Color(hex: "9CA3AF"))
+            }
+
+            AdminTextArea(
+                label: "JSON PAYLOAD",
+                placeholder: self.adminVM.bulkImportTemplate,
+                text: adminVM.bulkImportJSON
+            )
+            .frame(minHeight: 320)
+
+            HStack(spacing: 10) {
+                Button {
+                    #if canImport(UIKit)
+                    UIPasteboard.general.string = self.adminVM.bulkImportTemplate
+                    #endif
+                    copiedTemplate = true
+                } label: {
+                    Label(copiedTemplate ? "Template Copied" : "Copy Template", systemImage: "doc.on.doc")
+                        .font(.system(size: 12, design: .monospaced))
+                        .foregroundStyle(Color(hex: copiedTemplate ? "10B981" : "6366F1"))
+                }
+
+                Button {
+                    #if canImport(UIKit)
+                    if let clipboard = UIPasteboard.general.string, !clipboard.isEmpty {
+                        self.adminVM.bulkImportJSON = clipboard
+                        pastedPayload = true
+                    }
+                    #endif
+                } label: {
+                    Label(pastedPayload ? "Pasted" : "Paste Clipboard", systemImage: "doc.text")
+                        .font(.system(size: 12, design: .monospaced))
+                        .foregroundStyle(Color(hex: pastedPayload ? "10B981" : "22D3EE"))
+                }
+            }
+
+            AdminSaveButton(label: "Create All from JSON", isLoading: self.adminVM.isLoading) {
+                Task { _ = await self.adminVM.importFromBulkJSON() }
+            }
+
+            if !self.adminVM.bulkImportGeneratedIDs.isEmpty {
+                AdminCreatedIDCard(
+                    title: "Generated IDs",
+                    value: self.adminVM.bulkImportGeneratedIDs,
+                    hint: "Copy and reuse these IDs in future updates"
+                )
             }
         }
         .adminFeedback(success: self.adminVM.successMessage, error: self.adminVM.errorMessage) {
@@ -624,6 +726,50 @@ struct AdminSaveButton: View {
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
         .disabled(isLoading)
+    }
+}
+
+struct AdminCreatedIDCard: View {
+    let title: String
+    let value: String
+    let hint: String
+    @State private var copied = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(title.uppercased())
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .foregroundStyle(Color(hex: "4B5563"))
+
+            Text(value)
+                .font(.system(size: 13, design: .monospaced))
+                .foregroundStyle(.white)
+                .textSelection(.enabled)
+
+            HStack(spacing: 10) {
+                Button {
+                    #if canImport(UIKit)
+                    UIPasteboard.general.string = value
+                    #endif
+                    copied = true
+                } label: {
+                    Label(copied ? "Copied" : "Copy ID", systemImage: copied ? "checkmark" : "doc.on.doc")
+                        .font(.system(size: 12, design: .monospaced))
+                        .foregroundStyle(Color(hex: copied ? "10B981" : "6366F1"))
+                }
+
+                Text(hint)
+                    .font(.system(size: 11, design: .monospaced))
+                    .foregroundStyle(Color(hex: "4B5563"))
+            }
+        }
+        .padding(14)
+        .background(Color(hex: "111118"))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color(hex: "1F2937"), lineWidth: 1)
+        )
     }
 }
 
