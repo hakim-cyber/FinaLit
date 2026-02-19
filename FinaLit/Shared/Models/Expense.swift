@@ -19,12 +19,7 @@ struct Expense: Codable, Identifiable {
     var note: String
     var date: Date
     
-    // Convenience
-    var month: String {         // "2026-02" — used to group by month
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM"
-        return formatter.string(from: date)
-    }
+    var month: String { Self.monthFormatter.string(from: date) }
 }
 
 // Monthly summary — computed in ViewModel, not stored
@@ -38,4 +33,14 @@ struct MonthlyExpenseSummary {
         guard totalSpent > 0 else { return 0 }
         return ((byCategory[category] ?? 0) / totalSpent) * 100
     }
+}
+
+extension Expense {
+    private static let monthFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM"
+        return f
+    }()
+
+   
 }
