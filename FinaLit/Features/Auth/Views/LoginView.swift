@@ -16,79 +16,96 @@ struct LoginView: View {
     var body: some View {
         @Bindable var viewModel = viewModel
 
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Welcome back")
-                        .font(.largeTitle.weight(.semibold))
-                    Text("Log in to continue managing your finances.")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
+        ZStack {
+            AuthPalette.background.ignoresSafeArea()
 
-                VStack(spacing: 16) {
-                    if let error = viewModel.errorMessage, !error.isEmpty {
-                        AuthErrorBanner(message: error)
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 24) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Welcome back")
+                            .font(.system(size: 34, weight: .light, design: .serif))
+                            .foregroundStyle(.white)
+                        Text("Log in to continue your financial journey.")
+                            .font(.system(size: 13, design: .monospaced))
+                            .foregroundStyle(AuthPalette.muted)
                     }
 
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Email")
-                            .font(.subheadline.weight(.medium))
-                        TextField("name@email.com", text: $viewModel.email)
-                            .textInputAutocapitalization(.never)
-                            .keyboardType(.emailAddress)
-                            .autocorrectionDisabled()
-                            .padding()
-                            .background(.gray.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    }
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Password")
-                            .font(.subheadline.weight(.medium))
-                        SecureField("Enter password", text: $viewModel.password)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .padding()
-                            .background(.gray.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    }
-
-                    Button {
-                        Task {
-                            await viewModel.login()
+                    VStack(spacing: 16) {
+                        if let error = viewModel.errorMessage, !error.isEmpty {
+                            AuthErrorBanner(message: error)
                         }
-                    } label: {
-                        HStack(spacing: 10) {
-                            if viewModel.isLoading {
-                                ProgressView()
-                                    .progressViewStyle(.circular)
-                                    .tint(.white)
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("EMAIL")
+                                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                                .foregroundStyle(AuthPalette.muted)
+                            TextField("name@email.com", text: $viewModel.email)
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.emailAddress)
+                                .autocorrectionDisabled()
+                                .authInputStyle()
+                        }
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("PASSWORD")
+                                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                                .foregroundStyle(AuthPalette.muted)
+                            SecureField("Enter password", text: $viewModel.password)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                                .authInputStyle()
+                        }
+
+                        Button {
+                            Task {
+                                await viewModel.login()
                             }
-                            Text(viewModel.isLoading ? "Logging In..." : "Log In")
-                                .font(.headline)
+                        } label: {
+                            HStack(spacing: 10) {
+                                if viewModel.isLoading {
+                                    ProgressView()
+                                        .progressViewStyle(.circular)
+                                        .tint(.white)
+                                }
+                                Text(viewModel.isLoading ? "Logging In..." : "Log In")
+                                    .font(.system(size: 15, weight: .semibold, design: .monospaced))
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .foregroundStyle(canSubmit ? .white : AuthPalette.disabledText)
+                            .background(
+                                LinearGradient(
+                                    colors: canSubmit
+                                        ? [Color(hex: "6366F1"), Color(hex: "4F46E5")]
+                                        : [AuthPalette.border, AuthPalette.border],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .foregroundStyle(.white)
-                        .background(canSubmit ? Color.blue : Color.gray, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    }
-                    .disabled(!canSubmit)
+                        .disabled(!canSubmit)
 
-                    Button("Dont have acount") {
-                        coordinator.push(.register)
+                        Button("Don't have an account? Create one") {
+                            coordinator.push(.register)
+                        }
+                        .font(.system(size: 13, weight: .medium, design: .monospaced))
+                        .foregroundStyle(AuthPalette.accent)
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 4)
                     }
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(.blue)
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 4)
+                    .padding(20)
+                    .background(AuthPalette.surface, in: RoundedRectangle(cornerRadius: 16))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(AuthPalette.border, lineWidth: 1)
+                    )
                 }
-                .padding(20)
-                .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .padding(.horizontal, 20)
+                .padding(.top, 48)
+                .padding(.bottom, 24)
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 48)
-            .padding(.bottom, 24)
         }
-        .background(Color(.systemGroupedBackground).ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
         .onChange(of: viewModel.email) { _, _ in
             viewModel.clearError()
@@ -105,15 +122,49 @@ private struct AuthErrorBanner: View {
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(.red)
+                .foregroundStyle(Color(hex: "F87171"))
             Text(message)
-                .font(.footnote)
-                .foregroundStyle(.red)
+                .font(.system(size: 12, design: .monospaced))
+                .foregroundStyle(Color(hex: "FCA5A5"))
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.red.opacity(0.08), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .background(Color(hex: "450A0A").opacity(0.45), in: RoundedRectangle(cornerRadius: 10))
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color(hex: "7F1D1D"), lineWidth: 1)
+        )
+    }
+}
+
+private enum AuthPalette {
+    static let background = Color(hex: "0A0A0F")
+    static let surface = Color(hex: "111118")
+    static let border = Color(hex: "1F2937")
+    static let muted = Color(hex: "6B7280")
+    static let accent = Color(hex: "6366F1")
+    static let disabledText = Color(hex: "4B5563")
+}
+
+private struct AuthInputFieldModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 15, design: .serif))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 14)
+            .frame(height: 50)
+            .background(AuthPalette.background.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(AuthPalette.border, lineWidth: 1)
+            )
+    }
+}
+
+private extension View {
+    func authInputStyle() -> some View {
+        modifier(AuthInputFieldModifier())
     }
 }
 

@@ -32,30 +32,28 @@ struct OnboardingPersonalInfoView: View {
             VStack(alignment: .leading, spacing: 16) {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Name")
-                        .font(.subheadline.weight(.medium))
+                        .onboardingFieldLabelStyle()
                     TextField("Your name", text: $viewModel.name)
                         .textInputAutocapitalization(.words)
-                        .padding(.horizontal, 14)
-                        .frame(height: 50)
-                        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .onboardingInputStyle()
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
                         Text("Age")
-                            .font(.subheadline.weight(.medium))
+                            .onboardingFieldLabelStyle()
                         Spacer()
                         Text("\(Int(viewModel.age.rounded()))")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.secondary)
+                            .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                            .foregroundStyle(OnboardingPalette.accent)
                     }
                     Slider(value: $viewModel.age, in: 13...70, step: 1)
-                        .tint(.blue)
+                        .tint(OnboardingPalette.accent)
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Country")
-                        .font(.subheadline.weight(.medium))
+                        .onboardingFieldLabelStyle()
 
                     AdaptiveChips(
                         items: countries,
@@ -68,9 +66,7 @@ struct OnboardingPersonalInfoView: View {
 
                     TextField("Or enter your country", text: $viewModel.country)
                         .textInputAutocapitalization(.words)
-                        .padding(.horizontal, 14)
-                        .frame(height: 50)
-                        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .onboardingInputStyle()
                 }
             }
             .onChange(of: viewModel.name) { _, _ in viewModel.clearError() }
@@ -110,7 +106,7 @@ struct OnboardingEmploymentStatusView: View {
                         title: status.rawValue,
                         subtitle: status.description,
                         isSelected: viewModel.employmentStatus == status,
-                        accent: .blue,
+                        accent: OnboardingPalette.accent,
                         icon: "briefcase.fill"
                     ) {
                         viewModel.employmentStatus = status
@@ -158,13 +154,13 @@ struct OnboardingIncomeStabilityView: View {
 
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Income stability")
-                        .font(.subheadline.weight(.medium))
+                        .onboardingFieldLabelStyle()
 
                     HStack(spacing: 10) {
                         TogglePill(
                             title: "Stable",
                             isSelected: viewModel.incomeStability == .stable,
-                            tint: .blue
+                            tint: OnboardingPalette.accent
                         ) {
                             viewModel.incomeStability = .stable
                             viewModel.clearError()
@@ -216,7 +212,7 @@ struct OnboardingExpensesView: View {
                     value: $viewModel.monthlyFixedExpenses,
                     range: 0...10000,
                     step: 25,
-                    tint: .blue
+                    tint: OnboardingPalette.accent
                 )
 
                 MoneySlider(
@@ -267,19 +263,24 @@ struct OnboardingSavingsEmergencyView: View {
 
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Emergency fund")
-                        .font(.subheadline.weight(.medium))
+                        .onboardingFieldLabelStyle()
 
                     HStack {
                         Text("Months covered")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(OnboardingPalette.muted)
                         Spacer()
                         Stepper(value: $viewModel.emergencyFundMonths, in: 0...24) {
                             Text("\(viewModel.emergencyFundMonths) months")
-                                .font(.subheadline.weight(.semibold))
+                                .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                                .foregroundStyle(.white)
                         }
                     }
                     .padding(14)
-                    .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .background(OnboardingPalette.surface, in: RoundedRectangle(cornerRadius: 12))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(OnboardingPalette.border, lineWidth: 1)
+                    )
                 }
             }
         }
@@ -366,7 +367,7 @@ struct OnboardingRiskInterestView: View {
         ) {
             VStack(alignment: .leading, spacing: 14) {
                 Text("Risk tolerance")
-                    .font(.subheadline.weight(.medium))
+                    .onboardingFieldLabelStyle()
 
                 VStack(spacing: 10) {
                     RiskSelectionCard(
@@ -402,14 +403,14 @@ struct OnboardingRiskInterestView: View {
 
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Interested in investing?")
-                        .font(.subheadline.weight(.medium))
+                        .onboardingFieldLabelStyle()
 
                     HStack(spacing: 10) {
-                        TogglePill(title: "Yes", isSelected: viewModel.interestedInInvesting, tint: .blue) {
+                        TogglePill(title: "Yes", isSelected: viewModel.interestedInInvesting, tint: OnboardingPalette.accent) {
                             viewModel.interestedInInvesting = true
                             viewModel.clearError()
                         }
-                        TogglePill(title: "Not now", isSelected: !viewModel.interestedInInvesting, tint: .gray) {
+                        TogglePill(title: "Not now", isSelected: !viewModel.interestedInInvesting, tint: OnboardingPalette.muted) {
                             viewModel.interestedInInvesting = false
                             viewModel.clearError()
                         }
@@ -461,8 +462,7 @@ struct OnboardingShortTermGoalView: View {
 
                 TextField("Type your short-term goal", text: $viewModel.shortTermGoal, axis: .vertical)
                     .lineLimit(2...4)
-                    .padding(14)
-                    .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .onboardingTextAreaStyle()
                     .onChange(of: viewModel.shortTermGoal) { _, _ in viewModel.clearError() }
             }
         }
@@ -510,8 +510,7 @@ struct OnboardingLongTermGoalView: View {
 
                 TextField("Type your long-term goal", text: $viewModel.longTermGoal, axis: .vertical)
                     .lineLimit(2...4)
-                    .padding(14)
-                    .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .onboardingTextAreaStyle()
                     .onChange(of: viewModel.longTermGoal) { _, _ in viewModel.clearError() }
             }
         }
@@ -541,8 +540,8 @@ struct OnboardingSpendingWeaknessesView: View {
         ) {
             VStack(alignment: .leading, spacing: 10) {
                 Text("\(viewModel.spendingWeaknesses.count)/\(viewModel.maxWeaknessSelections) selected")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 11, design: .monospaced))
+                    .foregroundStyle(OnboardingPalette.muted)
 
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 130), spacing: 10)], spacing: 10) {
                     ForEach(SpendingCategory.allCases) { category in
@@ -593,8 +592,8 @@ struct OnboardingHobbiesView: View {
         ) {
             VStack(alignment: .leading, spacing: 12) {
                 Text("\(viewModel.normalizedHobbies.count)/\(viewModel.maxHobbySelections) selected")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 11, design: .monospaced))
+                    .foregroundStyle(OnboardingPalette.muted)
 
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 130), spacing: 10)], spacing: 10) {
                     ForEach(hobbies, id: \.self) { hobby in
@@ -627,9 +626,7 @@ struct OnboardingHobbiesView: View {
                 if viewModel.isOtherHobbySelected {
                     TextField("Add custom hobby", text: $viewModel.customHobby)
                         .textInputAutocapitalization(.words)
-                        .padding(.horizontal, 14)
-                        .frame(height: 50)
-                        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .onboardingInputStyle()
                         .onChange(of: viewModel.customHobby) { _, _ in
                             viewModel.clearError()
                         }
@@ -710,92 +707,102 @@ private struct OnboardingStepScaffold<Content: View>: View {
     @Environment(Coordinator<OnboardingPages>.self) private var coordinator
 
     var body: some View {
-        ScrollView {
-            VStack {
-                VStack(alignment: .leading, spacing: 18) {
-                    VStack(spacing: 14) {
-                        HStack {
-                            if page.stepNumber > 1 {
-                                Button {
-                                    coordinator.pop()
-                                } label: {
-                                    Image(systemName: "chevron.left")
-                                        .font(.headline.weight(.semibold))
-                                        .frame(width: 34, height: 34)
-                                        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        ZStack {
+            OnboardingPalette.background.ignoresSafeArea()
+
+            ScrollView(showsIndicators: false) {
+                VStack {
+                    VStack(alignment: .leading, spacing: 20) {
+                        VStack(spacing: 14) {
+                            HStack {
+                                if page.stepNumber > 1 {
+                                    Button {
+                                        coordinator.pop()
+                                    } label: {
+                                        Image(systemName: "chevron.left")
+                                            .font(.system(size: 13, weight: .semibold))
+                                            .foregroundStyle(.white)
+                                            .frame(width: 34, height: 34)
+                                            .background(OnboardingPalette.background.opacity(0.8), in: RoundedRectangle(cornerRadius: 10))
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(OnboardingPalette.border, lineWidth: 1)
+                                            )
+                                    }
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
+
+                                Spacer()
+
+                                Text("STEP \(page.stepNumber) OF \(OnboardingPages.totalSteps)")
+                                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                                    .foregroundStyle(OnboardingPalette.muted)
                             }
 
-                            Spacer()
-
-                            Text("Step \(page.stepNumber) of \(OnboardingPages.totalSteps)")
-                                .font(.footnote.weight(.medium))
-                                .foregroundStyle(.secondary)
+                            ProgressView(value: Double(page.stepNumber), total: Double(OnboardingPages.totalSteps))
+                                .tint(OnboardingPalette.accent)
                         }
 
-                        ProgressView(value: Double(page.stepNumber), total: Double(OnboardingPages.totalSteps))
-                            .tint(.blue)
-                    }
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(title)
+                                .font(.system(size: 30, weight: .light, design: .serif))
+                                .foregroundStyle(.white)
+                                .fixedSize(horizontal: false, vertical: true)
+                            Text(subtitle)
+                                .font(.system(size: 13, design: .monospaced))
+                                .foregroundStyle(OnboardingPalette.muted)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
 
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(title)
-                            .font(.title2.weight(.bold))
-                            .fixedSize(horizontal: false, vertical: true)
-                        Text(subtitle)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
+                        if let errorMessage, !errorMessage.isEmpty {
+                            AuthErrorBanner(message: errorMessage)
+                        }
 
-                    if let errorMessage, !errorMessage.isEmpty {
-                        AuthErrorBanner(message: errorMessage)
-                    }
+                        content()
 
-                    content()
-
-                    Button(action: onPrimaryTap) {
-                        HStack(spacing: 10) {
-                            if isLoading {
-                                ProgressView()
-                                    .progressViewStyle(.circular)
-                                    .tint(.white)
+                        Button(action: onPrimaryTap) {
+                            HStack(spacing: 10) {
+                                if isLoading {
+                                    ProgressView()
+                                        .progressViewStyle(.circular)
+                                        .tint(.white)
+                                }
+                                Text(primaryTitle)
+                                    .font(.system(size: 15, weight: .semibold, design: .monospaced))
                             }
-                            Text(primaryTitle)
-                                .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 52)
+                            .foregroundStyle((isPrimaryEnabled && !isLoading) ? .white : OnboardingPalette.disabledText)
+                            .background(
+                                LinearGradient(
+                                    colors: (isPrimaryEnabled && !isLoading)
+                                        ? [Color(hex: "6366F1"), Color(hex: "4F46E5")]
+                                        : [OnboardingPalette.border, OnboardingPalette.border],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
                         }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 52)
-                        .foregroundStyle(.white)
-                        .background(Color.black, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    }
-                    .disabled(!isPrimaryEnabled || isLoading)
-                    .opacity((isPrimaryEnabled && !isLoading) ? 1.0 : 0.45)
+                        .disabled(!isPrimaryEnabled || isLoading)
 
-                    Text("Educational guidance, not financial advice.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .center)
+                        Text("Educational guidance, not financial advice.")
+                            .font(.system(size: 11, design: .monospaced))
+                            .foregroundStyle(OnboardingPalette.muted)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                    .padding(22)
+                    .background(OnboardingPalette.surface, in: RoundedRectangle(cornerRadius: 24))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24)
+                            .stroke(OnboardingPalette.border, lineWidth: 1)
+                    )
+                    .frame(maxWidth: 640)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 28)
                 }
-                .padding(22)
-                .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 24, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .stroke(Color(.systemGray5), lineWidth: 1)
-                )
-                .frame(maxWidth: 640)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 28)
             }
         }
-        .background(
-            LinearGradient(
-                colors: [Color(.systemGroupedBackground), Color(.secondarySystemBackground)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
-        )
     }
 }
 
@@ -810,16 +817,23 @@ private struct MoneySlider: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text(title)
-                    .font(.subheadline.weight(.medium))
+                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(OnboardingPalette.muted)
                 Spacer()
                 Text(currency(value))
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(.white)
             }
 
             Slider(value: $value, in: range, step: step)
                 .tint(tint)
         }
+        .padding(14)
+        .background(OnboardingPalette.surface, in: RoundedRectangle(cornerRadius: 12))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(OnboardingPalette.border, lineWidth: 1)
+        )
     }
 }
 
@@ -832,13 +846,17 @@ private struct TogglePill: View {
     var body: some View {
         Button(action: onTap) {
             Text(title)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(isSelected ? Color.white : Color.primary)
+                .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                .foregroundStyle(isSelected ? Color.white : OnboardingPalette.muted)
                 .frame(maxWidth: .infinity)
                 .frame(height: 42)
                 .background(
-                    RoundedRectangle(cornerRadius: 11, style: .continuous)
-                        .fill(isSelected ? tint : Color(.secondarySystemBackground))
+                    RoundedRectangle(cornerRadius: 11)
+                        .fill(isSelected ? tint.opacity(0.2) : OnboardingPalette.surface)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 11)
+                        .stroke(isSelected ? tint : OnboardingPalette.border, lineWidth: 1)
                 )
         }
         .buttonStyle(.plain)
@@ -861,23 +879,23 @@ private struct RiskSelectionCard: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.primary)
+                        .font(.system(size: 16, weight: .medium, design: .serif))
+                        .foregroundStyle(.white)
                     Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.system(size: 11, design: .monospaced))
+                        .foregroundStyle(OnboardingPalette.muted)
                 }
 
                 Spacer()
             }
             .padding(14)
             .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(isSelected ? tint.opacity(0.14) : Color(.secondarySystemBackground))
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(isSelected ? tint.opacity(0.14) : OnboardingPalette.surface)
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(isSelected ? tint : Color(.systemGray5), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(isSelected ? tint : OnboardingPalette.border, lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
@@ -896,34 +914,35 @@ private struct KnowledgeLevelCard: View {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     Text(title)
-                        .font(.subheadline.weight(.semibold))
+                        .font(.system(size: 16, weight: .medium, design: .serif))
+                        .foregroundStyle(.white)
                     Spacer()
                     if isSelected {
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundStyle(.blue)
+                            .foregroundStyle(OnboardingPalette.accent)
                     }
                 }
 
                 Text(description)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 11, design: .monospaced))
+                    .foregroundStyle(OnboardingPalette.muted)
 
                 GeometryReader { geo in
-                    RoundedRectangle(cornerRadius: 4, style: .continuous)
-                        .fill(Color(.systemGray5))
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(OnboardingPalette.border)
                         .overlay(alignment: .leading) {
-                            RoundedRectangle(cornerRadius: 4, style: .continuous)
-                                .fill(Color.blue)
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(OnboardingPalette.accent)
                                 .frame(width: geo.size.width * level)
                         }
                 }
                 .frame(height: 8)
             }
             .padding(14)
-            .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .background(OnboardingPalette.surface, in: RoundedRectangle(cornerRadius: 12))
             .overlay(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(isSelected ? Color.blue : Color(.systemGray5), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(isSelected ? OnboardingPalette.accent : OnboardingPalette.border, lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
@@ -942,18 +961,18 @@ private struct SelectableRowCard: View {
         Button(action: onTap) {
             HStack(spacing: 12) {
                 Image(systemName: icon)
-                    .foregroundStyle(isSelected ? accent : .secondary)
+                    .foregroundStyle(isSelected ? accent : OnboardingPalette.muted)
                     .frame(width: 22)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.primary)
+                        .font(.system(size: 16, weight: .medium, design: .serif))
+                        .foregroundStyle(.white)
                     if !subtitle.isEmpty {
                         Text(subtitle)
-                            .font(.caption)
+                            .font(.system(size: 11, design: .monospaced))
                             .minimumScaleFactor(0.6)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(OnboardingPalette.muted)
                     }
                 }
 
@@ -966,12 +985,12 @@ private struct SelectableRowCard: View {
             }
             .padding(14)
             .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(isSelected ? accent.opacity(0.1) : Color(.secondarySystemBackground))
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(isSelected ? accent.opacity(0.1) : OnboardingPalette.surface)
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(isSelected ? accent : Color(.systemGray5), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(isSelected ? accent : OnboardingPalette.border, lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
@@ -989,19 +1008,23 @@ private struct ChipButton: View {
             HStack(spacing: 6) {
                 if !icon.isEmpty {
                     Image(systemName: icon)
-                        .font(.caption)
+                        .font(.system(size: 11, weight: .semibold, design: .monospaced))
                 }
                 Text(title)
-                    .font(.caption.weight(.semibold))
+                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
             }
             .lineLimit(1)
             .padding(.horizontal, 12)
             .frame(height: 36)
             .frame(maxWidth: .infinity)
-            .foregroundStyle(isSelected ? Color.white : Color.primary)
+            .foregroundStyle(isSelected ? Color.white : OnboardingPalette.muted)
             .background(
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(isSelected ? Color.blue : Color(.secondarySystemBackground))
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(isSelected ? OnboardingPalette.accent.opacity(0.18) : OnboardingPalette.surface)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(isSelected ? OnboardingPalette.accent : OnboardingPalette.border, lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
@@ -1033,15 +1056,72 @@ private struct AuthErrorBanner: View {
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(.red)
+                .foregroundStyle(Color(hex: "F87171"))
             Text(message)
-                .font(.footnote)
-                .foregroundStyle(.red)
+                .font(.system(size: 12, design: .monospaced))
+                .foregroundStyle(Color(hex: "FCA5A5"))
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.red.opacity(0.08), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .background(Color(hex: "450A0A").opacity(0.45), in: RoundedRectangle(cornerRadius: 10))
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color(hex: "7F1D1D"), lineWidth: 1)
+        )
+    }
+}
+
+private enum OnboardingPalette {
+    static let background = Color(hex: "0A0A0F")
+    static let surface = Color(hex: "111118")
+    static let border = Color(hex: "1F2937")
+    static let muted = Color(hex: "6B7280")
+    static let accent = Color(hex: "6366F1")
+    static let disabledText = Color(hex: "4B5563")
+}
+
+private struct OnboardingInputFieldModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 15, design: .serif))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 14)
+            .frame(height: 50)
+            .background(OnboardingPalette.background.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(OnboardingPalette.border, lineWidth: 1)
+            )
+    }
+}
+
+private struct OnboardingTextAreaModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 15, design: .serif))
+            .foregroundStyle(.white)
+            .padding(14)
+            .background(OnboardingPalette.background.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(OnboardingPalette.border, lineWidth: 1)
+            )
+    }
+}
+
+private extension View {
+    func onboardingInputStyle() -> some View {
+        modifier(OnboardingInputFieldModifier())
+    }
+
+    func onboardingTextAreaStyle() -> some View {
+        modifier(OnboardingTextAreaModifier())
+    }
+
+    func onboardingFieldLabelStyle() -> some View {
+        font(.system(size: 11, weight: .semibold, design: .monospaced))
+            .foregroundStyle(OnboardingPalette.muted)
     }
 }
 
