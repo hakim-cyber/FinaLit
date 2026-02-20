@@ -55,6 +55,8 @@ final class MainViewModel {
     private let db:      DatabaseService
     private let session: UserSession
     private var streamTask: Task<Void, Never>?
+    private var loadedUID: String?
+    private var hasLoadedHome = false
 
     init(db: DatabaseService, session: UserSession) {
         self.db      = db
@@ -68,8 +70,19 @@ final class MainViewModel {
     // Called once when Main tab appears
     // ─────────────────────────────────────────────────────────────────────────
 
-    func loadHome() async {
+    func loadHome(force: Bool = false) async {
         guard let uid else { return }
+        guard !isLoadingHome else { return }
+
+        if loadedUID != uid {
+            resetStateForUserSwitch()
+            loadedUID = uid
+        }
+
+        if hasLoadedHome && !force {
+            return
+        }
+
         isLoadingHome = true
         errorMessage  = nil
         defer { isLoadingHome = false }
@@ -95,10 +108,15 @@ final class MainViewModel {
 
             // Start real-time transaction stream
             startTransactionStream(uid: uid)
+            hasLoadedHome = true
 
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    func markHomeNeedsRefresh() {
+        hasLoadedHome = false
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -986,6 +1004,26 @@ final class MainViewModel {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM"
         return formatter.string(from: Date())
+    }
+
+    private func resetStateForUserSwitch() {
+        streamTask?.cancel()
+        streamTask = nil
+        hasLoadedHome = false
+        selectedMonth = Self.currentMonthString()
+        isLoadingTransactions = false
+        isSubmitting = false
+        transactions = []
+        recurringTemplates = []
+        budgetLimits = []
+        goals = []
+        debtAccounts = []
+        recentSnapshots = []
+        clearForm()
+        summary = nil
+        insights = []
+        aiContext = nil
+        errorMessage = nil
     }
 
     deinit {

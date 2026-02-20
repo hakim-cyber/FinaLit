@@ -88,6 +88,10 @@ struct LearnHomeView: View {
                 }
                 .padding(.top, 16)
             }
+            .refreshable {
+                await learnVM.onTabAppear(force: true)
+                await learnVM.loadHome(force: true)
+            }
 
             // ── Loading overlay ────────────────────────────────────────────
             if learnVM.isLoadingHome {

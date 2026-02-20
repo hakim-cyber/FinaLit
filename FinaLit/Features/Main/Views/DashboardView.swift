@@ -45,6 +45,9 @@ struct DashboardView: View {
                     }
                     .padding(.top, 16)
                 }
+                .refreshable {
+                    await mainVM.loadHome(force: true)
+                }
             }
 
             if let closeMonthSuccessMessage {

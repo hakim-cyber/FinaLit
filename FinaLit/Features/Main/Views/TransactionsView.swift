@@ -17,6 +17,13 @@ struct TransactionsView: View {
     @State private var filterType: TransactionType? = nil
     @State private var searchText: String = ""
 
+    private struct TransactionDayGroup: Identifiable {
+        let dayStart: Date
+        let label: String
+        let transactions: [Transaction]
+        var id: Date { dayStart }
+    }
+
     private var filtered: [Transaction] {
         mainVM.currentMonthTransactions.filter { tx in
             let typeMatch     = filterType == nil || tx.type == filterType
@@ -28,24 +35,24 @@ struct TransactionsView: View {
     }
 
     // Group by day
-    private var grouped: [(String, [Transaction])] {
-        let calendar  = Calendar.current
+    private var grouped: [TransactionDayGroup] {
+        let calendar = Calendar.current
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, d MMM"
 
-        var dict: [String: [Transaction]] = [:]
-        for tx in filtered {
-            let key = formatter.string(from: tx.date)
-            dict[key, default: []].append(tx)
+        let groupedByDay = Dictionary(grouping: filtered) { transaction in
+            calendar.startOfDay(for: transaction.date)
         }
-        return dict.sorted { lhs, rhs in
-            // Sort groups by date descending
-            let df = DateFormatter()
-            df.dateFormat = "EEEE, d MMM"
-            let d1 = df.date(from: lhs.key) ?? Date.distantPast
-            let d2 = df.date(from: rhs.key) ?? Date.distantPast
-            return d1 > d2
-        }
+
+        return groupedByDay
+            .map { dayStart, transactions in
+                TransactionDayGroup(
+                    dayStart: dayStart,
+                    label: formatter.string(from: dayStart),
+                    transactions: transactions.sorted { $0.date > $1.date }
+                )
+            }
+            .sorted { $0.dayStart > $1.dayStart }
     }
 
     var body: some View {
@@ -88,15 +95,15 @@ struct TransactionsView: View {
                 } else {
                     ScrollView(showsIndicators: false) {
                         VStack(alignment: .leading, spacing: 20) {
-                            ForEach(grouped, id: \.0) { day, txs in
+                            ForEach(grouped) { group in
                                 VStack(alignment: .leading, spacing: 8) {
-                                    Text(day.uppercased())
+                                    Text(group.label.uppercased())
                                         .font(.system(size: 10, weight: .semibold, design: .monospaced))
                                         .foregroundStyle(Color(hex: "4B5563"))
                                         .padding(.horizontal, 20)
 
                                     VStack(spacing: 1) {
-                                        ForEach(txs) { tx in
+                                        ForEach(group.transactions) { tx in
                                             TransactionRow(transaction: tx)
                                                 .onTapGesture {
                                                     coordinator.push(.transactionDetail(tx.id ?? ""))

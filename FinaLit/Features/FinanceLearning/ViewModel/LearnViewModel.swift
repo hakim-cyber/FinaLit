@@ -56,16 +56,30 @@ final class LearnViewModel {
     // MARK: - Dependencies
     private let db:      DatabaseService
     private let session: UserSession
+    private var loadedUID: String?
+    private var hasLoadedHome = false
+    private var hasLoadedSummary = false
 
     init(db: DatabaseService, session: UserSession) {
         self.db      = db
         self.session = session
     }
 
-    func onTabAppear() async {
+    func onTabAppear(force: Bool = false) async {
         guard let uid else { return }
+
+        if loadedUID != uid {
+            resetStateForUserSwitch()
+            loadedUID = uid
+        }
+
+        if hasLoadedSummary && !force {
+            return
+        }
+
         do {
             learningSummary = try await db.fetchLearningSummary(uid: uid)
+            hasLoadedSummary = true
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -78,8 +92,19 @@ final class LearnViewModel {
     // Called once when LearnHomeView appears
     // ─────────────────────────────────────────────────────────────────────────
 
-    func loadHome() async {
+    func loadHome(force: Bool = false) async {
         guard let uid else { return }
+        guard !isLoadingHome else { return }
+
+        if loadedUID != uid {
+            resetStateForUserSwitch()
+            loadedUID = uid
+        }
+
+        if hasLoadedHome && !force {
+            return
+        }
+
         isLoadingHome = true
         errorMessage  = nil
         defer { isLoadingHome = false }
@@ -107,10 +132,17 @@ final class LearnViewModel {
 
             // 5. Preload unlocked week/day caches so "Continue" works on first open
             await preloadUnlockedWeekData(uid: uid, weeks: weeks, progressList: weekProgressList)
+            hasLoadedHome = true
+            hasLoadedSummary = true
 
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    func markHomeNeedsRefresh() {
+        hasLoadedHome = false
+        hasLoadedSummary = false
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -542,6 +574,28 @@ final class LearnViewModel {
     // ─────────────────────────────────────────────────────────────────────────
 
     func clearError() {
+        errorMessage = nil
+    }
+
+    private func resetStateForUserSwitch() {
+        hasLoadedHome = false
+        hasLoadedSummary = false
+        isLoadingHome = false
+        isLoadingLesson = false
+        isLoadingQuiz = false
+        isSubmitting = false
+        todaysTip = nil
+        publishedWeeks = []
+        daysCache = [:]
+        currentLesson = nil
+        currentQuiz = nil
+        weekProgressList = []
+        dayProgressCache = [:]
+        reflections = []
+        learningSummary = LearningSummary()
+        currentQuizAnswers = [:]
+        currentQuizRevealed = [:]
+        currentQuestionIndex = 0
         errorMessage = nil
     }
 }
