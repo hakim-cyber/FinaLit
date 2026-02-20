@@ -19,6 +19,7 @@ final class ChatViewModel {
     var isSending: Bool = false
     var liveAssistantText: String?
     var errorMessage: String?
+    var hasAIDataSharingConsent: Bool = false
 
     private let session: UserSession
     private let repository: LocalChatRepository
@@ -28,6 +29,7 @@ final class ChatViewModel {
 
     private var thread: ChatThreadEntity?
     private var financialContext: AIFinancialContext?
+    private var consentOwnerUID: String?
 
     init(
         session: UserSession,
@@ -44,6 +46,8 @@ final class ChatViewModel {
     }
 
     func bootstrapIfNeeded(context: ModelContext) {
+        syncConsentStateForCurrentUser()
+
         guard let uid = session.user?.id else {
             errorMessage = ChatViewModelError.userMissing.errorDescription
             return
@@ -70,8 +74,14 @@ final class ChatViewModel {
     }
 
     func sendMessage(context: ModelContext) async {
+        syncConsentStateForCurrentUser()
+
         let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, !isSending else { return }
+        guard hasAIDataSharingConsent else {
+            errorMessage = "Allow AI data sharing before sending messages."
+            return
+        }
 
         var streamedReply = ""
 
@@ -194,6 +204,21 @@ final class ChatViewModel {
             } catch {
                 errorMessage = error.localizedDescription
             }
+        }
+    }
+
+    func setAIDataSharingConsent(_ hasConsent: Bool) {
+        guard let uid = session.user?.id else {
+            hasAIDataSharingConsent = false
+            return
+        }
+
+        hasAIDataSharingConsent = hasConsent
+        consentOwnerUID = uid
+        UserDefaults.standard.set(hasConsent, forKey: consentKey(uid: uid))
+
+        if hasConsent && errorMessage == "Allow AI data sharing before sending messages." {
+            errorMessage = nil
         }
     }
 
@@ -330,6 +355,23 @@ final class ChatViewModel {
             "I hit an issue while generating a reply. Please try again.\nEducational guidance, not financial advice.",
             "Unhandled error domain=\(nsError.domain) code=\(nsError.code) desc=\(error.localizedDescription)"
         )
+    }
+
+    private func syncConsentStateForCurrentUser() {
+        guard let uid = session.user?.id else {
+            consentOwnerUID = nil
+            hasAIDataSharingConsent = false
+            return
+        }
+
+        if consentOwnerUID == uid { return }
+
+        consentOwnerUID = uid
+        hasAIDataSharingConsent = UserDefaults.standard.bool(forKey: consentKey(uid: uid))
+    }
+
+    private func consentKey(uid: String) -> String {
+        "finalit.ai-data-sharing-consent.\(uid)"
     }
 }
 

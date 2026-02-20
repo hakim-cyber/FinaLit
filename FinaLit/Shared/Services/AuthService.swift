@@ -95,7 +95,7 @@ final class AuthService {
     /// Firebase account deletion often requires a very recent sign-in.
     /// We gate destructive client-side operations to avoid partial delete states.
     @MainActor
-    func ensureRecentLoginForSensitiveOperation(maxAgeSeconds: TimeInterval = 300) async throws {
+    func ensureRecentLoginForSensitiveOperation(maxAgeSeconds: TimeInterval = 900) async throws {
         guard let user = Auth.auth().currentUser else {
             throw AuthError.noAuthenticatedUser
         }
@@ -111,6 +111,26 @@ final class AuthService {
 
         do {
             _ = try await user.getIDTokenResult(forcingRefresh: true)
+        } catch let error as NSError {
+            throw AuthError.map(error)
+        }
+    }
+
+    // MARK: - Re-authentication
+
+    @MainActor
+    func reauthenticateCurrentUser(email: String, password: String) async throws {
+        guard let user = Auth.auth().currentUser else {
+            throw AuthError.noAuthenticatedUser
+        }
+
+        let credential = EmailAuthProvider.credential(
+            withEmail: email,
+            password: password
+        )
+
+        do {
+            _ = try await user.reauthenticate(with: credential)
         } catch let error as NSError {
             throw AuthError.map(error)
         }
@@ -142,13 +162,15 @@ final class AuthService {
 // Maps Firebase NSError codes to readable app errors.
 // Add cases as needed.
 
-enum AuthError: LocalizedError {
+enum AuthError: LocalizedError, Equatable {
     case invalidEmail
     case wrongPassword
+    case invalidCredential
     case userNotFound
     case emailAlreadyInUse
     case weakPassword
     case networkError
+    case tooManyRequests
     case requiresRecentLogin
     case noAuthenticatedUser
     case unknown(String)
@@ -157,10 +179,12 @@ enum AuthError: LocalizedError {
         switch AuthErrorCode(rawValue: error.code) {
         case .invalidEmail:        return .invalidEmail
         case .wrongPassword:       return .wrongPassword
+        case .invalidCredential:   return .invalidCredential
         case .userNotFound:        return .userNotFound
         case .emailAlreadyInUse:   return .emailAlreadyInUse
         case .weakPassword:        return .weakPassword
         case .networkError:        return .networkError
+        case .tooManyRequests:     return .tooManyRequests
         case .requiresRecentLogin: return .requiresRecentLogin
         default:                   return .unknown(error.localizedDescription)
         }
@@ -170,12 +194,14 @@ enum AuthError: LocalizedError {
         switch self {
         case .invalidEmail:      return "Please enter a valid email address."
         case .wrongPassword:     return "Incorrect password. Please try again."
+        case .invalidCredential: return "Incorrect credentials. Please try again."
         case .userNotFound:      return "No account found with this email."
         case .emailAlreadyInUse: return "An account with this email already exists."
         case .weakPassword:      return "Password must be at least 8 characters."
         case .networkError:      return "Network error. Please check your connection."
+        case .tooManyRequests:   return "Too many attempts. Try again in a moment."
         case .requiresRecentLogin:
-            return "Please log in again before deleting your account."
+            return "Please confirm your password before deleting your account."
         case .noAuthenticatedUser:
             return "No active account session was found."
         case .unknown(let msg):  return msg

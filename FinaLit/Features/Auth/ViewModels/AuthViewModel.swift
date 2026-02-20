@@ -29,6 +29,7 @@ class AuthViewModel {
     var isLoading: Bool    = false
     var errorMessage: String?
     var successMessage: String?
+    private(set) var lastAuthError: AuthError?
 
     // MARK: - Validation
     private var trimmedName: String {
@@ -52,6 +53,10 @@ class AuthViewModel {
         isEmailValid &&
         password.count >= 8 &&
         password == confirmPassword
+    }
+
+    var needsReauthenticationForDeletion: Bool {
+        lastAuthError == .requiresRecentLogin
     }
 
     // MARK: - Dependencies
@@ -86,9 +91,12 @@ class AuthViewModel {
         errorMessage = nil
         defer { isLoading = false }
 
+        var createdUID: String?
+
         do {
             // 1. Create Firebase Auth account → get UID
             let uid = try await authService.register(email: trimmedEmail, password: password)
+            createdUID = uid
 
             // 2. Build minimal User — profiles filled during onboarding
             let user = User(
@@ -108,7 +116,12 @@ class AuthViewModel {
             session.setUser(user)
 
         } catch {
-            errorMessage = error.localizedDescription
+            if let createdUID, authService.currentUID == createdUID {
+                // Roll back auth user if Firestore bootstrap fails.
+                try? await authService.deleteCurrentUser()
+                try? authService.signOut()
+            }
+            handleError(error)
         }
     }
 
@@ -129,7 +142,23 @@ class AuthViewModel {
 
             // 2. Fetch full User from Firestore
             //    This includes any saved profiles → hasCompletedOnboarding computed correctly
-            let user = try await dbService.fetchUser(uid: uid)
+            let user: User
+            do {
+                user = try await dbService.fetchUser(uid: uid)
+            } catch DBError.userNotFound {
+                // Recover missing user doc to avoid broken sessions after partial failures.
+                let fallbackName = trimmedName.isEmpty
+                    ? (trimmedEmail.split(separator: "@").first.map(String.init) ?? "User")
+                    : trimmedName
+                let recoveredUser = User(
+                    id: uid,
+                    email: trimmedEmail,
+                    name: fallbackName,
+                    createdAt: .now
+                )
+                try dbService.createUser(recoveredUser)
+                user = recoveredUser
+            }
 
             // 3. Set session → RootView reacts
             //    If onboarding was done before  → goes to RootTabView
@@ -137,7 +166,7 @@ class AuthViewModel {
             session.setUser(user)
 
         } catch {
-            errorMessage = error.localizedDescription
+            handleError(error)
         }
     }
 
@@ -162,7 +191,7 @@ class AuthViewModel {
             try await authService.sendPasswordReset(email: trimmedEmail)
             successMessage = "Password reset email sent. Check your inbox."
         } catch {
-            errorMessage = error.localizedDescription
+            handleError(error)
         }
     }
 
@@ -174,7 +203,7 @@ class AuthViewModel {
             session.signOut()  // clears session → RootView shows auth again
             clearForm()
         } catch {
-            errorMessage = error.localizedDescription
+            handleError(error)
         }
     }
 
@@ -191,23 +220,48 @@ class AuthViewModel {
 
         do {
             try await authService.ensureRecentLoginForSensitiveOperation()
-            try await dbService.deleteAllUserData(uid: uid)
-            try await authService.deleteCurrentUser()
-            session.signOut()
-            clearForm()
+            try await performAccountDeletion(uid: uid)
         } catch {
-            errorMessage = error.localizedDescription
+            handleError(error)
+        }
+    }
+
+    func reauthenticateForAccountDeletion(password: String) async -> Bool {
+        let trimmedPassword = password.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedPassword.isEmpty else {
+            errorMessage = "Please enter your password."
+            return false
+        }
+
+        guard let email = session.user?.email, !email.isEmpty else {
+            errorMessage = "Email is unavailable for this account."
+            return false
+        }
+
+        isLoading = true
+        clearMessages()
+        defer { isLoading = false }
+
+        do {
+            try await authService.reauthenticateCurrentUser(email: email, password: trimmedPassword)
+            successMessage = "Identity confirmed."
+            return true
+        } catch {
+            handleError(error)
+            return false
         }
     }
 
     // MARK: - Helpers
     func clearError() {
         errorMessage = nil
+        lastAuthError = nil
     }
 
     func clearMessages() {
         errorMessage = nil
         successMessage = nil
+        lastAuthError = nil
     }
 
     private func clearForm() {
@@ -217,5 +271,25 @@ class AuthViewModel {
         confirmPassword = ""
         errorMessage    = nil
         successMessage  = nil
+        lastAuthError   = nil
+    }
+
+    private func performAccountDeletion(uid: String) async throws {
+        // Keep data deletion before auth deletion while user is still authenticated.
+        try await dbService.deleteAllUserData(uid: uid)
+        try await authService.deleteCurrentUser()
+        session.signOut()
+        clearForm()
+    }
+
+    private func handleError(_ error: Error) {
+        if let authError = error as? AuthError {
+            lastAuthError = authError
+            errorMessage = authError.errorDescription
+            return
+        }
+
+        lastAuthError = nil
+        errorMessage = error.localizedDescription
     }
 }

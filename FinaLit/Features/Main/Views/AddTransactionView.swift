@@ -92,9 +92,20 @@ struct AddTransactionView: View {
         }
         .onDisappear { mainVM.clearForm() }
         .onAppear { mainVM.prepareTransactionFormForSelectedMonth() }
-        .alert("Error", isPresented: .constant(mainVM.errorMessage != nil)) {
+        .alert("Error", isPresented: isShowingErrorAlert) {
             Button("OK") { mainVM.clearError() }
         } message: { Text(mainVM.errorMessage ?? "") }
+    }
+
+    private var isShowingErrorAlert: Binding<Bool> {
+        Binding(
+            get: { mainVM.errorMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    mainVM.clearError()
+                }
+            }
+        )
     }
 
     // MARK: - Type Toggle

@@ -138,7 +138,7 @@ struct DashboardView: View {
         } message: {
             Text("This saves the monthly snapshot and creates next-month recurring transactions.")
         }
-        .alert("Error", isPresented: .constant(mainVM.errorMessage != nil)) {
+        .alert("Error", isPresented: isShowingErrorAlert) {
             Button("OK") { mainVM.clearError() }
         } message: {
             Text(mainVM.errorMessage ?? "")
@@ -146,6 +146,17 @@ struct DashboardView: View {
         .onDisappear {
             closeMonthToastTask?.cancel()
         }
+    }
+
+    private var isShowingErrorAlert: Binding<Bool> {
+        Binding(
+            get: { mainVM.errorMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    mainVM.clearError()
+                }
+            }
+        )
     }
 
     private func handleMonthClose() {
@@ -640,9 +651,7 @@ struct CategoryRow: View {
                     RoundedRectangle(cornerRadius: 2)
                         .fill(isOverBudget ? Color(hex: "F87171") : Color(hex: category.color))
                         .frame(
-                            width: limit != nil
-                                ? min(geo.size.width * CGFloat(amount / limit!), geo.size.width)
-                                : geo.size.width * CGFloat(percentage / 100),
+                            width: progressBarWidth(totalWidth: geo.size.width),
                             height: 3
                         )
                 }
@@ -659,6 +668,14 @@ struct CategoryRow: View {
                     lineWidth: 1
                 )
         )
+    }
+
+    private func progressBarWidth(totalWidth: CGFloat) -> CGFloat {
+        if let limit, limit > 0 {
+            return min(totalWidth * CGFloat(amount / limit), totalWidth)
+        }
+
+        return totalWidth * CGFloat(percentage / 100)
     }
 }
 

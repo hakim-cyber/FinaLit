@@ -12,17 +12,21 @@ struct ProfileSettingsHomeView: View {
     @Environment(AuthViewModel.self) private var authViewModel
     @Environment(Coordinator<SettingsPages>.self) private var coordinator
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
 
     @State private var showSignOutConfirmation = false
     @State private var showDeleteConfirmation = false
     @State private var showDeleteFinalConfirmation = false
+    @State private var showReauthSheet = false
 
     @State private var isSendingPasswordReset = false
     @State private var isDeletingAccount = false
+    @State private var isReauthenticating = false
 
     @State private var feedbackTitle = ""
     @State private var feedbackMessage = ""
     @State private var showFeedback = false
+    @State private var reauthPassword = ""
 
     private var appVersion: String {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
@@ -82,6 +86,26 @@ struct ProfileSettingsHomeView: View {
                             icon: "key.fill",
                             isLoading: isSendingPasswordReset,
                             action: sendPasswordReset
+                        )
+
+                        Divider()
+                            .overlay(ProfileSettingsPalette.border)
+
+                        SettingsActionRow(
+                            title: "Privacy Policy",
+                            subtitle: "How your data is used and protected",
+                            icon: "hand.raised.fill",
+                            action: { openLegalLink(AppLegalLinks.privacyPolicyURL, name: "Privacy Policy") }
+                        )
+
+                        Divider()
+                            .overlay(ProfileSettingsPalette.border)
+
+                        SettingsActionRow(
+                            title: "Terms of Use",
+                            subtitle: "Rules and conditions for using FinaLit",
+                            icon: "doc.text.fill",
+                            action: { openLegalLink(AppLegalLinks.termsOfUseURL, name: "Terms of Use") }
                         )
                     }
 
@@ -154,6 +178,9 @@ struct ProfileSettingsHomeView: View {
         } message: {
             Text(feedbackMessage)
         }
+        .sheet(isPresented: $showReauthSheet) {
+            reauthSheet
+        }
     }
 
     private func sendPasswordReset() {
@@ -191,6 +218,11 @@ struct ProfileSettingsHomeView: View {
             isDeletingAccount = false
 
             if let error = authViewModel.errorMessage, !error.isEmpty {
+                if authViewModel.needsReauthenticationForDeletion {
+                    reauthPassword = ""
+                    showReauthSheet = true
+                    return
+                }
                 presentFeedback(title: "Delete failed", message: error)
                 return
             }
@@ -199,10 +231,110 @@ struct ProfileSettingsHomeView: View {
         }
     }
 
+    private func confirmReauthenticationAndDelete() {
+        isReauthenticating = true
+
+        Task { @MainActor in
+            let isVerified = await authViewModel.reauthenticateForAccountDeletion(password: reauthPassword)
+            isReauthenticating = false
+
+            guard isVerified else {
+                presentFeedback(
+                    title: "Verification failed",
+                    message: authViewModel.errorMessage ?? "Please try again."
+                )
+                return
+            }
+
+            showReauthSheet = false
+            reauthPassword = ""
+            deleteAccount()
+        }
+    }
+
+    private func openLegalLink(_ url: URL?, name: String) {
+        guard let url else {
+            presentFeedback(title: "\(name) unavailable", message: "Link is not configured.")
+            return
+        }
+
+        openURL(url) { accepted in
+            if !accepted {
+                Task { @MainActor in
+                    presentFeedback(
+                        title: "\(name) unavailable",
+                        message: "Unable to open this link right now."
+                    )
+                }
+            }
+        }
+    }
+
     private func presentFeedback(title: String, message: String) {
         feedbackTitle = title
         feedbackMessage = message
         showFeedback = true
+    }
+
+    private var reauthSheet: some View {
+        NavigationStack {
+            ZStack {
+                ProfileSettingsPalette.background.ignoresSafeArea()
+
+                VStack(alignment: .leading, spacing: 14) {
+                    Text("For security, confirm your password to continue account deletion.")
+                        .font(.system(size: 13, design: .monospaced))
+                        .foregroundStyle(ProfileSettingsPalette.muted)
+
+                    SecureField("Current password", text: $reauthPassword)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .font(.system(size: 15, design: .serif))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 14)
+                        .frame(height: 50)
+                        .background(ProfileSettingsPalette.background.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(ProfileSettingsPalette.border, lineWidth: 1)
+                        )
+
+                    Button(action: confirmReauthenticationAndDelete) {
+                        HStack(spacing: 10) {
+                            if isReauthenticating {
+                                ProgressView()
+                                    .progressViewStyle(.circular)
+                                    .tint(.white)
+                            }
+                            Text(isReauthenticating ? "Verifying..." : "Verify & Delete")
+                                .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .foregroundStyle(.white)
+                        .background(Color(hex: "B91C1C"))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
+                    .disabled(isReauthenticating || reauthPassword.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+                .padding(20)
+            }
+            .navigationTitle("Confirm Password")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") {
+                        showReauthSheet = false
+                        reauthPassword = ""
+                    }
+                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(ProfileSettingsPalette.muted)
+                }
+            }
+            .keyboardDoneToolbar()
+        }
+        .presentationDetents([.height(300)])
+        .presentationDragIndicator(.visible)
     }
 }
 

@@ -156,7 +156,7 @@ struct QuizView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true) // can't go back mid quiz
         .task { await learnVM.loadQuiz(quizID: quizID) }
-        .alert("Error", isPresented: .constant(learnVM.errorMessage != nil)) {
+        .alert("Error", isPresented: isShowingErrorAlert) {
             Button("Try again") {
                 Task { await learnVM.loadQuiz(quizID: quizID) }
             }
@@ -164,6 +164,17 @@ struct QuizView: View {
         } message: {
             Text(learnVM.errorMessage ?? "")
         }
+    }
+
+    private var isShowingErrorAlert: Binding<Bool> {
+        Binding(
+            get: { learnVM.errorMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    learnVM.clearError()
+                }
+            }
+        )
     }
 
     private func handleNext() {

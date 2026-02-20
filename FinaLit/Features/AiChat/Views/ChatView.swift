@@ -13,6 +13,7 @@ struct ChatView: View {
     @Environment(MainViewModel.self) private var mainVM
     @Environment(Coordinator<ChatPages>.self) private var coordinator
     @Environment(\.modelContext) private var modelContext
+    @State private var showConsentPrompt = false
 
     var body: some View {
         @Bindable var viewModel = viewModel
@@ -95,6 +96,15 @@ struct ChatView: View {
         .onChange(of: mainVM.aiContext?.formattedPrompt) { _, _ in
             viewModel.updateFinancialContext(mainVM.aiContext)
         }
+        .alert("Allow AI data sharing?", isPresented: $showConsentPrompt) {
+            Button("Not now", role: .cancel) {}
+            Button("Allow & Send") {
+                viewModel.setAIDataSharingConsent(true)
+                Task { await sendMessageNow() }
+            }
+        } message: {
+            Text("To answer questions, FinaLit sends your message and selected financial profile data to Google Gemini through Firebase AI Logic.")
+        }
     }
 
     private var header: some View {
@@ -140,15 +150,38 @@ struct ChatView: View {
     }
 
     private var disclaimerCard: some View {
-        HStack(alignment: .top, spacing: 8) {
-            Text("NOTICE")
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 8) {
+                Text("NOTICE")
+                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(ChatPalette.warning)
+
+                Text("Educational guidance only. Not professional financial advice.")
+                    .font(.system(size: 11, design: .monospaced))
+                    .foregroundStyle(ChatPalette.warningText)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
+            Divider()
+                .overlay(ChatPalette.warningBorder.opacity(0.7))
+
+            HStack(spacing: 10) {
+                Text(viewModel.hasAIDataSharingConsent ? "AI data sharing: Enabled" : "AI data sharing: Off")
+                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(ChatPalette.warningText)
+
+                Spacer()
+
+                Button(viewModel.hasAIDataSharingConsent ? "Turn Off" : "Review") {
+                    if viewModel.hasAIDataSharingConsent {
+                        viewModel.setAIDataSharingConsent(false)
+                    } else {
+                        showConsentPrompt = true
+                    }
+                }
                 .font(.system(size: 10, weight: .semibold, design: .monospaced))
                 .foregroundStyle(ChatPalette.warning)
-
-            Text("Educational guidance only. Not professional financial advice.")
-                .font(.system(size: 11, design: .monospaced))
-                .foregroundStyle(ChatPalette.warningText)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            }
         }
         .padding(12)
         .background(ChatPalette.warningBackground)
@@ -205,33 +238,11 @@ struct ChatView: View {
             .disabled(viewModel.isSending)
             .submitLabel(.send)
             .onSubmit {
-                Task {
-                    let isDraftEmpty = viewModel.draft
-                        .trimmingCharacters(in: .whitespacesAndNewlines)
-                        .isEmpty
-                    if isDraftEmpty {
-                        KeyboardUX.dismiss()
-                        return
-                    }
-
-                    viewModel.updateFinancialContext(mainVM.aiContext)
-                    await viewModel.sendMessage(context: modelContext)
-                }
+                requestSend()
             }
 
             Button {
-                Task {
-                    let isDraftEmpty = viewModel.draft
-                        .trimmingCharacters(in: .whitespacesAndNewlines)
-                        .isEmpty
-                    if isDraftEmpty {
-                        KeyboardUX.dismiss()
-                        return
-                    }
-
-                    viewModel.updateFinancialContext(mainVM.aiContext)
-                    await viewModel.sendMessage(context: modelContext)
-                }
+                requestSend()
             } label: {
                 Image(systemName: "arrow.up")
                     .font(.system(size: 16, weight: .bold))
@@ -338,6 +349,29 @@ struct ChatView: View {
         withAnimation(.easeOut(duration: 0.2)) {
             proxy.scrollTo(id, anchor: .bottom)
         }
+    }
+
+    private func requestSend() {
+        let isDraftEmpty = viewModel.draft
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .isEmpty
+
+        if isDraftEmpty {
+            KeyboardUX.dismiss()
+            return
+        }
+
+        guard viewModel.hasAIDataSharingConsent else {
+            showConsentPrompt = true
+            return
+        }
+
+        Task { await sendMessageNow() }
+    }
+
+    private func sendMessageNow() async {
+        viewModel.updateFinancialContext(mainVM.aiContext)
+        await viewModel.sendMessage(context: modelContext)
     }
 }
 

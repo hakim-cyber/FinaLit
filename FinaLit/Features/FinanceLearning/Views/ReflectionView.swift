@@ -162,7 +162,7 @@ struct ReflectionView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Error", isPresented: .constant(learnVM.errorMessage != nil)) {
+        .alert("Error", isPresented: isShowingErrorAlert) {
             Button("Try again") {
                 Task {
                     let success = await learnVM.submitReflection(
@@ -179,6 +179,17 @@ struct ReflectionView: View {
         } message: {
             Text(learnVM.errorMessage ?? "")
         }
+    }
+
+    private var isShowingErrorAlert: Binding<Bool> {
+        Binding(
+            get: { learnVM.errorMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    learnVM.clearError()
+                }
+            }
+        )
     }
 }
 

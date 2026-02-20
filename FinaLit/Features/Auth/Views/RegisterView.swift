@@ -154,6 +154,8 @@ struct RegisterView: View {
                         .foregroundStyle(AuthPalette.accent)
                         .frame(maxWidth: .infinity)
                         .padding(.top, 4)
+
+                        AuthLegalLinksRow()
                     }
                     .padding(20)
                     .background(AuthPalette.surface, in: RoundedRectangle(cornerRadius: 16))
