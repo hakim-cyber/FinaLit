@@ -23,6 +23,7 @@ final class MainViewModel {
     var recurringTemplates:  [RecurringTemplate] = []
     var budgetLimits:        [BudgetLimit]       = []
     var goals:               [FinancialGoal]     = []
+    var debtAccounts:        [DebtAccount]       = []
     var recentSnapshots:     [MonthlySnapshot]   = []
 
     // MARK: - Computed State (rebuilt after every data change)
@@ -72,16 +73,20 @@ final class MainViewModel {
             // Fetch supporting data in parallel
             async let limitsTask    = db.fetchBudgetLimits(uid: uid)
             async let goalsTask     = db.fetchGoals(uid: uid)
+            async let debtsTask     = db.fetchDebtAccounts(uid: uid)
             async let snapshotsTask = db.fetchRecentSnapshots(uid: uid, limit: 6)
             async let recurringTask = db.fetchRecurringTemplates(uid: uid)
 
-            let (limits, fetchedGoals, snapshots, recurring) =
-                try await (limitsTask, goalsTask, snapshotsTask, recurringTask)
+            let (limits, fetchedGoals, fetchedDebts, snapshots, recurring) =
+                try await (limitsTask, goalsTask, debtsTask, snapshotsTask, recurringTask)
 
             budgetLimits       = limits
             goals              = fetchedGoals
+            debtAccounts       = fetchedDebts
             recentSnapshots    = snapshots
             recurringTemplates = recurring
+
+            try seedDebtAccountIfNeeded(uid: uid)
 
             // Start real-time transaction stream
             startTransactionStream(uid: uid)
@@ -202,11 +207,17 @@ final class MainViewModel {
     func updateGoalProgress(goal: FinancialGoal, newAmount: Double) async {
         guard let uid, let id = goal.id else { return }
         do {
-            try db.updateGoalProgress(uid: uid, goalID: id, currentAmount: newAmount)
+            let isCompleted = newAmount >= goal.targetAmount
+            try db.updateGoalProgress(
+                uid: uid,
+                goalID: id,
+                currentAmount: newAmount,
+                isCompleted: isCompleted
+            )
             if let index = goals.firstIndex(where: { $0.id == id }) {
                 goals[index].currentAmount = newAmount
-                if newAmount >= goals[index].targetAmount {
-                    goals[index].isCompleted = true
+                goals[index].isCompleted = isCompleted
+                if isCompleted {
                     try db.markGoalCompleted(uid: uid, goalID: id)
                 }
             }
@@ -224,6 +235,164 @@ final class MainViewModel {
             recalculate()
         } catch {
             errorMessage = error.localizedDescription
+        }
+    }
+
+    func contributeToGoal(goal: FinancialGoal, amount: Double) async -> Bool {
+        guard let uid, let goalID = goal.id else { return false }
+
+        let remaining = max(goal.targetAmount - goal.currentAmount, 0)
+        guard remaining > 0 else {
+            errorMessage = "This goal is already completed."
+            return false
+        }
+
+        guard amount > 0 else {
+            errorMessage = "Enter a valid contribution amount."
+            return false
+        }
+
+        let contribution = min(amount, remaining)
+        let newAmount = min(goal.currentAmount + contribution, goal.targetAmount)
+
+        isSubmitting = true
+        errorMessage = nil
+        defer { isSubmitting = false }
+
+        do {
+            let transaction = Transaction(
+                id: nil,
+                type: .expense,
+                amount: contribution,
+                category: .other,
+                date: Date(),
+                note: "Goal contribution - \(goal.title)",
+                isRecurring: false,
+                recurringID: nil
+            )
+            try db.addTransaction(transaction, uid: uid)
+
+            let isCompleted = newAmount >= goal.targetAmount
+            try db.updateGoalProgress(
+                uid: uid,
+                goalID: goalID,
+                currentAmount: newAmount,
+                isCompleted: isCompleted
+            )
+            if newAmount >= goal.targetAmount {
+                try db.markGoalCompleted(uid: uid, goalID: goalID)
+            }
+
+            if let index = goals.firstIndex(where: { $0.id == goalID }) {
+                goals[index].currentAmount = newAmount
+                goals[index].isCompleted = newAmount >= goals[index].targetAmount
+            }
+
+            recalculate()
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            return false
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // MARK: - Debt
+    // ─────────────────────────────────────────────────────────────────────────
+
+    func payDebt(account: DebtAccount, amount: Double, note: String = "") async -> Bool {
+        guard let uid, let debtID = account.id else { return false }
+        guard account.currentBalance > 0 else {
+            errorMessage = "This debt account is already paid."
+            return false
+        }
+        guard amount > 0 else {
+            errorMessage = "Enter a valid payment amount."
+            return false
+        }
+
+        let payment = min(amount, account.currentBalance)
+        let updatedBalance = max(account.currentBalance - payment, 0)
+        let normalizedNote = note.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        isSubmitting = true
+        errorMessage = nil
+        defer { isSubmitting = false }
+
+        do {
+            let transaction = Transaction(
+                id: nil,
+                type: .expense,
+                amount: payment,
+                category: .other,
+                date: Date(),
+                note: normalizedNote.isEmpty ? "Debt payment - \(account.name)" : normalizedNote,
+                isRecurring: false,
+                recurringID: nil
+            )
+            try db.addTransaction(transaction, uid: uid)
+            try db.updateDebtBalance(uid: uid, debtID: debtID, newBalance: updatedBalance)
+
+            if let index = debtAccounts.firstIndex(where: { $0.id == debtID }) {
+                debtAccounts[index].currentBalance = updatedBalance
+                debtAccounts[index].updatedAt = Date()
+                debtAccounts[index].isClosed = updatedBalance <= 0
+            }
+
+            recalculate()
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            return false
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // MARK: - Month Close & Rollover
+    // ─────────────────────────────────────────────────────────────────────────
+
+    func closeSelectedMonthAndRollover() async -> Bool {
+        guard let uid else { return false }
+        guard let summary else {
+            errorMessage = "Month data is still loading. Try again in a moment."
+            return false
+        }
+
+        isSubmitting = true
+        errorMessage = nil
+        defer { isSubmitting = false }
+
+        do {
+            if try await db.isMonthClosed(uid: uid, month: selectedMonth) {
+                errorMessage = "\(selectedMonthDisplay) is already closed."
+                return false
+            }
+
+            let snapshot = monthlySnapshot(from: summary, month: selectedMonth)
+            try db.saveMonthlySnapshot(snapshot, uid: uid)
+
+            let nextMonth = offsetMonth(selectedMonth, by: 1)
+            try await generateRecurringTransactions(for: nextMonth, uid: uid)
+
+            let closeRecord = MonthCloseRecord(
+                id: selectedMonth,
+                month: selectedMonth,
+                closedAt: Date(),
+                rolledToMonth: nextMonth
+            )
+            try db.markMonthClosed(uid: uid, record: closeRecord)
+
+            recentSnapshots = try await db.fetchRecentSnapshots(uid: uid, limit: 6)
+
+            if nextMonth <= Self.currentMonthString() {
+                selectedMonth = nextMonth
+            }
+
+            recalculate()
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            return false
         }
     }
 
@@ -305,6 +474,14 @@ final class MainViewModel {
 
     func transactions(for category: TransactionCategory) -> [Transaction] {
         currentMonthExpenses.filter { $0.category == category }
+    }
+
+    var activeDebtAccounts: [DebtAccount] {
+        debtAccounts.filter { !$0.isClosed && $0.currentBalance > 0 }
+    }
+
+    var totalDebtBalance: Double {
+        activeDebtAccounts.reduce(0) { $0 + $1.currentBalance }
     }
 
     var activeGoals: [FinancialGoal] {
@@ -541,9 +718,12 @@ final class MainViewModel {
 
     private func buildAIContext() -> AIFinancialContext? {
         guard let s       = summary,
-              let profile = session.user?.financialProfile,
-              let user    = session.user
+              let profile = session.user?.financialProfile
         else { return nil }
+
+        let onboardingDebt = profile.hasDebt ? (profile.debtAmount ?? 0) : 0
+        let effectiveDebt = debtAccounts.isEmpty ? onboardingDebt : totalDebtBalance
+        let hasDebt = effectiveDebt > 0
 
         return AIFinancialContext(
             monthlyIncome:      s.monthlyIncome,
@@ -559,8 +739,8 @@ final class MainViewModel {
             discretionaryRatio: s.discretionaryRatio,
             shortTermGoal:      profile.shortTermGoal,
             longTermGoal:       profile.longTermGoal,
-            hasDebt:            profile.hasDebt,
-            debtAmount:         profile.hasDebt ? profile.debtAmount : nil,
+            hasDebt:            hasDebt,
+            debtAmount:         hasDebt ? effectiveDebt : nil,
             riskTolerance:      profile.riskTolerance,
             knowledgeLevel:     profile.knowledgeLevel
         )
@@ -573,22 +753,7 @@ final class MainViewModel {
 
     func saveCurrentMonthSnapshot() async {
         guard let uid, let s = summary else { return }
-
-        let encodedByCategory: [String: Double] = Dictionary(
-            uniqueKeysWithValues: s.byCategory.map { ($0.key.rawValue, $0.value) }
-        )
-
-        let snapshot = MonthlySnapshot(
-            id:               selectedMonth,
-            month:            selectedMonth,
-            totalIncome:      s.monthlyIncome,
-            totalExpenses:    s.monthlyExpenses,
-            netBalance:       s.monthlyNet,
-            savingsRate:      s.savingsRate,
-            byCategory:       encodedByCategory,
-            transactionCount: currentMonthTransactions.count,
-            computedAt:       Date()
-        )
+        let snapshot = monthlySnapshot(from: s, month: selectedMonth)
 
         do {
             try db.saveMonthlySnapshot(snapshot, uid: uid)
@@ -597,6 +762,90 @@ final class MainViewModel {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // MARK: - Private Helpers
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private func seedDebtAccountIfNeeded(uid: String) throws {
+        guard debtAccounts.isEmpty,
+              let profile = session.user?.financialProfile,
+              profile.hasDebt,
+              let debtAmount = profile.debtAmount,
+              debtAmount > 0 else { return }
+
+        let account = DebtAccount(
+            id: UUID().uuidString,
+            name: "Primary Debt",
+            currentBalance: debtAmount,
+            annualInterestRate: nil,
+            minimumMonthlyPayment: nil,
+            createdAt: Date(),
+            updatedAt: Date(),
+            isClosed: false
+        )
+
+        try db.createDebtAccount(account, uid: uid)
+        debtAccounts = [account]
+    }
+
+    private func monthlySnapshot(from summary: FinancialSummary, month: String) -> MonthlySnapshot {
+        let encodedByCategory: [String: Double] = Dictionary(
+            uniqueKeysWithValues: summary.byCategory.map { ($0.key.rawValue, $0.value) }
+        )
+
+        let monthTransactionCount = transactions.filter { $0.month == month }.count
+
+        return MonthlySnapshot(
+            id:               month,
+            month:            month,
+            totalIncome:      summary.monthlyIncome,
+            totalExpenses:    summary.monthlyExpenses,
+            netBalance:       summary.monthlyNet,
+            savingsRate:      summary.savingsRate,
+            byCategory:       encodedByCategory,
+            transactionCount: monthTransactionCount,
+            computedAt:       Date()
+        )
+    }
+
+    private func generateRecurringTransactions(for month: String, uid: String) async throws {
+        guard !recurringTemplates.isEmpty else { return }
+
+        let existing = try await db.fetchTransactions(uid: uid, month: month)
+        let existingRecurringIDs = Set(existing.compactMap(\.recurringID))
+
+        for template in recurringTemplates where template.isActive {
+            guard let recurringID = template.id,
+                  !existingRecurringIDs.contains(recurringID) else { continue }
+
+            let tx = Transaction(
+                id: nil,
+                type: template.type,
+                amount: template.amount,
+                category: template.category,
+                date: recurringDate(for: template, targetMonth: month),
+                note: template.note,
+                isRecurring: true,
+                recurringID: recurringID
+            )
+            try db.addTransaction(tx, uid: uid)
+        }
+    }
+
+    private func recurringDate(for template: RecurringTemplate, targetMonth: String) -> Date {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM"
+        guard let targetMonthDate = formatter.date(from: targetMonth) else { return Date() }
+
+        let calendar = Calendar.current
+        let desiredDay = calendar.component(.day, from: template.startDate)
+        let maxDay = calendar.range(of: .day, in: .month, for: targetMonthDate)?.count ?? 28
+
+        var components = calendar.dateComponents([.year, .month], from: targetMonthDate)
+        components.day = min(desiredDay, maxDay)
+        return calendar.date(from: components) ?? targetMonthDate
     }
 
     // ─────────────────────────────────────────────────────────────────────────

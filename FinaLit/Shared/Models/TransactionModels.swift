@@ -134,6 +134,19 @@ struct RecurringTemplate: Codable, Identifiable {
     var isActive:   Bool = true
 }
 
+// MARK: - Debt Account
+// Tracks live debt balances (separate from one-time onboarding snapshot).
+struct DebtAccount: Codable, Identifiable {
+    @DocumentID var id: String?
+    var name: String
+    var currentBalance: Double
+    var annualInterestRate: Double?
+    var minimumMonthlyPayment: Double?
+    var createdAt: Date
+    var updatedAt: Date
+    var isClosed: Bool = false
+}
+
 enum RecurringFrequency: String, Codable, CaseIterable, Identifiable {
     case weekly   = "Weekly"
     case monthly  = "Monthly"
@@ -191,6 +204,15 @@ struct MonthlySnapshot: Codable, Identifiable {
 
     // Convenience
     var isPositive: Bool { netBalance >= 0 }
+}
+
+// MARK: - Month Close Record
+// Stored to prevent duplicate close/rollover for the same month.
+struct MonthCloseRecord: Codable, Identifiable {
+    @DocumentID var id: String?
+    var month: String
+    var closedAt: Date
+    var rolledToMonth: String
 }
 
 // MARK: - Financial Summary (computed in ViewModel, never stored)

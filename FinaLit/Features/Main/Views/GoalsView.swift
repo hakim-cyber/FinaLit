@@ -354,9 +354,9 @@ struct GoalDetailView: View {
                             .padding(.horizontal, 20)
                             .padding(.top, 8)
 
-                        // ── Update progress ────────────────────────────────
+                        // ── Add contribution ───────────────────────────────
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("UPDATE PROGRESS")
+                            Text("ADD CONTRIBUTION")
                                 .font(.system(size: 10, weight: .semibold, design: .monospaced))
                                 .foregroundStyle(Color(hex: "4B5563"))
                                 .padding(.horizontal, 20)
@@ -366,7 +366,7 @@ struct GoalDetailView: View {
                                     Text("€")
                                         .font(.system(size: 16, design: .monospaced))
                                         .foregroundStyle(Color(hex: "4B5563"))
-                                    TextField("Current amount", text: $newAmount)
+                                    TextField("Contribution", text: $newAmount)
                                         .font(.system(size: 16, design: .monospaced))
                                         .foregroundStyle(.white)
                                         .keyboardType(.decimalPad)
@@ -377,11 +377,11 @@ struct GoalDetailView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                                 .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(hex: "1F2937"), lineWidth: 1))
 
-                                Button("Update") {
+                                Button("Add") {
                                     if let amount = Double(newAmount) {
                                         Task {
-                                            await mainVM.updateGoalProgress(goal: goal, newAmount: amount)
-                                            newAmount = ""
+                                            let saved = await mainVM.contributeToGoal(goal: goal, amount: amount)
+                                            if saved { newAmount = "" }
                                         }
                                     }
                                 }
@@ -391,7 +391,7 @@ struct GoalDetailView: View {
                                 .padding(.vertical, 14)
                                 .background(Color(hex: "6366F1"))
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
-                                .disabled(Double(newAmount) == nil)
+                                .disabled((Double(newAmount) ?? 0) <= 0)
                             }
                             .padding(.horizontal, 20)
                         }
@@ -433,7 +433,7 @@ struct GoalDetailView: View {
             }
         }
         .onAppear {
-            if let goal { newAmount = String(format: "%.0f", goal.currentAmount) }
+            if goal != nil { newAmount = "" }
         }
         .navigationTitle("Goal")
         .navigationBarTitleDisplayMode(.inline)

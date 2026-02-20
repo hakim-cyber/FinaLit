@@ -60,6 +60,22 @@ extension DatabaseService {
         db.collection(FirestorePath.financialSummary(uid)).document("summary")
     }
 
+    private func debtAccountsCollection(_ uid: String) -> CollectionReference {
+        db.collection(FirestorePath.debtAccounts(uid))
+    }
+
+    private func debtAccountDocument(_ uid: String, _ debtID: String) -> DocumentReference {
+        debtAccountsCollection(uid).document(debtID)
+    }
+
+    private func monthClosuresCollection(_ uid: String) -> CollectionReference {
+        db.collection(FirestorePath.monthClosures(uid))
+    }
+
+    private func monthClosureDocument(_ uid: String, _ month: String) -> DocumentReference {
+        monthClosuresCollection(uid).document(month)
+    }
+
     // MARK: - Patch Structs
 
     private struct GoalProgressPatch: Codable {
@@ -75,6 +91,12 @@ extension DatabaseService {
         var isActive: Bool
     }
 
+    private struct DebtBalancePatch: Codable {
+        var currentBalance: Double
+        var updatedAt: Date
+        var isClosed: Bool
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // MARK: - Transactions
     // ─────────────────────────────────────────────────────────────────────────
@@ -87,7 +109,9 @@ extension DatabaseService {
         } else {
             collection.document()
         }
-        try doc.setData(from: transaction)
+        var payload = transaction
+        payload.id = nil
+        try doc.setData(from: payload)
     }
 
     /// Fetch all transactions, most recent first
@@ -163,7 +187,9 @@ extension DatabaseService {
 
     func createRecurringTemplate(_ template: RecurringTemplate, uid: String) throws {
         guard let id = template.id, !id.isEmpty else { throw DBError.invalidDocumentID }
-        try recurringCollection(uid).document(id).setData(from: template)
+        var payload = template
+        payload.id = nil
+        try recurringCollection(uid).document(id).setData(from: payload)
     }
 
     func fetchRecurringTemplates(uid: String) async throws -> [RecurringTemplate] {
@@ -230,7 +256,9 @@ extension DatabaseService {
 
     func createGoal(_ goal: FinancialGoal, uid: String) throws {
         guard let id = goal.id, !id.isEmpty else { throw DBError.invalidDocumentID }
-        try goalsCollection(uid).document(id).setData(from: goal)
+        var payload = goal
+        payload.id = nil
+        try goalsCollection(uid).document(id).setData(from: payload)
     }
 
     func fetchGoals(uid: String) async throws -> [FinancialGoal] {
@@ -242,11 +270,7 @@ extension DatabaseService {
         }
     }
 
-    func updateGoalProgress(uid: String, goalID: String, currentAmount: Double) throws {
-        let isCompleted: Bool = {
-            // Will be rechecked in ViewModel but set optimistically
-            false
-        }()
+    func updateGoalProgress(uid: String, goalID: String, currentAmount: Double, isCompleted: Bool) throws {
         try goalDocument(uid, goalID)
             .setData(from: GoalProgressPatch(
                 currentAmount: currentAmount,
@@ -264,12 +288,59 @@ extension DatabaseService {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // MARK: - Debt Accounts
+    // ─────────────────────────────────────────────────────────────────────────
+
+    func createDebtAccount(_ debt: DebtAccount, uid: String) throws {
+        guard let id = debt.id, !id.isEmpty else { throw DBError.invalidDocumentID }
+        var payload = debt
+        payload.id = nil
+        try debtAccountDocument(uid, id).setData(from: payload)
+    }
+
+    func fetchDebtAccounts(uid: String) async throws -> [DebtAccount] {
+        let snapshot = try await debtAccountsCollection(uid)
+            .order(by: "createdAt", descending: false)
+            .getDocuments()
+        return try snapshot.documents.compactMap {
+            try $0.data(as: DebtAccount.self)
+        }
+    }
+
+    func updateDebtBalance(uid: String, debtID: String, newBalance: Double) throws {
+        let clamped = max(newBalance, 0)
+        try debtAccountDocument(uid, debtID).setData(from: DebtBalancePatch(
+            currentBalance: clamped,
+            updatedAt: Date(),
+            isClosed: clamped <= 0
+        ), merge: true)
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // MARK: - Month Closures
+    // ─────────────────────────────────────────────────────────────────────────
+
+    func markMonthClosed(uid: String, record: MonthCloseRecord) throws {
+        guard !record.month.isEmpty else { throw DBError.invalidDocumentID }
+        var payload = record
+        payload.id = nil
+        try monthClosureDocument(uid, record.month).setData(from: payload)
+    }
+
+    func isMonthClosed(uid: String, month: String) async throws -> Bool {
+        let doc = try await monthClosureDocument(uid, month).getDocument()
+        return doc.exists
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     // MARK: - Monthly Snapshots
     // ─────────────────────────────────────────────────────────────────────────
 
     func saveMonthlySnapshot(_ snapshot: MonthlySnapshot, uid: String) throws {
         guard !snapshot.month.isEmpty else { throw DBError.invalidDocumentID }
-        try snapshotDocument(uid, snapshot.month).setData(from: snapshot)
+        var payload = snapshot
+        payload.id = nil
+        try snapshotDocument(uid, snapshot.month).setData(from: payload)
     }
 
     func fetchMonthlySnapshot(uid: String, month: String) async throws -> MonthlySnapshot? {
@@ -299,3 +370,5 @@ extension DatabaseService {
 // static func goals(_ uid: String)             → "users/\(uid)/goals"
 // static func monthlySnapshots(_ uid: String)  → "users/\(uid)/monthlySnapshots"
 // static func financialSummary(_ uid: String)  → "users/\(uid)/financialSummary"
+// static func debtAccounts(_ uid: String)      → "users/\(uid)/debtAccounts"
+// static func monthClosures(_ uid: String)     → "users/\(uid)/monthClosures"

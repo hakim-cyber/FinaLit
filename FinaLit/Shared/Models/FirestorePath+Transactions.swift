@@ -40,4 +40,12 @@ extension FirestorePath {
     static func financialSummary(_ uid: String) -> String {
         "users/\(uid)/financialSummary"
     }
+
+    static func debtAccounts(_ uid: String) -> String {
+        "users/\(uid)/debtAccounts"
+    }
+
+    static func monthClosures(_ uid: String) -> String {
+        "users/\(uid)/monthClosures"
+    }
 }
