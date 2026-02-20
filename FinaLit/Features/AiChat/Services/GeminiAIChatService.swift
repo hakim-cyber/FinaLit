@@ -13,14 +13,14 @@ protocol AIChatService {
         userMessage: String,
         intent: ChatIntent,
         context: AdvisorContextSnapshot,
-        history: [ChatTurn]
+        conversationMemory: String?
     ) -> AsyncThrowingStream<String, Error>
 
     func generateReply(
         userMessage: String,
         intent: ChatIntent,
         context: AdvisorContextSnapshot,
-        history: [ChatTurn]
+        conversationMemory: String?
     ) async throws -> String
 }
 
@@ -59,9 +59,8 @@ final class GeminiAIChatService: AIChatService {
         self.fallbackModelNames = fallbackModelNames
 
         generationConfig = GenerationConfig(
-            temperature: 0.2,
-            topP: 0.9,
-            maxOutputTokens: 700,
+            temperature: 0.65,
+            topP: 0.95,
             responseMIMEType: "text/plain"
         )
 
@@ -79,17 +78,13 @@ final class GeminiAIChatService: AIChatService {
         userMessage: String,
         intent: ChatIntent,
         context: AdvisorContextSnapshot,
-        history: [ChatTurn]
+        conversationMemory: String?
     ) -> AsyncThrowingStream<String, Error> {
-        let modelHistory = history.suffix(AIChatRuntimeConfig.historyLimit).map { turn in
-            let role = turn.role == .assistant ? "model" : "user"
-            return ModelContent(role: role, parts: turn.text)
-        }
-
         let prompt = promptBuilder.userPrompt(
             userMessage: userMessage,
             intent: intent,
-            context: context
+            context: context,
+            conversationMemory: conversationMemory
         )
 
         let candidateModels = uniqueModels(preferred: preferredModelName, fallbacks: fallbackModelNames)
@@ -103,6 +98,7 @@ final class GeminiAIChatService: AIChatService {
                 var lastError: Error?
 
                 for (index, modelName) in candidateModels.enumerated() {
+                    var aggregated = ""
                     do {
                         let model = FirebaseAI.firebaseAI(backend: backend).generativeModel(
                             modelName: modelName,
@@ -111,13 +107,13 @@ final class GeminiAIChatService: AIChatService {
                             systemInstruction: systemInstruction
                         )
 
-                        let chat = model.startChat(history: modelHistory)
+                        let chat = model.startChat()
                         let stream = try chat.sendMessageStream(prompt)
 
-                        var aggregated = ""
                         for try await chunk in stream {
-                            guard let chunkText = chunk.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-                                  !chunkText.isEmpty else {
+                            guard let chunkText = chunk.text,
+                                  !chunkText.isEmpty,
+                                  !chunkText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                                 continue
                             }
 
@@ -133,6 +129,15 @@ final class GeminiAIChatService: AIChatService {
                         continuation.finish()
                         return
                     } catch {
+                        // If the model stopped at token limit but produced usable text,
+                        // treat that as a successful partial response.
+                        if isMaxTokensStop(error),
+                           !aggregated.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            continuation.yield(aggregated)
+                            continuation.finish()
+                            return
+                        }
+
                         lastError = error
                         if shouldRetryWithAnotherModel(error: error),
                            index < candidateModels.count - 1 {
@@ -153,7 +158,7 @@ final class GeminiAIChatService: AIChatService {
         userMessage: String,
         intent: ChatIntent,
         context: AdvisorContextSnapshot,
-        history: [ChatTurn]
+        conversationMemory: String?
     ) async throws -> String {
         var finalText = ""
 
@@ -161,7 +166,7 @@ final class GeminiAIChatService: AIChatService {
             userMessage: userMessage,
             intent: intent,
             context: context,
-            history: history
+            conversationMemory: conversationMemory
         ) {
             finalText = partial
         }
@@ -189,6 +194,15 @@ final class GeminiAIChatService: AIChatService {
             message.contains("404")
     }
 
+    private func isMaxTokensStop(_ error: Error) -> Bool {
+        if let generateError = error as? GenerateContentError,
+           case let .responseStoppedEarly(reason, _) = generateError {
+            return reason.rawValue == "MAX_TOKENS"
+        }
+
+        return false
+    }
+
     private func mappedError(_ error: Error) -> Error {
         let message = error.localizedDescription.lowercased()
 
@@ -214,14 +228,54 @@ final class GeminiAIChatService: AIChatService {
             return incoming
         }
 
+        // Some providers emit cumulative text snapshots; replace existing in that case.
         if incoming.count >= existing.count, incoming.hasPrefix(existing) {
             return incoming
         }
 
-        if existing.hasSuffix(incoming) {
+        // Ignore stale smaller snapshots.
+        if existing.hasPrefix(incoming) {
             return existing
         }
 
-        return existing + " " + incoming
+        // Merge overlapping incremental chunks to avoid duplicated or glued words.
+        let overlapLength = longestOverlapLength(
+            suffixOf: existing,
+            prefixOf: incoming
+        )
+
+        if overlapLength > 0 {
+            let start = incoming.index(incoming.startIndex, offsetBy: overlapLength)
+            return existing + String(incoming[start...])
+        }
+
+        if shouldInsertSpace(between: existing, and: incoming) {
+            return existing + " " + incoming
+        }
+
+        return existing + incoming
+    }
+
+    private func longestOverlapLength(suffixOf existing: String, prefixOf incoming: String) -> Int {
+        let maxLength = min(existing.count, incoming.count)
+        guard maxLength > 0 else { return 0 }
+
+        for length in stride(from: maxLength, through: 1, by: -1) {
+            let existingStart = existing.index(existing.endIndex, offsetBy: -length)
+            let incomingEnd = incoming.index(incoming.startIndex, offsetBy: length)
+
+            if existing[existingStart...] == incoming[..<incomingEnd] {
+                return length
+            }
+        }
+
+        return 0
+    }
+
+    private func shouldInsertSpace(between existing: String, and incoming: String) -> Bool {
+        guard let last = existing.last, let first = incoming.first else { return false }
+        guard last.isLetter || last.isNumber else { return false }
+        guard first.isLetter || first.isNumber else { return false }
+        return true
     }
 }

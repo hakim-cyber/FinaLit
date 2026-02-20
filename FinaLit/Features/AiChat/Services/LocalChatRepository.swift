@@ -67,6 +67,7 @@ struct LocalChatRepository {
             context.delete(message)
         }
 
+        thread.conversationMemory = nil
         thread.updatedAt = .now
         try context.save()
     }

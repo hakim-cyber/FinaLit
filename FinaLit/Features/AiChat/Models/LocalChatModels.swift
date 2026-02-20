@@ -18,6 +18,7 @@ final class ChatThreadEntity {
     @Attribute(.unique) var id: String
     var ownerUID: String
     var title: String
+    var conversationMemory: String?
     var createdAt: Date
     var updatedAt: Date
 
@@ -28,12 +29,14 @@ final class ChatThreadEntity {
         id: String = UUID().uuidString,
         ownerUID: String,
         title: String = "AI Advisor",
+        conversationMemory: String? = nil,
         createdAt: Date = .now,
         updatedAt: Date = .now
     ) {
         self.id = id
         self.ownerUID = ownerUID
         self.title = title
+        self.conversationMemory = conversationMemory
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.messages = []

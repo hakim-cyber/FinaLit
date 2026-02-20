@@ -14,11 +14,6 @@ enum ChatIntent: String {
     case general
 }
 
-struct ChatTurn {
-    let role: ChatRole
-    let text: String
-}
-
 struct AdvisorContextSnapshot {
     let userName: String
     let age: Int
