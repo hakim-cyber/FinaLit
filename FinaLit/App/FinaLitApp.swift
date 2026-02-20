@@ -6,11 +6,10 @@
 //
 
 import SwiftUI
-import FirebaseCore
-
+import SwiftData
+import Firebase
 @main
 struct FinaLitApp: App {
-   
 
     @State private var session: UserSession
     @State private var appCoordinator: AppCoordinator
@@ -22,6 +21,7 @@ struct FinaLitApp: App {
     @State private var onboardingViewModel: OnboardingViewModel
     @State private var learnViewModel: LearnViewModel
     @State private var adminViewModel: AdminViewModel
+    @State private var chatViewModel: ChatViewModel
 
     init() {
         FirebaseApp.configure()
@@ -42,6 +42,7 @@ struct FinaLitApp: App {
         _onboardingViewModel = State(initialValue: OnboardingViewModel(dbService: dbService, session: session))
         _learnViewModel = State(initialValue: LearnViewModel(db: dbService, session: session))
         _adminViewModel  = State(initialValue: AdminViewModel(db: dbService))
+        _chatViewModel = State(initialValue: ChatViewModel(session: session))
     }
 
     var body: some Scene {
@@ -55,10 +56,13 @@ struct FinaLitApp: App {
                 .environment(onboardingViewModel)
                 .environment(learnViewModel)
                 .environment(adminViewModel)
+                .environment(chatViewModel)
                 .task {
                     await restoreSession()
                 }
+                .preferredColorScheme(.dark)
         }
+        .modelContainer(for: [ChatThreadEntity.self, ChatMessageEntity.self])
     }
 
     private func restoreSession() async {

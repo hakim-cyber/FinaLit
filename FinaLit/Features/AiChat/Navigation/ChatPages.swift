@@ -28,7 +28,7 @@ enum ChatPages: Coordinatable {
     @ViewBuilder
     var body: some View {
         switch self {
-        case .chat: Text("Chat View")  // replace with ChatView()
+        case .chat: ChatView()
         }
     }
 }

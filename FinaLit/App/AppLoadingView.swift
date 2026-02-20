@@ -5,52 +5,57 @@ struct AppLoadingView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [
-                    Color.blue.opacity(0.30),
-                    Color.cyan.opacity(0.22),
-                    Color.white
-                ],
-                startPoint: animate ? .topLeading : .bottomTrailing,
-                endPoint: animate ? .bottomTrailing : .topLeading
-            )
-            .ignoresSafeArea()
+            Color(hex: "0A0A0F").ignoresSafeArea()
 
-            VStack(spacing: 20) {
+            VStack(spacing: 22) {
                 ZStack {
-                    ForEach(0..<3, id: \.self) { index in
-                        Circle()
-                            .stroke(Color.blue.opacity(0.22), lineWidth: 2)
-                            .frame(width: 96, height: 96)
-                            .scaleEffect(animate ? 1.2 + CGFloat(index) * 0.18 : 0.70)
-                            .opacity(animate ? 0.0 : 0.75)
-                            .animation(
-                                .easeOut(duration: 1.5)
-                                    .repeatForever(autoreverses: false)
-                                    .delay(Double(index) * 0.28),
-                                value: animate
-                            )
-                    }
+                    Circle()
+                        .stroke(Color(hex: "1F2937"), lineWidth: 1)
+                        .frame(width: 112, height: 112)
 
-                    Image(systemName: "chart.line.uptrend.xyaxis.circle.fill")
-                        .font(.system(size: 50))
-                        .foregroundStyle(Color.blue)
+                    Circle()
+                        .trim(from: 0.18, to: 1)
+                        .stroke(
+                            Color(hex: "6366F1"),
+                            style: StrokeStyle(lineWidth: 3, lineCap: .round)
+                        )
+                        .frame(width: 88, height: 88)
+                        .rotationEffect(.degrees(animate ? 360 : 0))
+                        .animation(
+                            .linear(duration: 1.1).repeatForever(autoreverses: false),
+                            value: animate
+                        )
+
+                    Image(systemName: "chart.line.uptrend.xyaxis")
+                        .font(.system(size: 32, weight: .semibold))
+                        .foregroundStyle(Color(hex: "6366F1"))
                 }
                 .frame(width: 120, height: 120)
 
-                VStack(spacing: 8) {
-                    Text("Preparing your dashboard")
-                        .font(.title3.weight(.semibold))
-                    Text("Loading your profile securely...")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                VStack(spacing: 6) {
+                    Text("FinaLit")
+                        .font(.system(size: 34, weight: .light, design: .serif))
+                        .foregroundStyle(.white)
+                    Text("Restoring your workspace")
+                        .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(Color(hex: "6B7280"))
                 }
 
                 ProgressView()
-                    .tint(.blue)
+                    .tint(Color(hex: "6366F1"))
                     .scaleEffect(1.1)
             }
+            .padding(.vertical, 34)
             .padding(.horizontal, 24)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color(hex: "111118"))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color(hex: "1F2937"), lineWidth: 1)
+                    )
+            )
+            .padding(.horizontal, 20)
         }
         .onAppear {
             animate = true
