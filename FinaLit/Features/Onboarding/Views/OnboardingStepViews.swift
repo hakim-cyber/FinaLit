@@ -900,7 +900,7 @@ private struct MoneySlider: View {
                     .font(.system(size: 12, weight: .semibold, design: .monospaced))
                     .foregroundStyle(OnboardingPalette.muted)
                 Spacer()
-                Text(currency(value))
+                Text(currency(snapped(value)))
                     .font(.system(size: 14, weight: .semibold, design: .monospaced))
                     .foregroundStyle(.white)
             }
@@ -914,6 +914,24 @@ private struct MoneySlider: View {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(OnboardingPalette.border, lineWidth: 1)
         )
+        .onAppear {
+            let adjusted = snapped(value)
+            if abs(adjusted - value) > 0.0001 {
+                value = adjusted
+            }
+        }
+        .onChange(of: value) { _, newValue in
+            let adjusted = snapped(newValue)
+            if abs(adjusted - newValue) > 0.0001 {
+                value = adjusted
+            }
+        }
+    }
+
+    private func snapped(_ raw: Double) -> Double {
+        guard step > 0 else { return raw }
+        let snappedValue = (raw / step).rounded() * step
+        return min(max(snappedValue, range.lowerBound), range.upperBound)
     }
 }
 
