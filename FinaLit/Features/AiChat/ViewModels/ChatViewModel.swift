@@ -27,6 +27,7 @@ final class ChatViewModel {
     private let aiService: any AIChatService
 
     private var thread: ChatThreadEntity?
+    private var financialContext: AIFinancialContext?
 
     init(
         session: UserSession,
@@ -64,6 +65,10 @@ final class ChatViewModel {
         isLoading = false
     }
 
+    func updateFinancialContext(_ context: AIFinancialContext?) {
+        financialContext = context
+    }
+
     func sendMessage(context: ModelContext) async {
         let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, !isSending else { return }
@@ -94,7 +99,12 @@ final class ChatViewModel {
             liveAssistantText = nil
 
             let intent = contextBuilder.classifyIntent(for: text)
-            let snapshot = contextBuilder.buildSnapshot(user: user, message: text, intent: intent)
+            let snapshot = contextBuilder.buildSnapshot(
+                user: user,
+                message: text,
+                intent: intent,
+                financialContext: financialContext
+            )
             let memoryForPrompt = memoryService.memoryForPrompt(thread.conversationMemory)
 
             var finalReply = ""

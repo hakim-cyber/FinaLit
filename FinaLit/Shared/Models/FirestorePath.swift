@@ -22,8 +22,8 @@ users/
     ── behaviorProfile/  → BehaviorProfile  (after onboarding step 4)
     ── learningProgress/ → LearningProgress (auto-created on first lesson open)
     
-    expenses/            → subcollection
-      {expenseID}/       → Expense
+    transactions/        → subcollection
+      {transactionID}/   → Transaction
     
     chatHistory/         → subcollection
       {messageID}/       → ChatMessage
@@ -39,13 +39,11 @@ quizzes/               → top-level
 
 enum FirestorePath {
     static let users = "users"
-    static let expenses = "expenses"
     static let chatHistory = "chatHistory"
     static let lessons = "lessons"
     static let quizzes = "quizzes"
     
     static func user(_ uid: String) -> String { "users/\(uid)" }
-    static func expenses(_ uid: String) -> String { "users/\(uid)/expenses" }
     static func chat(_ uid: String) -> String { "users/\(uid)/chatHistory" }
 
     static func weeks() -> String { "weeks" }

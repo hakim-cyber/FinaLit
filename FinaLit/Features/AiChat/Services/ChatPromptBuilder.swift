@@ -70,6 +70,10 @@ struct ChatPromptBuilder {
             purchaseIncomeLine = "Purchase/Income Ratio: N/A"
         }
 
+        let topCategoriesLine = context.topSpendingCategories.isEmpty
+            ? "Top spending categories: Not enough transaction data yet"
+            : "Top spending categories: \(context.topSpendingCategories.joined(separator: ", "))"
+
         let compactMemoryBlock: String
         if let conversationMemory, !conversationMemory.isEmpty {
             compactMemoryBlock = """
@@ -84,7 +88,24 @@ struct ChatPromptBuilder {
         let detailMode = responseDetailMode(for: userMessage)
         let targetLength = targetLengthHint(for: detailMode)
 
+        let financialSnapshotBlock = """
+        FINANCIAL SNAPSHOT (from transactions):
+        Income: \(formatCurrency(context.monthlyIncome))
+        Expenses: \(formatCurrency(context.monthlyExpenses))
+        Monthly net: \(formatCurrency(context.monthlyBalance))
+        Savings: \(formatCurrency(context.currentSavings))
+        Savings rate: \(formatPercent(context.savingsRate))
+        Expense ratio: \(formatPercent(context.expenseRatio))
+        Daily avg spending: \(formatCurrency(context.dailyAverageSpending))
+        Stability: \(context.stabilityLevel)
+        Overspending: \(context.isOverspending ? "Yes" : "No")
+        Discretionary ratio: \(formatPercent(context.discretionaryRatio))
+        \(topCategoriesLine)
+        """
+
         return """
+        \(financialSnapshotBlock)
+
         USER QUESTION:
         \(userMessage)
 
@@ -100,15 +121,10 @@ struct ChatPromptBuilder {
         \(compactMemoryBlock)
 
         USER DATA (compact):
-        Income: \(formatCurrency(context.monthlyIncome))
-        Expenses (fixed/variable/total): \(formatCurrency(context.fixedExpenses)) / \(formatCurrency(context.variableExpenses)) / \(formatCurrency(context.totalExpenses))
-        Monthly balance: \(formatCurrency(context.monthlyBalance))
-        Savings: \(formatCurrency(context.currentSavings))
         Debt: \(formatCurrency(context.debtAmount))
         Risk tolerance: \(context.riskTolerance)
         Knowledge level: \(context.knowledgeLevel)
-        Savings rate: \(formatPercent(context.savingsRate))
-        Expense ratio: \(formatPercent(context.expenseRatio))
+        Emergency fund months: \(context.emergencyFundMonths)
         Weak spending areas: \(weaknesses)
         Goals: short=\(context.shortTermGoal) | long=\(context.longTermGoal)
         \(purchaseLine)

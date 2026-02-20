@@ -21,6 +21,7 @@ struct FinaLitApp: App {
     @State private var onboardingViewModel: OnboardingViewModel
     @State private var learnViewModel: LearnViewModel
     @State private var adminViewModel: AdminViewModel
+    @State private var mainViewModel: MainViewModel
     @State private var chatViewModel: ChatViewModel
 
     init() {
@@ -42,6 +43,7 @@ struct FinaLitApp: App {
         _onboardingViewModel = State(initialValue: OnboardingViewModel(dbService: dbService, session: session))
         _learnViewModel = State(initialValue: LearnViewModel(db: dbService, session: session))
         _adminViewModel  = State(initialValue: AdminViewModel(db: dbService))
+        _mainViewModel = State(initialValue: MainViewModel(db: dbService, session: session))
         _chatViewModel = State(initialValue: ChatViewModel(session: session))
     }
 
@@ -56,6 +58,7 @@ struct FinaLitApp: App {
                 .environment(onboardingViewModel)
                 .environment(learnViewModel)
                 .environment(adminViewModel)
+                .environment(mainViewModel)
                 .environment(chatViewModel)
                 .task {
                     await restoreSession()

@@ -10,6 +10,7 @@ import SwiftData
 
 struct ChatView: View {
     @Environment(ChatViewModel.self) private var viewModel
+    @Environment(MainViewModel.self) private var mainVM
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
@@ -84,7 +85,14 @@ struct ChatView: View {
         }
         .navigationBarHidden(true)
         .task {
+            if mainVM.aiContext == nil && !mainVM.isLoadingHome {
+                await mainVM.loadHome()
+            }
+            viewModel.updateFinancialContext(mainVM.aiContext)
             viewModel.bootstrapIfNeeded(context: modelContext)
+        }
+        .onChange(of: mainVM.aiContext?.formattedPrompt) { _, _ in
+            viewModel.updateFinancialContext(mainVM.aiContext)
         }
     }
 
@@ -191,12 +199,14 @@ struct ChatView: View {
             .submitLabel(.send)
             .onSubmit {
                 Task {
+                    viewModel.updateFinancialContext(mainVM.aiContext)
                     await viewModel.sendMessage(context: modelContext)
                 }
             }
 
             Button {
                 Task {
+                    viewModel.updateFinancialContext(mainVM.aiContext)
                     await viewModel.sendMessage(context: modelContext)
                 }
             } label: {

@@ -29,21 +29,29 @@ struct ChatAdvisorContextBuilder {
         return .general
     }
 
-    func buildSnapshot(user: User, message: String, intent: ChatIntent) -> AdvisorContextSnapshot {
+    func buildSnapshot(
+        user: User,
+        message: String,
+        intent: ChatIntent,
+        financialContext: AIFinancialContext?
+    ) -> AdvisorContextSnapshot {
         let profile = user.profile
         let financial = user.financialProfile
         let behavior = user.behaviorProfile
 
-        let monthlyIncome = profile?.monthlyIncome ?? 0
-        let fixedExpenses = financial?.monthlyFixedExpenses ?? 0
-        let variableExpenses = financial?.monthlyVariableExpenses ?? 0
-        let totalExpenses = fixedExpenses + variableExpenses
-        let currentSavings = financial?.currentSavings ?? 0
-        let debtAmount = financial?.debtAmount ?? 0
-        let monthlyBalance = monthlyIncome - totalExpenses
+        let monthlyIncome = financialContext?.monthlyIncome ?? profile?.monthlyIncome ?? 0
+        let monthlyExpenses = financialContext?.monthlyExpenses ?? 0
+        let monthlyBalance = financialContext?.monthlyNet ?? (monthlyIncome - monthlyExpenses)
+        let currentSavings = financialContext?.totalSavings ?? financial?.currentSavings ?? 0
+        let debtAmount = financialContext?.debtAmount ?? financial?.debtAmount ?? 0
 
-        let savingsRate = ratio(numerator: currentSavings, denominator: monthlyIncome)
-        let expenseRatio = ratio(numerator: totalExpenses, denominator: monthlyIncome)
+        let savingsRate = financialContext.map { max($0.savingsRate, 0) / 100 } ??
+            ratio(numerator: currentSavings, denominator: monthlyIncome)
+        let expenseRatio = ratio(numerator: monthlyExpenses, denominator: monthlyIncome)
+        let emergencyFundMonths = financialContext.map {
+            guard $0.monthlyExpenses > 0 else { return 0 }
+            return max(Int(($0.totalSavings / $0.monthlyExpenses).rounded(.down)), 0)
+        } ?? financial?.emergencyFundMonths ?? 0
 
         let purchaseAmount = intent == .purchaseDecision ? extractCandidateAmount(from: message) : nil
         let purchaseToSavingsRatio = purchaseAmount.map {
@@ -59,20 +67,23 @@ struct ChatAdvisorContextBuilder {
             country: profile?.country ?? "Unknown",
             employmentStatus: profile?.employmentStatus.rawValue ?? "Unknown",
             monthlyIncome: monthlyIncome,
-            fixedExpenses: fixedExpenses,
-            variableExpenses: variableExpenses,
-            totalExpenses: totalExpenses,
+            monthlyExpenses: monthlyExpenses,
             monthlyBalance: monthlyBalance,
             currentSavings: currentSavings,
             debtAmount: debtAmount,
-            emergencyFundMonths: financial?.emergencyFundMonths ?? 0,
-            riskTolerance: financial?.riskTolerance.rawValue ?? "Unknown",
-            knowledgeLevel: financial?.knowledgeLevel.rawValue ?? "Unknown",
-            shortTermGoal: financial?.shortTermGoal ?? "Not set",
-            longTermGoal: financial?.longTermGoal ?? "Not set",
+            emergencyFundMonths: emergencyFundMonths,
+            riskTolerance: financialContext?.riskTolerance.rawValue ?? financial?.riskTolerance.rawValue ?? "Unknown",
+            knowledgeLevel: financialContext?.knowledgeLevel.rawValue ?? financial?.knowledgeLevel.rawValue ?? "Unknown",
+            shortTermGoal: financialContext?.shortTermGoal ?? financial?.shortTermGoal ?? "Not set",
+            longTermGoal: financialContext?.longTermGoal ?? financial?.longTermGoal ?? "Not set",
             spendingWeaknesses: behavior?.spendingWeaknesses.map(\.rawValue) ?? [],
             savingsRate: savingsRate,
             expenseRatio: expenseRatio,
+            dailyAverageSpending: financialContext?.dailyAverage ?? 0,
+            stabilityLevel: financialContext?.stabilityLevel.rawValue ?? "Unknown",
+            isOverspending: financialContext?.isOverspending ?? (monthlyIncome > 0 && monthlyExpenses > monthlyIncome),
+            discretionaryRatio: financialContext?.discretionaryRatio ?? 0,
+            topSpendingCategories: formatTopCategories(financialContext?.topCategories ?? []),
             purchaseAmount: purchaseAmount,
             purchaseToSavingsRatio: purchaseToSavingsRatio,
             purchaseToIncomeRatio: purchaseToIncomeRatio,
@@ -87,6 +98,12 @@ struct ChatAdvisorContextBuilder {
     private func ratio(numerator: Double, denominator: Double) -> Double {
         guard denominator > 0 else { return 0 }
         return numerator / denominator
+    }
+
+    private func formatTopCategories(_ categories: [(TransactionCategory, Double)]) -> [String] {
+        categories.map {
+            "\($0.0.rawValue): \(String(format: "%.0f", $0.1))€"
+        }
     }
 
     private func affordabilityScore(

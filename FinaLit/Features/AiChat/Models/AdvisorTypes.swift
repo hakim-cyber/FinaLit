@@ -20,9 +20,7 @@ struct AdvisorContextSnapshot {
     let country: String
     let employmentStatus: String
     let monthlyIncome: Double
-    let fixedExpenses: Double
-    let variableExpenses: Double
-    let totalExpenses: Double
+    let monthlyExpenses: Double
     let monthlyBalance: Double
     let currentSavings: Double
     let debtAmount: Double
@@ -34,6 +32,11 @@ struct AdvisorContextSnapshot {
     let spendingWeaknesses: [String]
     let savingsRate: Double
     let expenseRatio: Double
+    let dailyAverageSpending: Double
+    let stabilityLevel: String
+    let isOverspending: Bool
+    let discretionaryRatio: Double
+    let topSpendingCategories: [String]
     let purchaseAmount: Double?
     let purchaseToSavingsRatio: Double?
     let purchaseToIncomeRatio: Double?

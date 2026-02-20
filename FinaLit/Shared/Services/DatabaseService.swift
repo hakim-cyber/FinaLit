@@ -85,64 +85,6 @@ final class DatabaseService {
         try userDocument(uid).setData(from: BehaviorProfilePatch(behaviorProfile: profile), merge: true)
     }
 
-    // MARK: - Expenses
-
-    func addExpense(_ expense: Expense, uid: String) throws {
-        let expensesCollection = db.collection(FirestorePath.expenses(uid))
-        let targetDocument = if let expenseID = expense.id, !expenseID.isEmpty {
-            expensesCollection.document(expenseID)
-        } else {
-            expensesCollection.document()
-        }
-
-        try targetDocument.setData(from: expense)
-    }
-
-    func fetchExpenses(uid: String) async throws -> [Expense] {
-        let snapshot = try await db
-            .collection(FirestorePath.expenses(uid))
-            .order(by: "date", descending: true)
-            .getDocuments()
-
-        return try snapshot.documents.compactMap {
-            try $0.data(as: Expense.self)
-        }
-    }
-
-    func deleteExpense(expenseID: String, uid: String) async throws {
-        try await db
-            .collection(FirestorePath.expenses(uid))
-            .document(expenseID)
-            .delete()
-    }
-
-    /// Streams real-time expense updates sorted by most recent.
-    func streamExpenses(uid: String) -> AsyncStream<[Expense]> {
-        let query = db
-            .collection(FirestorePath.expenses(uid))
-            .order(by: "date", descending: true)
-
-        return AsyncStream { continuation in
-            let listener = query.addSnapshotListener { snapshot, error in
-                if let error {
-                    #if DEBUG
-                    print("Expense stream failed: \(error.localizedDescription)")
-                    #endif
-                    continuation.finish()
-                    return
-                }
-
-                let documents = snapshot?.documents ?? []
-                let expenses = documents.compactMap { try? $0.data(as: Expense.self) }
-                continuation.yield(expenses)
-            }
-
-            continuation.onTermination = { _ in
-                listener.remove()
-            }
-        }
-    }
-
 //    // MARK: - Chat History
 //
 //    func saveMessage(_ message: ChatMessage, uid: String) async throws {
