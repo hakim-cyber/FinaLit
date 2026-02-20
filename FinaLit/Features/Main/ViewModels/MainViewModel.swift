@@ -306,6 +306,50 @@ final class MainViewModel {
     // MARK: - Debt
     // ─────────────────────────────────────────────────────────────────────────
 
+    func addDebtAccount(
+        name: String,
+        balance: Double,
+        annualInterestRate: Double? = nil,
+        minimumMonthlyPayment: Double? = nil
+    ) async -> Bool {
+        guard let uid else { return false }
+
+        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedName.isEmpty else {
+            errorMessage = "Please enter a debt account name."
+            return false
+        }
+        guard balance > 0 else {
+            errorMessage = "Please enter a valid debt balance."
+            return false
+        }
+
+        isSubmitting = true
+        errorMessage = nil
+        defer { isSubmitting = false }
+
+        let account = DebtAccount(
+            id: UUID().uuidString,
+            name: trimmedName,
+            currentBalance: balance,
+            annualInterestRate: annualInterestRate,
+            minimumMonthlyPayment: minimumMonthlyPayment,
+            createdAt: Date(),
+            updatedAt: Date(),
+            isClosed: false
+        )
+
+        do {
+            try db.createDebtAccount(account, uid: uid)
+            debtAccounts.append(account)
+            recalculate()
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            return false
+        }
+    }
+
     func payDebt(account: DebtAccount, amount: Double, note: String = "") async -> Bool {
         guard let uid, let debtID = account.id else { return false }
         guard account.currentBalance > 0 else {

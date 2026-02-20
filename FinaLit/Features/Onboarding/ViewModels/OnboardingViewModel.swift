@@ -9,6 +9,17 @@ import SwiftUI
 
 @Observable
 class OnboardingViewModel {
+    struct DebtEntry: Identifiable, Equatable {
+        let id: UUID
+        var name: String
+        var amountText: String
+
+        init(id: UUID = UUID(), name: String = "", amountText: String = "") {
+            self.id = id
+            self.name = name
+            self.amountText = amountText
+        }
+    }
 
     // MARK: - Step 1: Name + Age + Country
     var name: String = ""
@@ -32,7 +43,13 @@ class OnboardingViewModel {
 
     // MARK: - Step 6: Debt
     var hasDebt: Bool = false
-    var debtAmount: Double = 0
+    var debtEntries: [DebtEntry] = []
+    var totalDebtAmount: Double {
+        debtEntries
+            .compactMap { parseMonetaryInput($0.amountText) }
+            .filter { $0 > 0 }
+            .reduce(0, +)
+    }
 
     // MARK: - Step 7: Risk + Investing Interest
     var riskTolerance: RiskTolerance = .medium
@@ -82,7 +99,13 @@ class OnboardingViewModel {
     }
 
     var isStep6Valid: Bool {
-        !hasDebt || debtAmount > 0
+        guard hasDebt else { return true }
+        let entries = normalizedDebtEntries
+        guard !entries.isEmpty else { return false }
+        return entries.allSatisfy {
+            !trim($0.name).isEmpty &&
+            (parseMonetaryInput($0.amountText) ?? 0) > 0
+        }
     }
 
     var isStep8Valid: Bool {
@@ -151,6 +174,49 @@ class OnboardingViewModel {
         selectedHobbies.append(hobby)
     }
 
+    // MARK: - Step 6 Helpers
+    func setHasDebt(_ enabled: Bool) {
+        hasDebt = enabled
+        if enabled {
+            if debtEntries.isEmpty {
+                debtEntries = [DebtEntry(name: "Credit Card")]
+            }
+        } else {
+            debtEntries = []
+        }
+        clearError()
+    }
+
+    func addDebtEntry() {
+        debtEntries.append(DebtEntry())
+        clearError()
+    }
+
+    func removeDebtEntry(_ id: UUID) {
+        debtEntries.removeAll { $0.id == id }
+        clearError()
+    }
+
+    func debtEntryName(_ id: UUID) -> String {
+        debtEntries.first(where: { $0.id == id })?.name ?? ""
+    }
+
+    func debtEntryAmountText(_ id: UUID) -> String {
+        debtEntries.first(where: { $0.id == id })?.amountText ?? ""
+    }
+
+    func updateDebtEntryName(_ id: UUID, value: String) {
+        guard let index = debtEntries.firstIndex(where: { $0.id == id }) else { return }
+        debtEntries[index].name = value
+        clearError()
+    }
+
+    func updateDebtEntryAmount(_ id: UUID, value: String) {
+        guard let index = debtEntries.firstIndex(where: { $0.id == id }) else { return }
+        debtEntries[index].amountText = value
+        clearError()
+    }
+
     // MARK: - Step Saves
     func saveStep1PersonalInfo() async -> Bool {
         guard isStep1Valid else {
@@ -186,7 +252,9 @@ class OnboardingViewModel {
 
     func saveStep6Debt() async -> Bool {
         guard isStep6Valid else {
-            errorMessage = "Please enter your total debt amount."
+            errorMessage = hasDebt
+                ? "Add at least one debt with account name and amount."
+                : "Please confirm your debt status."
             return false
         }
         return await saveFinancialProfileProgress()
@@ -258,6 +326,18 @@ class OnboardingViewModel {
             try dbService.saveFinancialProfile(financialProfile, uid: uid)
             try dbService.saveBehaviorProfile(behaviorProfile, uid: uid)
 
+            if hasDebt {
+                let debtAccounts = buildDebtAccounts()
+                if !debtAccounts.isEmpty {
+                    let existingDebtAccounts = try await dbService.fetchDebtAccounts(uid: uid)
+                    if existingDebtAccounts.isEmpty {
+                        for debtAccount in debtAccounts {
+                            try dbService.createDebtAccount(debtAccount, uid: uid)
+                        }
+                    }
+                }
+            }
+
             session.updateFinancialProfile(financialProfile)
             session.updateBehaviorProfile(behaviorProfile)
 
@@ -326,7 +406,7 @@ class OnboardingViewModel {
             monthlyVariableExpenses: monthlyVariableExpenses,
             currentSavings: currentSavings,
             hasDebt: hasDebt,
-            debtAmount: hasDebt ? debtAmount : nil,
+            debtAmount: hasDebt ? totalDebtAmount : nil,
             emergencyFundMonths: emergencyFundMonths,
             riskTolerance: riskTolerance,
             shortTermGoal: trim(shortTermGoal),
@@ -338,5 +418,32 @@ class OnboardingViewModel {
 
     private func trim(_ value: String) -> String {
         value.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var normalizedDebtEntries: [DebtEntry] {
+        debtEntries.filter {
+            !trim($0.name).isEmpty || !trim($0.amountText).isEmpty
+        }
+    }
+
+    private func buildDebtAccounts() -> [DebtAccount] {
+        let now = Date()
+        return normalizedDebtEntries.compactMap { entry in
+            let name = trim(entry.name)
+            guard !name.isEmpty,
+                  let amount = parseMonetaryInput(entry.amountText),
+                  amount > 0 else { return nil }
+
+            return DebtAccount(
+                id: UUID().uuidString,
+                name: name,
+                currentBalance: amount,
+                annualInterestRate: nil,
+                minimumMonthlyPayment: nil,
+                createdAt: now,
+                updatedAt: now,
+                isClosed: false
+            )
+        }
     }
 }

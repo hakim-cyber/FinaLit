@@ -16,6 +16,7 @@ struct DashboardView: View {
     @Environment(UserSession.self)             private var session
     @Environment(Coordinator<MainPages>.self)  private var coordinator
     @State private var showPayDebtSheet = false
+    @State private var showAddDebtSheet = false
     @State private var showGoalContributionSheet = false
     @State private var showCloseMonthDialog = false
     @State private var closeMonthSuccessMessage: String?
@@ -107,8 +108,18 @@ struct DashboardView: View {
         .navigationBarHidden(true)
         .task { await mainVM.loadHome() }
         .sheet(isPresented: $showPayDebtSheet) {
-            PayDebtSheet()
+            PayDebtSheet(onAddDebt: {
+                showPayDebtSheet = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    showAddDebtSheet = true
+                }
+            })
                 .presentationDetents([.height(420)])
+                .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $showAddDebtSheet) {
+            AddDebtSheet()
+                .presentationDetents([.height(500)])
                 .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $showGoalContributionSheet) {
@@ -197,6 +208,13 @@ struct DashboardView: View {
         }
     }
 
+    private var debtQuickActionSubtitle: String {
+        if mainVM.activeDebtAccounts.isEmpty {
+            return mainVM.debtAccounts.isEmpty ? "Create first debt" : "Add another debt"
+        }
+        return "\(formatCurrency(mainVM.totalDebtBalance)) remaining"
+    }
+
     // MARK: - Balance Hero Card
     private var balanceHeroCard: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -279,15 +297,17 @@ struct DashboardView: View {
 
             HStack(spacing: 10) {
                 QuickActionCard(
-                    title: "Pay Debt",
-                    subtitle: mainVM.totalDebtBalance > 0
-                        ? "\(formatCurrency(mainVM.totalDebtBalance)) remaining"
-                        : "No active debt",
+                    title: mainVM.activeDebtAccounts.isEmpty ? "Add Debt" : "Pay Debt",
+                    subtitle: debtQuickActionSubtitle,
                     icon: "creditcard.fill",
                     colorHex: "F97316",
-                    isDisabled: mainVM.activeDebtAccounts.isEmpty
+                    isDisabled: mainVM.isSubmitting
                 ) {
-                    showPayDebtSheet = true
+                    if mainVM.activeDebtAccounts.isEmpty {
+                        showAddDebtSheet = true
+                    } else {
+                        showPayDebtSheet = true
+                    }
                 }
 
                 QuickActionCard(
@@ -841,13 +861,156 @@ struct QuickActionCard: View {
     }
 }
 
+// MARK: - Add Debt Sheet
+struct AddDebtSheet: View {
+    @Environment(MainViewModel.self) private var mainVM
+    @Environment(\.dismiss) private var dismiss
+    @State private var accountName: String = ""
+    @State private var balance: String = ""
+    @State private var annualInterestRate: String = ""
+    @State private var minimumPayment: String = ""
+
+    private var parsedBalance: Double? {
+        parseMonetaryInput(balance)
+    }
+
+    private var parsedAPR: Double? {
+        parseMonetaryInput(annualInterestRate)
+    }
+
+    private var parsedMinimumPayment: Double? {
+        parseMonetaryInput(minimumPayment)
+    }
+
+    private var normalizedAPR: Double? {
+        guard !annualInterestRate.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+        guard let parsedAPR, parsedAPR >= 0 else { return nil }
+        return min(parsedAPR, 100)
+    }
+
+    private var normalizedMinimumPayment: Double? {
+        guard !minimumPayment.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+        guard let parsedMinimumPayment, parsedMinimumPayment > 0 else { return nil }
+        return parsedMinimumPayment
+    }
+
+    private var isValid: Bool {
+        !accountName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        (parsedBalance ?? 0) > 0
+    }
+
+    var body: some View {
+        ZStack {
+            Color(hex: "0A0A0F").ignoresSafeArea()
+
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Add Debt Account")
+                    .font(.system(size: 20, weight: .medium, design: .serif))
+                    .foregroundStyle(.white)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("ACCOUNT NAME")
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(Color(hex: "4B5563"))
+                    TextField("e.g. Credit Card", text: $accountName)
+                        .font(.system(size: 16, design: .serif))
+                        .foregroundStyle(.white)
+                        .padding(12)
+                        .background(Color(hex: "111118"))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "1F2937"), lineWidth: 1))
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("CURRENT BALANCE")
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(Color(hex: "4B5563"))
+                    TextField("0", text: $balance)
+                        .font(.system(size: 24, weight: .light, design: .serif))
+                        .foregroundStyle(.white)
+                        .keyboardType(.decimalPad)
+                        .tint(Color(hex: "6366F1"))
+                        .padding(.vertical, 6)
+                    Divider().background(Color(hex: "1F2937"))
+                }
+
+                HStack(spacing: 10) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("APR % (OPTIONAL)")
+                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .foregroundStyle(Color(hex: "4B5563"))
+                        TextField("e.g. 19.9", text: $annualInterestRate)
+                            .font(.system(size: 14, design: .monospaced))
+                            .foregroundStyle(.white)
+                            .keyboardType(.decimalPad)
+                            .padding(12)
+                            .background(Color(hex: "111118"))
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "1F2937"), lineWidth: 1))
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("MIN PAYMENT (OPTIONAL)")
+                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .foregroundStyle(Color(hex: "4B5563"))
+                        TextField("e.g. 50", text: $minimumPayment)
+                            .font(.system(size: 14, design: .monospaced))
+                            .foregroundStyle(.white)
+                            .keyboardType(.decimalPad)
+                            .padding(12)
+                            .background(Color(hex: "111118"))
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "1F2937"), lineWidth: 1))
+                    }
+                }
+
+                Spacer(minLength: 4)
+
+                Button {
+                    guard let value = parsedBalance else { return }
+                    Task {
+                        let saved = await mainVM.addDebtAccount(
+                            name: accountName,
+                            balance: value,
+                            annualInterestRate: normalizedAPR,
+                            minimumMonthlyPayment: normalizedMinimumPayment
+                        )
+                        if saved { dismiss() }
+                    }
+                } label: {
+                    Text("Save Debt Account")
+                        .font(.system(size: 14, design: .monospaced))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(
+                            isValid
+                                ? LinearGradient(colors: [Color(hex: "6366F1"), Color(hex: "4F46E5")],
+                                                 startPoint: .leading, endPoint: .trailing)
+                                : LinearGradient(colors: [Color(hex: "1F2937"), Color(hex: "1F2937")],
+                                                 startPoint: .leading, endPoint: .trailing)
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+                .disabled(!isValid || mainVM.isSubmitting)
+            }
+            .padding(20)
+        }
+    }
+}
+
 // MARK: - Pay Debt Sheet
 struct PayDebtSheet: View {
     @Environment(MainViewModel.self) private var mainVM
     @Environment(\.dismiss) private var dismiss
+    let onAddDebt: () -> Void
     @State private var selectedDebtID: String = ""
     @State private var amount: String = ""
     @State private var note: String = ""
+
+    init(onAddDebt: @escaping () -> Void = {}) {
+        self.onAddDebt = onAddDebt
+    }
 
     private var selectedAccount: DebtAccount? {
         mainVM.activeDebtAccounts.first(where: { $0.id == selectedDebtID }) ?? mainVM.activeDebtAccounts.first
@@ -862,19 +1025,52 @@ struct PayDebtSheet: View {
         return true
     }
 
+    private func openAddDebt() {
+        dismiss()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            onAddDebt()
+        }
+    }
+
     var body: some View {
         ZStack {
             Color(hex: "0A0A0F").ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 16) {
-                Text("Pay Debt")
-                    .font(.system(size: 20, weight: .medium, design: .serif))
-                    .foregroundStyle(.white)
+                HStack {
+                    Text("Pay Debt")
+                        .font(.system(size: 20, weight: .medium, design: .serif))
+                        .foregroundStyle(.white)
+                    Spacer()
+                    Button("Add Debt") {
+                        openAddDebt()
+                    }
+                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(Color(hex: "F97316"))
+                }
 
                 if mainVM.activeDebtAccounts.isEmpty {
-                    Text("No active debt accounts.")
-                        .font(.system(size: 13, design: .monospaced))
-                        .foregroundStyle(Color(hex: "6B7280"))
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("No active debt accounts.")
+                            .font(.system(size: 13, design: .monospaced))
+                            .foregroundStyle(Color(hex: "6B7280"))
+
+                        Button {
+                            openAddDebt()
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: "plus.circle.fill")
+                                Text("Create debt account")
+                            }
+                            .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 10)
+                            .background(Color(hex: "F97316").opacity(0.2))
+                            .clipShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
+                    }
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("ACCOUNT")

@@ -294,8 +294,6 @@ struct OnboardingDebtView: View {
     @Environment(Coordinator<OnboardingPages>.self) private var coordinator
 
     var body: some View {
-        @Bindable var viewModel = viewModel
-
         OnboardingStepScaffold(
             page: .debt,
             title: "Do you currently have debt?",
@@ -315,28 +313,110 @@ struct OnboardingDebtView: View {
             VStack(alignment: .leading, spacing: 14) {
                 HStack(spacing: 10) {
                     TogglePill(title: "No debt", isSelected: !viewModel.hasDebt, tint: .green) {
-                        viewModel.hasDebt = false
-                        viewModel.debtAmount = 0
-                        viewModel.clearError()
+                        viewModel.setHasDebt(false)
                     }
 
                     TogglePill(title: "I have debt", isSelected: viewModel.hasDebt, tint: .red) {
-                        viewModel.hasDebt = true
-                        viewModel.clearError()
+                        viewModel.setHasDebt(true)
                     }
                 }
 
                 if viewModel.hasDebt {
-                    MoneySlider(
-                        title: "Total debt",
-                        value: $viewModel.debtAmount,
-                        range: 0...250000,
-                        step: 100,
-                        tint: .red
-                    )
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Debt accounts")
+                            .onboardingFieldLabelStyle()
+
+                        ForEach(viewModel.debtEntries) { debtEntry in
+                            OnboardingDebtEntryCard(
+                                accountName: Binding(
+                                    get: { viewModel.debtEntryName(debtEntry.id) },
+                                    set: { viewModel.updateDebtEntryName(debtEntry.id, value: $0) }
+                                ),
+                                amountText: Binding(
+                                    get: { viewModel.debtEntryAmountText(debtEntry.id) },
+                                    set: { viewModel.updateDebtEntryAmount(debtEntry.id, value: $0) }
+                                ),
+                                canDelete: viewModel.debtEntries.count > 1,
+                                onDelete: { viewModel.removeDebtEntry(debtEntry.id) }
+                            )
+                        }
+
+                        Button {
+                            viewModel.addDebtEntry()
+                        } label: {
+                            HStack(spacing: 8) {
+                                Image(systemName: "plus.circle.fill")
+                                Text("Add another debt")
+                            }
+                            .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                            .foregroundStyle(Color(hex: "F87171"))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(Color(hex: "F87171").opacity(0.12))
+                            .clipShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
+
+                        HStack {
+                            Text("Total debt")
+                                .onboardingFieldLabelStyle()
+                            Spacer()
+                            Text(currency(viewModel.totalDebtAmount))
+                                .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                                .foregroundStyle(.white)
+                        }
+                        .padding(12)
+                        .background(OnboardingPalette.background.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(OnboardingPalette.border, lineWidth: 1)
+                        )
+                    }
                 }
             }
         }
+    }
+}
+
+private struct OnboardingDebtEntryCard: View {
+    @Binding var accountName: String
+    @Binding var amountText: String
+    let canDelete: Bool
+    let onDelete: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
+                TextField("Debt account name", text: $accountName)
+                    .textInputAutocapitalization(.words)
+                    .onboardingInputStyle()
+
+                if canDelete {
+                    Button(action: onDelete) {
+                        Image(systemName: "trash")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(Color(hex: "F87171"))
+                            .frame(width: 40, height: 40)
+                            .background(Color(hex: "450A0A"), in: RoundedRectangle(cornerRadius: 10))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color(hex: "7F1D1D"), lineWidth: 1)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+
+            TextField("Debt amount", text: $amountText)
+                .keyboardType(.decimalPad)
+                .onboardingInputStyle()
+        }
+        .padding(12)
+        .background(OnboardingPalette.surface, in: RoundedRectangle(cornerRadius: 12))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(OnboardingPalette.border, lineWidth: 1)
+        )
     }
 }
 
