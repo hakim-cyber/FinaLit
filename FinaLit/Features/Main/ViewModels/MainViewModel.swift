@@ -179,8 +179,8 @@ final class MainViewModel {
     // MARK: - Goals
     // ─────────────────────────────────────────────────────────────────────────
 
-    func addGoal(title: String, targetAmount: Double, deadline: Date?) async -> Bool {
-        guard let uid else { return false }
+    func addGoal(title: String, targetAmount: Double, deadline: Date?) async -> String? {
+        guard let uid else { return nil }
         isSubmitting = true
         defer { isSubmitting = false }
 
@@ -197,10 +197,11 @@ final class MainViewModel {
         do {
             try db.createGoal(goal, uid: uid)
             goals.append(goal)
-            return true
+            recalculate()
+            return goal.id
         } catch {
             errorMessage = error.localizedDescription
-            return false
+            return nil
         }
     }
 

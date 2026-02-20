@@ -104,6 +104,32 @@ struct GoalCard: View {
     let goal:        FinancialGoal
     var isCompleted: Bool = false
 
+    private var remainingAmount: Double {
+        max(goal.targetAmount - goal.currentAmount, 0)
+    }
+
+    private var monthsUntilDeadline: Int? {
+        guard let deadline = goal.deadline else { return nil }
+        let calendar = Calendar.current
+        let fromDate = calendar.startOfDay(for: Date())
+        let toDate = calendar.startOfDay(for: deadline)
+        return calendar.dateComponents([.month], from: fromDate, to: toDate).month
+    }
+
+    private var monthlyPaceText: String? {
+        guard !isCompleted, remainingAmount > 0, let monthsUntilDeadline else { return nil }
+        guard monthsUntilDeadline >= 0 else { return "Deadline passed" }
+
+        let monthWindow = max(monthsUntilDeadline, 1)
+        let neededPerMonth = remainingAmount / Double(monthWindow)
+        return "Need \(formatCurrency(neededPerMonth))/month"
+    }
+
+    private var monthlyPaceColor: Color {
+        guard let monthsUntilDeadline else { return Color(hex: "4B5563") }
+        return monthsUntilDeadline < 0 ? Color(hex: "F87171") : Color(hex: "10B981")
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top) {
@@ -148,6 +174,16 @@ struct GoalCard: View {
                         .font(.system(size: 10, design: .monospaced))
                         .foregroundStyle(Color(hex: "4B5563"))
                 }
+            }
+
+            if let monthlyPaceText {
+                HStack(spacing: 6) {
+                    Image(systemName: "speedometer")
+                        .font(.system(size: 10))
+                    Text(monthlyPaceText)
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                }
+                .foregroundStyle(monthlyPaceColor)
             }
 
             // Progress bar
@@ -216,14 +252,165 @@ struct AddGoalView: View {
     @State private var targetAmount:  String = ""
     @State private var hasDeadline:   Bool   = false
     @State private var deadline:      Date   = Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date()
+    @State private var selectedTemplateID: String?
+    @State private var createdGoalID: String?
+    @State private var createdGoalTitle: String = ""
+    @State private var showCreatedGoalToast = false
+
+    private struct GoalTemplatePreset: Identifiable {
+        let id: String
+        let title: String
+        let targetAmount: Double
+        let deadlineMonths: Int
+        let hint: String
+    }
+
+    private let goalTemplates: [GoalTemplatePreset] = [
+        .init(id: "emergency_fund", title: "Emergency Fund", targetAmount: 3000, deadlineMonths: 6, hint: "6 months"),
+        .init(id: "vacation", title: "Vacation", targetAmount: 1500, deadlineMonths: 4, hint: "4 months"),
+        .init(id: "new_laptop", title: "New Laptop", targetAmount: 2200, deadlineMonths: 8, hint: "8 months"),
+        .init(id: "car_down_payment", title: "Car Down Payment", targetAmount: 5000, deadlineMonths: 12, hint: "12 months")
+    ]
 
     private var parsedTargetAmount: Double? {
         parseMonetaryInput(targetAmount)
     }
 
+    private var trimmedTitle: String {
+        title.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     private var isValid: Bool {
-        !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !trimmedTitle.isEmpty &&
         (parsedTargetAmount ?? 0) > 0
+    }
+
+    private var isCreateDisabled: Bool {
+        !isValid || mainVM.isSubmitting || showCreatedGoalToast
+    }
+
+    private var templatesSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("TEMPLATES")
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .foregroundStyle(Color(hex: "4B5563"))
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(goalTemplates) { template in
+                        Button {
+                            applyTemplate(template)
+                        } label: {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(template.title)
+                                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                                    .foregroundStyle(.white)
+                                    .lineLimit(1)
+                                Text("\(formatCurrency(template.targetAmount)) - \(template.hint)")
+                                    .font(.system(size: 10, design: .monospaced))
+                                    .foregroundStyle(Color(hex: "6B7280"))
+                            }
+                            .frame(width: 165, alignment: .leading)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 10)
+                            .background(Color(hex: "111118"))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(
+                                        selectedTemplateID == template.id ? Color(hex: "6366F1") : Color(hex: "1F2937"),
+                                        lineWidth: 1
+                                    )
+                            )
+                        }
+                    }
+                }
+                .padding(.vertical, 1)
+            }
+        }
+    }
+
+    private var goalCreatedToast: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 8) {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(Color(hex: "10B981"))
+                Text("Goal created")
+                    .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(.white)
+            }
+
+            Text("\"\(createdGoalTitle)\" is now active.")
+                .font(.system(size: 12, design: .monospaced))
+                .foregroundStyle(Color(hex: "9CA3AF"))
+
+            HStack(spacing: 10) {
+                Button {
+                    openCreatedGoal()
+                } label: {
+                    Text("View Goal")
+                        .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(Color(hex: "6366F1"))
+                        .clipShape(Capsule())
+                }
+
+                Button {
+                    coordinator.pop()
+                } label: {
+                    Text("Done")
+                        .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(Color(hex: "9CA3AF"))
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(Color(hex: "1F2937"))
+                        .clipShape(Capsule())
+                }
+            }
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(hex: "111118"))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color(hex: "1F2937"), lineWidth: 1))
+    }
+
+    private func applyTemplate(_ template: GoalTemplatePreset) {
+        selectedTemplateID = template.id
+        title = template.title
+        targetAmount = formatAmount(template.targetAmount)
+        hasDeadline = true
+        deadline = Calendar.current.date(byAdding: .month, value: template.deadlineMonths, to: Date()) ?? Date()
+    }
+
+    private func createGoal() {
+        Task {
+            let createdID = await mainVM.addGoal(
+                title: trimmedTitle,
+                targetAmount: parsedTargetAmount ?? 0,
+                deadline: hasDeadline ? deadline : nil
+            )
+
+            guard let createdID else { return }
+
+            createdGoalID = createdID
+            createdGoalTitle = trimmedTitle
+            KeyboardUX.dismiss()
+            withAnimation(.easeInOut(duration: 0.2)) {
+                showCreatedGoalToast = true
+            }
+        }
+    }
+
+    private func openCreatedGoal() {
+        guard let createdGoalID else { return }
+        withAnimation(.easeInOut(duration: 0.2)) {
+            showCreatedGoalToast = false
+        }
+        coordinator.pop()
+        coordinator.push(.goalDetail(createdGoalID))
     }
 
     var body: some View {
@@ -232,6 +419,7 @@ struct AddGoalView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 24) {
+                    templatesSection
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("GOAL NAME")
@@ -282,10 +470,17 @@ struct AddGoalView: View {
                         }
                     }
 
-                    Spacer(minLength: 100)
+                    Spacer(minLength: 160)
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
+            }
+
+            if showCreatedGoalToast {
+                goalCreatedToast
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 120)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
             }
 
             // Save button
@@ -296,14 +491,7 @@ struct AddGoalView: View {
                 )
                 .frame(height: 30)
                 Button {
-                    Task {
-                        let saved = await mainVM.addGoal(
-                            title:        title,
-                            targetAmount: parsedTargetAmount ?? 0,
-                            deadline:     hasDeadline ? deadline : nil
-                        )
-                        if saved { coordinator.pop() }
-                    }
+                    createGoal()
                 } label: {
                     HStack {
                         Text("Create Goal")
@@ -324,7 +512,7 @@ struct AddGoalView: View {
                     .foregroundStyle(isValid ? .white : Color(hex: "374151"))
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
-                .disabled(!isValid || mainVM.isSubmitting)
+                .disabled(isCreateDisabled)
                 .padding(.horizontal, 20)
                 .padding(.bottom, 32)
                 .background(Color(hex: "0A0A0F"))

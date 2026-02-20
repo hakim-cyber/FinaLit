@@ -223,12 +223,16 @@ struct DashboardView: View {
 
                 QuickActionCard(
                     title: "Add to Goal",
-                    subtitle: mainVM.activeGoals.isEmpty ? "No active goal" : "Contribute now",
+                    subtitle: mainVM.activeGoals.isEmpty ? "Create first goal" : "Contribute now",
                     icon: "target",
                     colorHex: "10B981",
-                    isDisabled: mainVM.activeGoals.isEmpty
+                    isDisabled: mainVM.isSubmitting
                 ) {
-                    showGoalContributionSheet = true
+                    if mainVM.activeGoals.isEmpty {
+                        coordinator.push(.addGoal)
+                    } else {
+                        showGoalContributionSheet = true
+                    }
                 }
 
                 QuickActionCard(
@@ -321,29 +325,32 @@ struct DashboardView: View {
 
     // MARK: - Goals Preview
     private var goalsPreview: some View {
-        Group {
-            if !mainVM.activeGoals.isEmpty {
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        Text("GOALS")
-                            .font(.system(size: 11, weight: .semibold, design: .monospaced))
-                            .foregroundStyle(Color(hex: "4B5563"))
-                        Spacer()
-                        Button("See all →") {
-                            coordinator.push(.goals)
-                        }
-                        .font(.system(size: 11, design: .monospaced))
-                        .foregroundStyle(Color(hex: "6366F1"))
-                    }
-                    .padding(.horizontal, 20)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("GOALS")
+                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(Color(hex: "4B5563"))
+                Spacer()
+                Button(mainVM.activeGoals.isEmpty ? "New goal →" : "See all →") {
+                    coordinator.push(mainVM.activeGoals.isEmpty ? .addGoal : .goals)
+                }
+                .font(.system(size: 11, design: .monospaced))
+                .foregroundStyle(Color(hex: "6366F1"))
+            }
+            .padding(.horizontal, 20)
 
-                    ForEach(mainVM.activeGoals.prefix(2)) { goal in
-                        GoalPreviewCard(goal: goal)
-                            .padding(.horizontal, 20)
-                            .onTapGesture {
-                                coordinator.push(.goalDetail(goal.id ?? ""))
-                            }
-                    }
+            if mainVM.activeGoals.isEmpty {
+                EmptyGoalsPreviewCard {
+                    coordinator.push(.addGoal)
+                }
+                .padding(.horizontal, 20)
+            } else {
+                ForEach(mainVM.activeGoals.prefix(2)) { goal in
+                    GoalPreviewCard(goal: goal)
+                        .padding(.horizontal, 20)
+                        .onTapGesture {
+                            coordinator.push(.goalDetail(goal.id ?? ""))
+                        }
                 }
             }
         }
@@ -563,6 +570,31 @@ struct CategoryRow: View {
 struct GoalPreviewCard: View {
     let goal: FinancialGoal
 
+    private var remainingAmount: Double {
+        max(goal.targetAmount - goal.currentAmount, 0)
+    }
+
+    private var monthsUntilDeadline: Int? {
+        guard let deadline = goal.deadline else { return nil }
+        let calendar = Calendar.current
+        let fromDate = calendar.startOfDay(for: Date())
+        let toDate = calendar.startOfDay(for: deadline)
+        return calendar.dateComponents([.month], from: fromDate, to: toDate).month
+    }
+
+    private var monthlyPaceText: String? {
+        guard remainingAmount > 0, let monthsUntilDeadline else { return nil }
+        guard monthsUntilDeadline >= 0 else { return "Deadline passed" }
+
+        let neededPerMonth = remainingAmount / Double(max(monthsUntilDeadline, 1))
+        return "Need \(formatCurrency(neededPerMonth))/month"
+    }
+
+    private var monthlyPaceColor: Color {
+        guard let monthsUntilDeadline else { return Color(hex: "10B981") }
+        return monthsUntilDeadline < 0 ? Color(hex: "F87171") : Color(hex: "10B981")
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -581,6 +613,11 @@ struct GoalPreviewCard: View {
                 Text("of \(formatCurrency(goal.targetAmount))")
                     .font(.system(size: 13, design: .monospaced))
                     .foregroundStyle(Color(hex: "4B5563"))
+            }
+            if let monthlyPaceText {
+                Text(monthlyPaceText)
+                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(monthlyPaceColor)
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
@@ -602,6 +639,41 @@ struct GoalPreviewCard: View {
             .frame(height: 6)
         }
         .padding(16)
+        .background(Color(hex: "111118"))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color(hex: "1F2937"), lineWidth: 1))
+    }
+}
+
+struct EmptyGoalsPreviewCard: View {
+    let onCreateGoal: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("No active goals yet")
+                .font(.system(size: 15, design: .serif))
+                .foregroundStyle(.white)
+
+            Text("Create your first goal and start tracking progress from your dashboard.")
+                .font(.system(size: 12, design: .monospaced))
+                .foregroundStyle(Color(hex: "6B7280"))
+                .fixedSize(horizontal: false, vertical: true)
+
+            Button(action: onCreateGoal) {
+                HStack(spacing: 8) {
+                    Image(systemName: "plus.circle.fill")
+                    Text("Create your first goal")
+                }
+                .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(Color(hex: "10B981").opacity(0.2))
+                .clipShape(Capsule())
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(hex: "111118"))
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color(hex: "1F2937"), lineWidth: 1))
