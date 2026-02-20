@@ -121,42 +121,57 @@ struct TransactionsView: View {
     }
 
     private var transactionsSummaryHeader: some View {
-        HStack(spacing: 0) {
-            VStack(spacing: 2) {
-                Text(formatCurrency(mainVM.currentMonthIncome.reduce(0) { $0 + $1.amount }))
-                    .font(.system(size: 16, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(Color(hex: "10B981"))
-                Text("Income")
-                    .font(.system(size: 10, design: .monospaced))
-                    .foregroundStyle(Color(hex: "4B5563"))
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 6) {
+                Image(systemName: "calendar")
+                    .font(.system(size: 10))
+                Text(mainVM.selectedMonthDisplay.uppercased())
+                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
             }
-            .frame(maxWidth: .infinity)
+            .foregroundStyle(Color(hex: "6B7280"))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(Color(hex: "0A0A0F"))
+            .clipShape(Capsule())
 
-            Divider().frame(height: 28).background(Color(hex: "1F2937"))
+            HStack(spacing: 0) {
+                VStack(spacing: 2) {
+                    Text(formatCurrency(mainVM.currentMonthIncome.reduce(0) { $0 + $1.amount }))
+                        .font(.system(size: 16, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(Color(hex: "10B981"))
+                    Text("Income")
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundStyle(Color(hex: "4B5563"))
+                }
+                .frame(maxWidth: .infinity)
 
-            VStack(spacing: 2) {
-                Text(formatCurrency(mainVM.currentMonthExpenses.reduce(0) { $0 + $1.amount }))
-                    .font(.system(size: 16, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(Color(hex: "F87171"))
-                Text("Expenses")
-                    .font(.system(size: 10, design: .monospaced))
-                    .foregroundStyle(Color(hex: "4B5563"))
+                Divider().frame(height: 28).background(Color(hex: "1F2937"))
+
+                VStack(spacing: 2) {
+                    Text(formatCurrency(mainVM.currentMonthExpenses.reduce(0) { $0 + $1.amount }))
+                        .font(.system(size: 16, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(Color(hex: "F87171"))
+                    Text("Expenses")
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundStyle(Color(hex: "4B5563"))
+                }
+                .frame(maxWidth: .infinity)
+
+                Divider().frame(height: 28).background(Color(hex: "1F2937"))
+
+                VStack(spacing: 2) {
+                    Text("\(mainVM.currentMonthTransactions.count)")
+                        .font(.system(size: 16, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(.white)
+                    Text("Total")
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundStyle(Color(hex: "4B5563"))
+                }
+                .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: .infinity)
-
-            Divider().frame(height: 28).background(Color(hex: "1F2937"))
-
-            VStack(spacing: 2) {
-                Text("\(mainVM.currentMonthTransactions.count)")
-                    .font(.system(size: 16, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(.white)
-                Text("Total")
-                    .font(.system(size: 10, design: .monospaced))
-                    .foregroundStyle(Color(hex: "4B5563"))
-            }
-            .frame(maxWidth: .infinity)
         }
         .padding(.vertical, 14)
+        .padding(.horizontal, 12)
         .background(Color(hex: "111118"))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }

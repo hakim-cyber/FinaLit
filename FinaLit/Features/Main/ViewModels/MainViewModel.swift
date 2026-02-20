@@ -17,6 +17,11 @@ import Foundation
 
 @Observable
 final class MainViewModel {
+    struct MonthCloseResult {
+        let closedMonth: String
+        let rolledToMonth: String
+        let recurringCreatedCount: Int
+    }
 
     // MARK: - Raw Data
     var transactions:        [Transaction]       = []
@@ -352,11 +357,11 @@ final class MainViewModel {
     // MARK: - Month Close & Rollover
     // ─────────────────────────────────────────────────────────────────────────
 
-    func closeSelectedMonthAndRollover() async -> Bool {
-        guard let uid else { return false }
+    func closeSelectedMonthAndRollover() async -> MonthCloseResult? {
+        guard let uid else { return nil }
         guard let summary else {
             errorMessage = "Month data is still loading. Try again in a moment."
-            return false
+            return nil
         }
 
         isSubmitting = true
@@ -364,20 +369,22 @@ final class MainViewModel {
         defer { isSubmitting = false }
 
         do {
-            if try await db.isMonthClosed(uid: uid, month: selectedMonth) {
-                errorMessage = "\(selectedMonthDisplay) is already closed."
-                return false
+            let closingMonth = selectedMonth
+            let nextMonth = offsetMonth(closingMonth, by: 1)
+
+            if try await db.isMonthClosed(uid: uid, month: closingMonth) {
+                errorMessage = "\(displayMonth(closingMonth)) is already closed."
+                return nil
             }
 
-            let snapshot = monthlySnapshot(from: summary, month: selectedMonth)
+            let snapshot = monthlySnapshot(from: summary, month: closingMonth)
             try db.saveMonthlySnapshot(snapshot, uid: uid)
 
-            let nextMonth = offsetMonth(selectedMonth, by: 1)
-            try await generateRecurringTransactions(for: nextMonth, uid: uid)
+            let recurringCreated = try await generateRecurringTransactions(for: nextMonth, uid: uid)
 
             let closeRecord = MonthCloseRecord(
-                id: selectedMonth,
-                month: selectedMonth,
+                id: closingMonth,
+                month: closingMonth,
                 closedAt: Date(),
                 rolledToMonth: nextMonth
             )
@@ -390,10 +397,14 @@ final class MainViewModel {
             }
 
             recalculate()
-            return true
+            return MonthCloseResult(
+                closedMonth: closingMonth,
+                rolledToMonth: nextMonth,
+                recurringCreatedCount: recurringCreated
+            )
         } catch {
             errorMessage = error.localizedDescription
-            return false
+            return nil
         }
     }
 
@@ -450,11 +461,7 @@ final class MainViewModel {
     }
 
     var selectedMonthDisplay: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM"
-        guard let date = formatter.date(from: selectedMonth) else { return selectedMonth }
-        formatter.dateFormat = "MMMM yyyy"
-        return formatter.string(from: date)
+        displayMonth(selectedMonth)
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -811,11 +818,12 @@ final class MainViewModel {
         )
     }
 
-    private func generateRecurringTransactions(for month: String, uid: String) async throws {
-        guard !recurringTemplates.isEmpty else { return }
+    private func generateRecurringTransactions(for month: String, uid: String) async throws -> Int {
+        guard !recurringTemplates.isEmpty else { return 0 }
 
         let existing = try await db.fetchTransactions(uid: uid, month: month)
         let existingRecurringIDs = Set(existing.compactMap(\.recurringID))
+        var createdCount = 0
 
         for template in recurringTemplates where template.isActive {
             guard let recurringID = template.id,
@@ -832,7 +840,10 @@ final class MainViewModel {
                 recurringID: recurringID
             )
             try db.addTransaction(tx, uid: uid)
+            createdCount += 1
         }
+
+        return createdCount
     }
 
     private func recurringDate(for template: RecurringTemplate, targetMonth: String) -> Date {
@@ -874,8 +885,12 @@ final class MainViewModel {
         formAmount      = ""
         formCategory    = .food
         formNote        = ""
-        formDate        = Date()
+        formDate        = defaultFormDateForSelectedMonth()
         formIsRecurring = false
+    }
+
+    func prepareTransactionFormForSelectedMonth() {
+        formDate = defaultFormDateForSelectedMonth()
     }
 
     func clearError() {
@@ -888,6 +903,30 @@ final class MainViewModel {
 
     private func formatted(_ value: Double) -> String {
         String(format: "%.1f", value)
+    }
+
+    private func displayMonth(_ month: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM"
+        guard let date = formatter.date(from: month) else { return month }
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: date)
+    }
+
+    private func defaultFormDateForSelectedMonth() -> Date {
+        guard !isCurrentMonth else { return Date() }
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM"
+        guard let monthDate = formatter.date(from: selectedMonth) else { return Date() }
+
+        let calendar = Calendar.current
+        let todayDay = calendar.component(.day, from: Date())
+        let maxDay = calendar.range(of: .day, in: .month, for: monthDate)?.count ?? 28
+
+        var components = calendar.dateComponents([.year, .month], from: monthDate)
+        components.day = min(todayDay, maxDay)
+        return calendar.date(from: components) ?? monthDate
     }
 
     private func offsetMonth(_ month: String, by offset: Int) -> String {

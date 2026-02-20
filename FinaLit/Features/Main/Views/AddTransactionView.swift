@@ -91,6 +91,7 @@ struct AddTransactionView: View {
             }
         }
         .onDisappear { mainVM.clearForm() }
+        .onAppear { mainVM.prepareTransactionFormForSelectedMonth() }
         .alert("Error", isPresented: .constant(mainVM.errorMessage != nil)) {
             Button("OK") { mainVM.clearError() }
         } message: { Text(mainVM.errorMessage ?? "") }

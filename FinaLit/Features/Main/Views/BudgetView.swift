@@ -23,6 +23,19 @@ struct BudgetView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 24) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "calendar")
+                            .font(.system(size: 10))
+                        Text(mainVM.selectedMonthDisplay.uppercased())
+                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    }
+                    .foregroundStyle(Color(hex: "6B7280"))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color(hex: "111118"))
+                    .clipShape(Capsule())
+                    .padding(.horizontal, 20)
+                    .padding(.top, 8)
 
                     // ── Edit toggle ────────────────────────────────────────
                     HStack {
@@ -39,7 +52,6 @@ struct BudgetView: View {
                         .foregroundStyle(Color(hex: "6366F1"))
                     }
                     .padding(.horizontal, 20)
-                    .padding(.top, 8)
 
                     // ── Category rows ──────────────────────────────────────
                     VStack(spacing: 10) {

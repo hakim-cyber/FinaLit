@@ -18,6 +18,8 @@ struct DashboardView: View {
     @State private var showPayDebtSheet = false
     @State private var showGoalContributionSheet = false
     @State private var showCloseMonthDialog = false
+    @State private var closeMonthSuccessMessage: String?
+    @State private var closeMonthToastTask: Task<Void, Never>?
 
     var body: some View {
         ZStack {
@@ -42,6 +44,34 @@ struct DashboardView: View {
                     }
                     .padding(.top, 16)
                 }
+            }
+
+            if let closeMonthSuccessMessage {
+                VStack {
+                    HStack(spacing: 8) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(Color(hex: "10B981"))
+                            .font(.system(size: 14))
+                        Text(closeMonthSuccessMessage)
+                            .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                            .foregroundStyle(.white)
+                            .multilineTextAlignment(.leading)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color(hex: "111118"))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color(hex: "10B981").opacity(0.35), lineWidth: 1)
+                    )
+                    .padding(.horizontal, 20)
+                    .padding(.top, 8)
+
+                    Spacer()
+                }
+                .transition(.move(edge: .top).combined(with: .opacity))
             }
 
             // ── FAB: Add Transaction ───────────────────────────────────────
@@ -88,7 +118,7 @@ struct DashboardView: View {
         }
         .confirmationDialog("Close this month?", isPresented: $showCloseMonthDialog, titleVisibility: .visible) {
             Button("Close Month & Rollover") {
-                Task { _ = await mainVM.closeSelectedMonthAndRollover() }
+                handleMonthClose()
             }
             Button("Cancel", role: .cancel) {}
         } message: {
@@ -99,6 +129,45 @@ struct DashboardView: View {
         } message: {
             Text(mainVM.errorMessage ?? "")
         }
+        .onDisappear {
+            closeMonthToastTask?.cancel()
+        }
+    }
+
+    private func handleMonthClose() {
+        Task { @MainActor in
+            guard let result = await mainVM.closeSelectedMonthAndRollover() else { return }
+            let closed = formatMonth(result.closedMonth)
+            let rolled = formatMonth(result.rolledToMonth)
+            let recurringCount = result.recurringCreatedCount
+            let recurringText = recurringCount == 1
+                ? "1 recurring item added for \(rolled)."
+                : "\(recurringCount) recurring items added for \(rolled)."
+
+            let message = "\(closed) closed. \(recurringText)"
+            withAnimation(.easeInOut(duration: 0.2)) {
+                closeMonthSuccessMessage = message
+            }
+
+            closeMonthToastTask?.cancel()
+            closeMonthToastTask = Task {
+                try? await Task.sleep(nanoseconds: 3_000_000_000)
+                guard !Task.isCancelled else { return }
+                await MainActor.run {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        closeMonthSuccessMessage = nil
+                    }
+                }
+            }
+        }
+    }
+
+    private func formatMonth(_ month: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM"
+        guard let date = formatter.date(from: month) else { return month }
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: date)
     }
 
     // MARK: - Header
