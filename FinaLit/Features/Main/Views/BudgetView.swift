@@ -133,7 +133,7 @@ struct BudgetCategoryCard: View {
                     Text(category.rawValue)
                         .font(.system(size: 15, design: .serif))
                         .foregroundStyle(.white)
-                    Text("Spent: €\(formatAmount(spent))")
+                    Text("Spent: \(formatCurrency(spent))")
                         .font(.system(size: 11, design: .monospaced))
                         .foregroundStyle(Color(hex: "4B5563"))
                 }
@@ -142,7 +142,7 @@ struct BudgetCategoryCard: View {
 
                 if isEditing {
                     HStack(spacing: 4) {
-                        Text("€")
+                        Text(AppRegion.currencySymbol)
                             .font(.system(size: 14, design: .monospaced))
                             .foregroundStyle(Color(hex: "4B5563"))
                         TextField("Limit", text: $editingText)
@@ -154,7 +154,7 @@ struct BudgetCategoryCard: View {
                     }
                 } else if let limit {
                     VStack(alignment: .trailing, spacing: 2) {
-                        Text("€\(formatAmount(limit))")
+                        Text(formatCurrency(limit))
                             .font(.system(size: 14, weight: .semibold, design: .monospaced))
                             .foregroundStyle(isOver ? Color(hex: "F87171") : .white)
                         Text("limit")
@@ -214,7 +214,7 @@ struct TotalBudgetCard: View {
                     .foregroundStyle(Color(hex: "4B5563"))
                 Spacer()
                 if totalLimit > 0 {
-                    Text("€\(formatAmount(spent)) / €\(formatAmount(totalLimit))")
+                    Text("\(formatCurrency(spent)) / \(formatCurrency(totalLimit))")
                         .font(.system(size: 13, design: .monospaced))
                         .foregroundStyle(spent > totalLimit ? Color(hex: "F87171") : .white)
                 }
@@ -277,13 +277,13 @@ struct InsightsView: View {
                             ) {
                                 InsightStatCard(
                                     label: "Daily Average",
-                                    value: "€\(formatAmount(summary.dailyAverage))",
+                                    value: formatCurrency(summary.dailyAverage),
                                     icon:  "calendar",
                                     color: "6366F1"
                                 )
                                 InsightStatCard(
                                     label: "Net Balance",
-                                    value: "\(summary.monthlyNet >= 0 ? "+" : "")€\(formatAmount(summary.monthlyNet))",
+                                    value: formatSignedCurrency(summary.monthlyNet),
                                     icon:  "equal.circle.fill",
                                     color: summary.monthlyNet >= 0 ? "10B981" : "F87171"
                                 )
@@ -463,9 +463,9 @@ struct SpendingHistoryChart: View {
             .frame(height: 80)
 
             HStack {
-                Text("€0")
+                Text(formatCurrency(0))
                 Spacer()
-                Text("€\(formatAmount(maxExpense))")
+                Text(formatCurrency(maxExpense))
             }
             .font(.system(size: 9, design: .monospaced))
             .foregroundStyle(Color(hex: "374151"))

@@ -123,7 +123,7 @@ struct TransactionsView: View {
     private var transactionsSummaryHeader: some View {
         HStack(spacing: 0) {
             VStack(spacing: 2) {
-                Text("€\(formatAmount(mainVM.currentMonthIncome.reduce(0) { $0 + $1.amount }))")
+                Text(formatCurrency(mainVM.currentMonthIncome.reduce(0) { $0 + $1.amount }))
                     .font(.system(size: 16, weight: .semibold, design: .monospaced))
                     .foregroundStyle(Color(hex: "10B981"))
                 Text("Income")
@@ -135,7 +135,7 @@ struct TransactionsView: View {
             Divider().frame(height: 28).background(Color(hex: "1F2937"))
 
             VStack(spacing: 2) {
-                Text("€\(formatAmount(mainVM.currentMonthExpenses.reduce(0) { $0 + $1.amount }))")
+                Text(formatCurrency(mainVM.currentMonthExpenses.reduce(0) { $0 + $1.amount }))
                     .font(.system(size: 16, weight: .semibold, design: .monospaced))
                     .foregroundStyle(Color(hex: "F87171"))
                 Text("Expenses")
@@ -227,7 +227,7 @@ struct TransactionDetailView: View {
                                     .foregroundStyle(Color(hex: tx.category.color))
                             }
 
-                            Text("\(tx.isIncome ? "+" : "-")€\(formatAmount(tx.amount))")
+                            Text(formatSignedCurrency(amount: tx.amount, isIncome: tx.isIncome))
                                 .font(.system(size: 40, weight: .light, design: .serif))
                                 .foregroundStyle(tx.isIncome ? Color(hex: "10B981") : .white)
 

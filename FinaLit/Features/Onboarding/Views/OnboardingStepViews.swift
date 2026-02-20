@@ -428,7 +428,7 @@ struct OnboardingShortTermGoalView: View {
     @Environment(Coordinator<OnboardingPages>.self) private var coordinator
 
     private let suggestions = [
-        "Build a $1,000 emergency fund",
+        "Build a \(AppRegion.currencySymbol)1,000 emergency fund",
         "Pay off a credit card",
         "Save for a new laptop",
         "Save for a trip",
@@ -1126,13 +1126,5 @@ private extension View {
 }
 
 private func currency(_ value: Double) -> String {
-    onboardingCurrencyFormatter.string(from: NSNumber(value: value)) ?? "$\(Int(value))"
+    formatCurrency(value)
 }
-
-private let onboardingCurrencyFormatter: NumberFormatter = {
-    let formatter = NumberFormatter()
-    formatter.numberStyle = .currency
-    formatter.maximumFractionDigits = 0
-    formatter.locale = .current
-    return formatter
-}()

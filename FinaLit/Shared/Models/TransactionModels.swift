@@ -160,7 +160,7 @@ enum RecurringFrequency: String, Codable, CaseIterable, Identifiable {
 struct BudgetLimit: Codable, Identifiable {
     @DocumentID var id: String?
     var category: TransactionCategory
-    var limit:    Double               // monthly limit in €
+    var limit:    Double               // monthly limit in local currency
 }
 
 // MARK: - Financial Goal
@@ -321,25 +321,25 @@ struct AIFinancialContext {
     var formattedPrompt: String {
         """
         FINANCIAL SNAPSHOT:
-        Monthly Income:    \(monthlyIncome)€
-        Monthly Expenses:  \(monthlyExpenses)€
-        Monthly Net:       \(monthlyNet)€
+        Monthly Income:    \(formatCurrency(monthlyIncome))
+        Monthly Expenses:  \(formatCurrency(monthlyExpenses))
+        Monthly Net:       \(formatCurrency(monthlyNet))
         Savings Rate:      \(String(format: "%.1f", savingsRate))%
-        Current Balance:   \(currentBalance)€
-        Total Savings:     \(totalSavings)€
-        Daily Avg Spend:   \(String(format: "%.0f", dailyAverage))€
+        Current Balance:   \(formatCurrency(currentBalance))
+        Total Savings:     \(formatCurrency(totalSavings))
+        Daily Avg Spend:   \(formatCurrency(dailyAverage))
         Stability:         \(stabilityLevel.rawValue)
         Overspending:      \(isOverspending ? "Yes ⚠️" : "No")
         Discretionary:     \(String(format: "%.1f", discretionaryRatio * 100))% of income
 
         TOP SPENDING CATEGORIES:
-        \(topCategories.map { "- \($0.0.rawValue): \($0.1)€" }.joined(separator: "\n"))
+        \(topCategories.map { "- \($0.0.rawValue): \(formatCurrency($0.1))" }.joined(separator: "\n"))
 
         GOALS:
         Short-term: \(shortTermGoal)
         Long-term:  \(longTermGoal)
 
-        DEBT: \(hasDebt ? "\(debtAmount ?? 0)€" : "None")
+        DEBT: \(hasDebt ? formatCurrency(debtAmount ?? 0) : "None")
         RISK TOLERANCE: \(riskTolerance.rawValue)
         KNOWLEDGE LEVEL: \(knowledgeLevel.rawValue)
         """

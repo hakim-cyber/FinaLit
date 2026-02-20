@@ -44,7 +44,7 @@ struct ChatPromptBuilder {
 
         let purchaseLine: String
         if let purchase = context.purchaseAmount {
-            purchaseLine = "Purchase Amount Candidate: \(formatCurrency(purchase))"
+            purchaseLine = "Purchase Amount Candidate: \(formatMoney(purchase))"
         } else {
             purchaseLine = "Purchase Amount Candidate: N/A"
         }
@@ -90,13 +90,13 @@ struct ChatPromptBuilder {
 
         let financialSnapshotBlock = """
         FINANCIAL SNAPSHOT (from transactions):
-        Income: \(formatCurrency(context.monthlyIncome))
-        Expenses: \(formatCurrency(context.monthlyExpenses))
-        Monthly net: \(formatCurrency(context.monthlyBalance))
-        Savings: \(formatCurrency(context.currentSavings))
+        Income: \(formatMoney(context.monthlyIncome))
+        Expenses: \(formatMoney(context.monthlyExpenses))
+        Monthly net: \(formatMoney(context.monthlyBalance))
+        Savings: \(formatMoney(context.currentSavings))
         Savings rate: \(formatPercent(context.savingsRate))
         Expense ratio: \(formatPercent(context.expenseRatio))
-        Daily avg spending: \(formatCurrency(context.dailyAverageSpending))
+        Daily avg spending: \(formatMoney(context.dailyAverageSpending))
         Stability: \(context.stabilityLevel)
         Overspending: \(context.isOverspending ? "Yes" : "No")
         Discretionary ratio: \(formatPercent(context.discretionaryRatio))
@@ -121,7 +121,7 @@ struct ChatPromptBuilder {
         \(compactMemoryBlock)
 
         USER DATA (compact):
-        Debt: \(formatCurrency(context.debtAmount))
+        Debt: \(formatMoney(context.debtAmount))
         Risk tolerance: \(context.riskTolerance)
         Knowledge level: \(context.knowledgeLevel)
         Emergency fund months: \(context.emergencyFundMonths)
@@ -144,8 +144,8 @@ struct ChatPromptBuilder {
         """
     }
 
-    private func formatCurrency(_ value: Double) -> String {
-        String(format: "%.2f", value)
+    private func formatMoney(_ value: Double) -> String {
+        formatCurrency(value)
     }
 
     private func formatPercent(_ value: Double) -> String {

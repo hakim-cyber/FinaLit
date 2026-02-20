@@ -133,7 +133,7 @@ struct AddTransactionView: View {
                 .foregroundStyle(Color(hex: "4B5563"))
 
             HStack(alignment: .center, spacing: 4) {
-                Text("€")
+                Text(AppRegion.currencySymbol)
                     .font(.system(size: 36, weight: .light, design: .serif))
                     .foregroundStyle(Color(hex: "374151"))
                 TextField("0", text: $mainVM.formAmount)

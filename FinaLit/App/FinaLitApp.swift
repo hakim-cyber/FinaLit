@@ -60,6 +60,7 @@ struct FinaLitApp: App {
                 .environment(adminViewModel)
                 .environment(mainViewModel)
                 .environment(chatViewModel)
+                .environment(\.locale, AppRegion.locale)
                 .task {
                     await restoreSession()
                 }

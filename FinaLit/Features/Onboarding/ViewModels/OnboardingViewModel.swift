@@ -13,7 +13,7 @@ class OnboardingViewModel {
     // MARK: - Step 1: Name + Age + Country
     var name: String = ""
     var age: Double = 22
-    var country: String = ""
+    var country: String = AppRegion.defaultCountry
 
     // MARK: - Step 2: Employment
     var employmentStatus: EmploymentStatus = .employed

@@ -24,7 +24,7 @@ struct FinancialProfile: Codable {
     
     // MARK: - Step 3: Risk & Goals
     var riskTolerance: RiskTolerance
-    var shortTermGoal: String        // free text, e.g. "Save 5000€ in 1 year"
+    var shortTermGoal: String        // free text, e.g. "Save 5000₼ in 1 year"
     var longTermGoal: String         // free text, e.g. "Buy a house"
     var interestedInInvesting: Bool
     var knowledgeLevel: KnowledgeLevel

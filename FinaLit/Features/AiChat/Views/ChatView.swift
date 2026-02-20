@@ -158,7 +158,7 @@ struct ChatView: View {
                 .font(.system(size: 18, weight: .medium, design: .serif))
                 .foregroundStyle(.white)
 
-            Text("Try: \"Can I afford a 900€ laptop?\"")
+            Text("Try: \"Can I afford a 900\(AppRegion.currencySymbol) laptop?\"")
                 .font(.system(size: 12, design: .monospaced))
                 .foregroundStyle(ChatPalette.muted)
 

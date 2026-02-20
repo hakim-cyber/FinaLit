@@ -132,7 +132,7 @@ struct GoalCard: View {
             // Amount row
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("€\(formatAmount(goal.currentAmount))")
+                    Text(formatCurrency(goal.currentAmount))
                         .font(.system(size: 20, weight: .light, design: .serif))
                         .foregroundStyle(.white)
                     Text("saved")
@@ -141,7 +141,7 @@ struct GoalCard: View {
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text("€\(formatAmount(goal.targetAmount))")
+                    Text(formatCurrency(goal.targetAmount))
                         .font(.system(size: 16, design: .monospaced))
                         .foregroundStyle(Color(hex: "6B7280"))
                     Text("target")
@@ -246,7 +246,7 @@ struct AddGoalView: View {
                             .font(.system(size: 10, weight: .semibold, design: .monospaced))
                             .foregroundStyle(Color(hex: "4B5563"))
                         HStack(spacing: 4) {
-                            Text("€")
+                            Text(AppRegion.currencySymbol)
                                 .font(.system(size: 32, weight: .light, design: .serif))
                                 .foregroundStyle(Color(hex: "374151"))
                             TextField("5,000", text: $targetAmount)
@@ -363,7 +363,7 @@ struct GoalDetailView: View {
 
                             HStack(spacing: 12) {
                                 HStack(spacing: 4) {
-                                    Text("€")
+                                    Text(AppRegion.currencySymbol)
                                         .font(.system(size: 16, design: .monospaced))
                                         .foregroundStyle(Color(hex: "4B5563"))
                                     TextField("Contribution", text: $newAmount)
@@ -404,7 +404,7 @@ struct GoalDetailView: View {
                                     .font(.system(size: 13, design: .monospaced))
                                     .foregroundStyle(Color(hex: "4B5563"))
                                 Spacer()
-                                Text("€\(formatAmount(remaining))")
+                                Text(formatCurrency(remaining))
                                     .font(.system(size: 16, weight: .semibold, design: .monospaced))
                                     .foregroundStyle(Color(hex: "6366F1"))
                             }

@@ -585,7 +585,7 @@ final class MainViewModel {
             result.append(SmartInsight(
                 type:    .danger,
                 title:   "You're overspending",
-                message: "Your expenses (\(formatted(s.monthlyExpenses))€) exceed your income (\(formatted(s.monthlyIncome))€) this month.",
+                message: "Your expenses (\(formatCurrency(s.monthlyExpenses))) exceed your income (\(formatCurrency(s.monthlyIncome))) this month.",
                 icon:    "exclamationmark.triangle.fill",
                 color:   "F87171"
             ))
@@ -649,7 +649,7 @@ final class MainViewModel {
                 result.append(SmartInsight(
                     type:    .warning,
                     title:   "\(limit.category.rawValue) budget exceeded",
-                    message: "You spent \(formatted(spent))€ — \(formatted(spent - limit.limit))€ over your \(formatted(limit.limit))€ budget.",
+                    message: "You spent \(formatCurrency(spent)) — \(formatCurrency(spent - limit.limit)) over your \(formatCurrency(limit.limit)) budget.",
                     icon:    limit.category.icon,
                     color:   "FB923C"
                 ))

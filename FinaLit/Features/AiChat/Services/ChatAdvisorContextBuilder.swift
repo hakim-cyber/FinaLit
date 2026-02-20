@@ -64,7 +64,7 @@ struct ChatAdvisorContextBuilder {
         return AdvisorContextSnapshot(
             userName: profile?.name ?? user.name,
             age: profile?.age ?? 0,
-            country: profile?.country ?? "Unknown",
+            country: profile?.country ?? AppRegion.defaultCountry,
             employmentStatus: profile?.employmentStatus.rawValue ?? "Unknown",
             monthlyIncome: monthlyIncome,
             monthlyExpenses: monthlyExpenses,
@@ -102,7 +102,7 @@ struct ChatAdvisorContextBuilder {
 
     private func formatTopCategories(_ categories: [(TransactionCategory, Double)]) -> [String] {
         categories.map {
-            "\($0.0.rawValue): \(String(format: "%.0f", $0.1))€"
+            "\($0.0.rawValue): \(formatCurrency($0.1))"
         }
     }
 

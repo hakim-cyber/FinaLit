@@ -137,11 +137,11 @@ struct DashboardView: View {
                     .foregroundStyle(Color(hex: "4B5563"))
 
                 if let summary = mainVM.summary {
-                    Text("€\(formatAmount(summary.currentBalance))")
+                    Text(formatCurrency(summary.currentBalance))
                         .font(.system(size: 42, weight: .light, design: .serif))
                         .foregroundStyle(summary.currentBalance >= 0 ? .white : Color(hex: "F87171"))
                 } else {
-                    Text("€ —")
+                    Text("\(AppRegion.currencySymbol) —")
                         .font(.system(size: 42, weight: .light, design: .serif))
                         .foregroundStyle(Color(hex: "374151"))
                 }
@@ -180,13 +180,13 @@ struct DashboardView: View {
         HStack(spacing: 10) {
             StatMiniCard(
                 label:  "Income",
-                value:  mainVM.summary.map { "€\(formatAmount($0.monthlyIncome))" } ?? "—",
+                value:  mainVM.summary.map { formatCurrency($0.monthlyIncome) } ?? "—",
                 icon:   "arrow.up.circle.fill",
                 color:  "10B981"
             )
             StatMiniCard(
                 label:  "Expenses",
-                value:  mainVM.summary.map { "€\(formatAmount($0.monthlyExpenses))" } ?? "—",
+                value:  mainVM.summary.map { formatCurrency($0.monthlyExpenses) } ?? "—",
                 icon:   "arrow.down.circle.fill",
                 color:  "F87171"
             )
@@ -212,7 +212,7 @@ struct DashboardView: View {
                 QuickActionCard(
                     title: "Pay Debt",
                     subtitle: mainVM.totalDebtBalance > 0
-                        ? "€\(formatAmount(mainVM.totalDebtBalance)) remaining"
+                        ? "\(formatCurrency(mainVM.totalDebtBalance)) remaining"
                         : "No active debt",
                     icon: "creditcard.fill",
                     colorHex: "F97316",
@@ -513,11 +513,11 @@ struct CategoryRow: View {
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 1) {
-                    Text("€\(formatAmount(amount))")
+                    Text(formatCurrency(amount))
                         .font(.system(size: 14, weight: .semibold, design: .monospaced))
                         .foregroundStyle(isOverBudget ? Color(hex: "F87171") : .white)
                     if let limit {
-                        Text("of €\(formatAmount(limit))")
+                        Text("of \(formatCurrency(limit))")
                             .font(.system(size: 10, design: .monospaced))
                             .foregroundStyle(Color(hex: "4B5563"))
                     } else {
@@ -575,10 +575,10 @@ struct GoalPreviewCard: View {
                     .foregroundStyle(Color(hex: "6366F1"))
             }
             HStack {
-                Text("€\(formatAmount(goal.currentAmount))")
+                Text(formatCurrency(goal.currentAmount))
                     .font(.system(size: 13, design: .monospaced))
                     .foregroundStyle(Color(hex: "9CA3AF"))
-                Text("of €\(formatAmount(goal.targetAmount))")
+                Text("of \(formatCurrency(goal.targetAmount))")
                     .font(.system(size: 13, design: .monospaced))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
@@ -632,7 +632,7 @@ struct TransactionRow: View {
                     .foregroundStyle(Color(hex: "4B5563"))
             }
             Spacer()
-            Text("\(transaction.isIncome ? "+" : "-")€\(formatAmount(transaction.amount))")
+            Text(formatSignedCurrency(amount: transaction.amount, isIncome: transaction.isIncome))
                 .font(.system(size: 14, weight: .semibold, design: .monospaced))
                 .foregroundStyle(transaction.isIncome ? Color(hex: "10B981") : .white)
         }
@@ -737,7 +737,7 @@ struct PayDebtSheet: View {
                             .foregroundStyle(Color(hex: "4B5563"))
                         Picker("Debt Account", selection: $selectedDebtID) {
                             ForEach(mainVM.activeDebtAccounts) { account in
-                                Text("\(account.name) - €\(formatAmount(account.currentBalance))")
+                                Text("\(account.name) - \(formatCurrency(account.currentBalance))")
                                     .tag(account.id ?? "")
                             }
                         }
@@ -866,7 +866,7 @@ struct GoalContributionSheet: View {
 
                     if let goal = selectedGoal {
                         let remaining = max(goal.targetAmount - goal.currentAmount, 0)
-                        Text("Remaining: €\(formatAmount(remaining))")
+                        Text("Remaining: \(formatCurrency(remaining))")
                             .font(.system(size: 11, design: .monospaced))
                             .foregroundStyle(Color(hex: "6B7280"))
                     }
@@ -916,13 +916,4 @@ struct MainLoadingView: View {
                 .scaleEffect(1.3)
         }
     }
-}
-
-// MARK: - Format helper (shared across Main views)
-func formatAmount(_ value: Double) -> String {
-    let formatter = NumberFormatter()
-    formatter.numberStyle = .decimal
-    formatter.maximumFractionDigits = value.truncatingRemainder(dividingBy: 1) == 0 ? 0 : 2
-    formatter.minimumFractionDigits = 0
-    return formatter.string(from: NSNumber(value: value)) ?? String(format: "%.2f", value)
 }
