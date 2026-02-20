@@ -167,9 +167,13 @@ final class LearnViewModel {
     }
 
     // Called when user taps "I've read this" at bottom of lesson
-    func markLessonRead(weekID: String, dayID: String) async {
-        guard let uid else { return }
+    @discardableResult
+    func markLessonRead(weekID: String, dayID: String) async -> Bool {
+        guard let uid else { return false }
+
+        isSubmitting = true
         errorMessage = nil
+        defer { isSubmitting = false }
 
         do {
             try await db.markLessonRead(uid: uid, weekID: weekID, dayID: dayID)
@@ -182,9 +186,11 @@ final class LearnViewModel {
 
             try await db.recalculateAndSaveLearningSummary(uid: uid)
             learningSummary = try await db.fetchLearningSummary(uid: uid)
+            return true
 
         } catch {
             errorMessage = error.localizedDescription
+            return false
         }
     }
 

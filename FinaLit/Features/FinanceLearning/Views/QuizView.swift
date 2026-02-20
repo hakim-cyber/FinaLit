@@ -109,25 +109,48 @@ struct QuizView: View {
                         Button {
                             handleNext()
                         } label: {
-                            Text(isLastQuestion ? "See Results →" : "Next Question →")
+                            HStack(spacing: 10) {
+                                Text(
+                                    learnVM.isSubmitting && isLastQuestion
+                                        ? "Loading Results..."
+                                        : (isLastQuestion ? "See Results →" : "Next Question →")
+                                )
                                 .font(.system(size: 16, design: .monospaced))
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 18)
-                                .background(
-                                    LinearGradient(
+
+                                if learnVM.isSubmitting && isLastQuestion {
+                                    ProgressView()
+                                        .tint(.white)
+                                        .scaleEffect(0.85)
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 18)
+                            .background(
+                                learnVM.isSubmitting
+                                    ? LinearGradient(
+                                        colors: [Color(hex: "1F2937"), Color(hex: "1F2937")],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                    : LinearGradient(
                                         colors: [Color(hex: "6366F1"), Color(hex: "4F46E5")],
                                         startPoint: .leading,
                                         endPoint: .trailing
                                     )
-                                )
-                                .foregroundStyle(.white)
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                            )
+                            .foregroundStyle(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
                         }
+                        .disabled(learnVM.isSubmitting)
                         .padding(.horizontal, 20)
                         .padding(.bottom, 32)
                         .transition(.opacity.combined(with: .move(edge: .bottom)))
                     }
                 }
+            }
+
+            if learnVM.isSubmitting {
+                LearnLoadingView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)

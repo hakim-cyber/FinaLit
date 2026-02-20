@@ -83,7 +83,7 @@ struct LessonDetailView: View {
                     .frame(height: 40)
 
                     Button {
-                        Task { await handleReadComplete(lesson: lesson) }
+                        Task { await handleReadComplete() }
                     } label: {
                         HStack {
                             Text(hasMarkedRead ? "Continue to Quiz →" : "I've read this ✓")
@@ -165,12 +165,13 @@ struct LessonDetailView: View {
     }
 
     // MARK: - Actions
-    private func handleReadComplete(lesson: Lesson) async {
+    private func handleReadComplete() async {
         // Find weekID from the days cache
         guard let weekID = findWeekID() else { return }
 
         if !hasMarkedRead {
-            await learnVM.markLessonRead(weekID: weekID, dayID: dayID)
+            let didMarkRead = await learnVM.markLessonRead(weekID: weekID, dayID: dayID)
+            guard didMarkRead else { return }
             hasMarkedRead = true
         }
 
