@@ -17,6 +17,8 @@ struct User: Codable, Identifiable {
     var isAdmin:          Bool = false
     var financialProfile: FinancialProfile?
     var behaviorProfile: BehaviorProfile?
+    var financialSummaryLastUpdated: Date?  // know when snapshot was last computed
+    var monthlyBudgetGoal: Double?          // optional: user sets a monthly spend limit
 
     init(
         id: String? = nil,
@@ -25,7 +27,9 @@ struct User: Codable, Identifiable {
         createdAt: Date,
         profile: UserProfile? = nil,
         financialProfile: FinancialProfile? = nil,
-        behaviorProfile: BehaviorProfile? = nil
+        behaviorProfile: BehaviorProfile? = nil,
+        financialSummaryLastUpdated: Date? = nil,
+        monthlyBudgetGoal: Double? = nil
     ) {
         self.id = id
         self.email = email
@@ -34,6 +38,8 @@ struct User: Codable, Identifiable {
         self.profile = profile
         self.financialProfile = financialProfile
         self.behaviorProfile = behaviorProfile
+        self.financialSummaryLastUpdated = financialSummaryLastUpdated
+        self.monthlyBudgetGoal = monthlyBudgetGoal
     }
     
     // Computed: onboarding complete only if all 3 profiles exist
