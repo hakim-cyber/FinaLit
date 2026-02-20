@@ -128,21 +128,76 @@ struct ChatAdvisorContextBuilder {
     }
 
     private func extractCandidateAmount(from text: String) -> Double? {
-        let pattern = #"(\d+(?:[.,]\d{1,2})?)"#
-        guard let regex = try? NSRegularExpression(pattern: pattern) else { return nil }
+        let nsText = text as NSString
+        let searchRange = NSRange(location: 0, length: nsText.length)
 
-        let range = NSRange(text.startIndex..<text.endIndex, in: text)
-        let matches = regex.matches(in: text, range: range)
+        let numberPattern = #"(?:\d{1,3}(?:[.,]\d{3})+|\d+)(?:[.,]\d{1,2})?"#
+        guard let numberRegex = try? NSRegularExpression(pattern: numberPattern) else { return nil }
 
-        let numbers: [Double] = matches.compactMap { match in
-            guard match.numberOfRanges > 1,
-                  let numberRange = Range(match.range(at: 1), in: text) else {
-                return nil
+        let candidates: [AmountCandidate] = numberRegex
+            .matches(in: text, range: searchRange)
+            .compactMap { match in
+                guard match.range.location != NSNotFound else { return nil }
+                let token = nsText.substring(with: match.range)
+                guard let value = parseMonetaryInput(token), value > 0 else { return nil }
+                return AmountCandidate(value: value, range: match.range)
             }
-            let normalized = text[numberRange].replacingOccurrences(of: ",", with: ".")
-            return Double(normalized)
+
+        guard !candidates.isEmpty else { return nil }
+
+        let keywordPattern = #"\b(?:buy|purchase|afford|cost|price|spend|pay|upgrade|for)\b"#
+        if let keywordRegex = try? NSRegularExpression(pattern: keywordPattern, options: [.caseInsensitive]) {
+            let keywords = keywordRegex.matches(in: text, range: searchRange)
+            if let best = bestContextualCandidate(from: candidates, keywordMatches: keywords) {
+                return best.value
+            }
         }
 
-        return numbers.max()
+        if let currencyMatched = candidates.first(where: { hasCurrencyPrefix($0.range, in: nsText) }) {
+            return currencyMatched.value
+        }
+
+        return candidates.first?.value
     }
+
+    private func bestContextualCandidate(
+        from candidates: [AmountCandidate],
+        keywordMatches: [NSTextCheckingResult]
+    ) -> AmountCandidate? {
+        var best: (candidate: AmountCandidate, distance: Int)?
+
+        for candidate in candidates {
+            let distances = keywordMatches.compactMap { keyword -> Int? in
+                let distance = candidate.range.location - NSMaxRange(keyword.range)
+                return distance >= 0 ? distance : nil
+            }
+
+            guard let closestDistance = distances.min(), closestDistance <= 32 else { continue }
+
+            if let currentBest = best {
+                if closestDistance < currentBest.distance ||
+                    (closestDistance == currentBest.distance &&
+                     candidate.range.location < currentBest.candidate.range.location) {
+                    best = (candidate, closestDistance)
+                }
+            } else {
+                best = (candidate, closestDistance)
+            }
+        }
+
+        return best?.candidate
+    }
+
+    private func hasCurrencyPrefix(_ amountRange: NSRange, in text: NSString) -> Bool {
+        guard amountRange.location > 0 else { return false }
+        let prefixStart = max(amountRange.location - 2, 0)
+        let prefixLength = amountRange.location - prefixStart
+        let prefix = text.substring(with: NSRange(location: prefixStart, length: prefixLength))
+        return prefix.contains(where: { "$€£₼".contains($0) })
+    }
+}
+
+private struct AmountCandidate {
+    let value: Double
+    let range: NSRange
 }

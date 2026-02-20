@@ -64,8 +64,11 @@ final class LearnViewModel {
 
     func onTabAppear() async {
         guard let uid else { return }
-        // Touch the summary to update lastActiveDate + streak
-        try? await db.recalculateAndSaveLearningSummary(uid: uid)
+        do {
+            learningSummary = try await db.fetchLearningSummary(uid: uid)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
     // MARK: - Computed: current user ID
     private var uid: String? { session.user?.id }
@@ -101,6 +104,9 @@ final class LearnViewModel {
 
             // 4. Fetch learning summary
             learningSummary = try await db.fetchLearningSummary(uid: uid)
+
+            // 5. Preload unlocked week/day caches so "Continue" works on first open
+            await preloadUnlockedWeekData(uid: uid, weeks: weeks, progressList: weekProgressList)
 
         } catch {
             errorMessage = error.localizedDescription
@@ -236,9 +242,10 @@ final class LearnViewModel {
     }
 
     // Called after user finishes last question and taps "See Results"
-    func submitQuiz(weekID: String, dayID: String) async {
+    @discardableResult
+    func submitQuiz(weekID: String, dayID: String) async -> Bool {
         guard let uid,
-              let quiz = currentQuiz else { return }
+              let quiz = currentQuiz else { return false }
 
         isSubmitting = true
         errorMessage = nil
@@ -273,9 +280,11 @@ final class LearnViewModel {
             // Recalculate summary
             try await db.recalculateAndSaveLearningSummary(uid: uid)
             learningSummary = try await db.fetchLearningSummary(uid: uid)
+            return true
 
         } catch {
             errorMessage = error.localizedDescription
+            return false
         }
     }
 
@@ -394,6 +403,40 @@ final class LearnViewModel {
         // Update local cache
         updateWeekProgressLocally(weekID: nextWeekID) { progress in
             progress.isUnlocked = true
+        }
+    }
+
+    private func preloadUnlockedWeekData(
+        uid: String,
+        weeks: [Week],
+        progressList: [WeekProgress]
+    ) async {
+        let unlockedWeekIDs = Set(progressList.filter(\.isUnlocked).map(\.weekID))
+        guard !unlockedWeekIDs.isEmpty else { return }
+
+        for week in weeks {
+            guard let weekID = week.id, unlockedWeekIDs.contains(weekID) else { continue }
+
+            do {
+                let days: [Day]
+                if let cachedDays = daysCache[weekID], !cachedDays.isEmpty {
+                    days = cachedDays
+                } else {
+                    days = try await db.fetchDays(weekID: weekID)
+                    daysCache[weekID] = days
+                }
+
+                try await db.initializeDayProgressIfNeeded(
+                    uid: uid,
+                    weekID: weekID,
+                    weekNumber: week.weekNumber,
+                    days: days
+                )
+
+                dayProgressCache[weekID] = try await db.fetchAllDayProgress(uid: uid, weekID: weekID)
+            } catch {
+                errorMessage = error.localizedDescription
+            }
         }
     }
 

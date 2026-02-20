@@ -88,7 +88,7 @@ struct BudgetView: View {
     private func saveLimits() {
         var limits: [BudgetLimit] = []
         for (category, text) in editingLimits {
-            if let value = Double(text), value > 0 {
+            if let value = parseMonetaryInput(text), value > 0 {
                 limits.append(BudgetLimit(
                     id:       UUID().uuidString,
                     category: category,
@@ -148,7 +148,7 @@ struct BudgetCategoryCard: View {
                         TextField("Limit", text: $editingText)
                             .font(.system(size: 14, design: .monospaced))
                             .foregroundStyle(.white)
-                            .keyboardType(.numberPad)
+                            .keyboardType(.decimalPad)
                             .frame(width: 70)
                             .multilineTextAlignment(.trailing)
                     }

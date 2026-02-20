@@ -118,7 +118,7 @@ final class MainViewModel {
 
     func addTransaction() async -> Bool {
         guard let uid else { return false }
-        guard let amount = Double(formAmount), amount > 0 else {
+        guard let amount = parseMonetaryInput(formAmount), amount > 0 else {
             errorMessage = "Please enter a valid amount."
             return false
         }
@@ -403,7 +403,7 @@ final class MainViewModel {
     func saveBudgetLimits(_ limits: [BudgetLimit]) async {
         guard let uid else { return }
         do {
-            try db.saveBudgetLimits(limits, uid: uid)
+            try await db.saveBudgetLimits(limits, uid: uid)
             budgetLimits = limits
             recalculate()
         } catch {
@@ -853,7 +853,7 @@ final class MainViewModel {
     // ─────────────────────────────────────────────────────────────────────────
 
     var isFormValid: Bool {
-        guard let amount = Double(formAmount) else { return false }
+        guard let amount = parseMonetaryInput(formAmount) else { return false }
         return amount > 0
     }
 

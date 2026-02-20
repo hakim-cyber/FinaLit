@@ -712,8 +712,12 @@ struct PayDebtSheet: View {
         mainVM.activeDebtAccounts.first(where: { $0.id == selectedDebtID }) ?? mainVM.activeDebtAccounts.first
     }
 
+    private var parsedAmount: Double? {
+        parseMonetaryInput(amount)
+    }
+
     private var isValid: Bool {
-        guard let value = Double(amount), value > 0, selectedAccount != nil else { return false }
+        guard let value = parsedAmount, value > 0, selectedAccount != nil else { return false }
         return true
     }
 
@@ -775,7 +779,7 @@ struct PayDebtSheet: View {
                 Spacer(minLength: 4)
 
                 Button {
-                    guard let account = selectedAccount, let value = Double(amount) else { return }
+                    guard let account = selectedAccount, let value = parsedAmount else { return }
                     Task {
                         let paid = await mainVM.payDebt(account: account, amount: value, note: note)
                         if paid { dismiss() }
@@ -818,8 +822,12 @@ struct GoalContributionSheet: View {
         mainVM.activeGoals.first(where: { $0.id == selectedGoalID }) ?? mainVM.activeGoals.first
     }
 
+    private var parsedAmount: Double? {
+        parseMonetaryInput(amount)
+    }
+
     private var isValid: Bool {
-        guard let value = Double(amount), value > 0, selectedGoal != nil else { return false }
+        guard let value = parsedAmount, value > 0, selectedGoal != nil else { return false }
         return true
     }
 
@@ -875,7 +883,7 @@ struct GoalContributionSheet: View {
                 Spacer(minLength: 4)
 
                 Button {
-                    guard let goal = selectedGoal, let value = Double(amount) else { return }
+                    guard let goal = selectedGoal, let value = parsedAmount else { return }
                     Task {
                         let saved = await mainVM.contributeToGoal(goal: goal, amount: value)
                         if saved { dismiss() }

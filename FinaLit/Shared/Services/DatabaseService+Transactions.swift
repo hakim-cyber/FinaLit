@@ -239,7 +239,7 @@ extension DatabaseService {
     }
 
     /// Save all budget limits at once (overwrites previous)
-    func saveBudgetLimits(_ limits: [BudgetLimit], uid: String) throws {
+    func saveBudgetLimits(_ limits: [BudgetLimit], uid: String) async throws {
         let encoded: [[String: Any]] = limits.map { limit in
             [
                 "id":       limit.id ?? UUID().uuidString,
@@ -247,7 +247,7 @@ extension DatabaseService {
                 "limit":    limit.limit
             ]
         }
-        budgetLimitsDocument(uid).setData(["limits": encoded]) { _ in }
+        try await budgetLimitsDocument(uid).setData(["limits": encoded])
     }
 
     // ─────────────────────────────────────────────────────────────────────────

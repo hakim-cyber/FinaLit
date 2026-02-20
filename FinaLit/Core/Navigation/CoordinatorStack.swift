@@ -30,6 +30,7 @@ struct CoordinatorStack<CoordinatorPage: Coordinatable>: View {
                     .fullScreenCover(item: $coordinator.fullScreenCover) { $0 }
             }
             .environment(coordinator)
+            .keyboardDoneToolbar()
             .onAppear {
                 // Register this coordinator with AppCoordinator
                 // so AppCoordinator can drive it from the outside

@@ -10,6 +10,16 @@ import FirebaseFirestore
 
 extension DatabaseService {
 
+    // MARK: - Admin: Fetch all weeks (published + drafts)
+    func fetchAllWeeks() async throws -> [Week] {
+        let snapshot = try await weeksCollection
+            .order(by: "weekNumber", descending: false)
+            .getDocuments()
+        return try snapshot.documents.compactMap {
+            try $0.data(as: Week.self)
+        }
+    }
+
     // MARK: - Admin: Create Week
     func createWeek(_ week: Week) throws {
         guard let id = week.id, !id.isEmpty else { throw DBError.invalidDocumentID }

@@ -217,8 +217,13 @@ struct AddGoalView: View {
     @State private var hasDeadline:   Bool   = false
     @State private var deadline:      Date   = Calendar.current.date(byAdding: .month, value: 6, to: Date()) ?? Date()
 
+    private var parsedTargetAmount: Double? {
+        parseMonetaryInput(targetAmount)
+    }
+
     private var isValid: Bool {
-        !title.isEmpty && Double(targetAmount) != nil && (Double(targetAmount) ?? 0) > 0
+        !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        (parsedTargetAmount ?? 0) > 0
     }
 
     var body: some View {
@@ -294,7 +299,7 @@ struct AddGoalView: View {
                     Task {
                         let saved = await mainVM.addGoal(
                             title:        title,
-                            targetAmount: Double(targetAmount) ?? 0,
+                            targetAmount: parsedTargetAmount ?? 0,
                             deadline:     hasDeadline ? deadline : nil
                         )
                         if saved { coordinator.pop() }
@@ -338,6 +343,10 @@ struct GoalDetailView: View {
     @State private var newAmount: String = ""
     @State private var showDeleteAlert = false
 
+    private var parsedContributionAmount: Double? {
+        parseMonetaryInput(newAmount)
+    }
+
     private var goal: FinancialGoal? {
         mainVM.goals.first { $0.id == goalID }
     }
@@ -378,7 +387,7 @@ struct GoalDetailView: View {
                                 .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(hex: "1F2937"), lineWidth: 1))
 
                                 Button("Add") {
-                                    if let amount = Double(newAmount) {
+                                    if let amount = parsedContributionAmount {
                                         Task {
                                             let saved = await mainVM.contributeToGoal(goal: goal, amount: amount)
                                             if saved { newAmount = "" }
@@ -391,7 +400,7 @@ struct GoalDetailView: View {
                                 .padding(.vertical, 14)
                                 .background(Color(hex: "6366F1"))
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
-                                .disabled((Double(newAmount) ?? 0) <= 0)
+                                .disabled((parsedContributionAmount ?? 0) <= 0)
                             }
                             .padding(.horizontal, 20)
                         }

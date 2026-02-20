@@ -146,8 +146,10 @@ struct QuizView: View {
     private func handleNext() {
         if isLastQuestion {
             Task {
-                await learnVM.submitQuiz(weekID: weekID, dayID: dayID)
-                coordinator.push(.quizReview(dayID, weekID))
+                let didSave = await learnVM.submitQuiz(weekID: weekID, dayID: dayID)
+                if didSave {
+                    coordinator.push(.quizReview(dayID, weekID))
+                }
             }
         } else {
             withAnimation(.easeInOut(duration: 0.2)) {

@@ -22,6 +22,13 @@ struct RootTabView: View {
 
         TabView(selection: $appCoordinator.selectedTab) {
            
+            CoordinatorStack(MainPages.dashboard) { coordinator in
+                appCoordinator.register(coordinator)    // hand coordinator to AppCoordinator
+            }
+            .tabItem { Label("Track Finances", systemImage: "chart.pie.fill") }
+            .tag(AppTab.main)
+            
+           
             CoordinatorStack(LearnPages.home) { coordinator in
                 appCoordinator.register(coordinator)
             }
@@ -29,18 +36,14 @@ struct RootTabView: View {
             .tag(AppTab.learn)
           
             
-            CoordinatorStack(MainPages.dashboard) { coordinator in
-                appCoordinator.register(coordinator)    // hand coordinator to AppCoordinator
-            }
-            .tabItem { Label("Main", systemImage: "chart.pie.fill") }
-            .tag(AppTab.main)
-
-         
             CoordinatorStack(ChatPages.chat) { coordinator in
                 appCoordinator.register(coordinator)
             }
-            .tabItem { Label("AI Chat", systemImage: "brain.head.profile") }
+            .tabItem { Label("AI Assistant", systemImage: "brain.head.profile") }
             .tag(AppTab.chat)
+
+         
+           
 
             // RootTabView.swift
             if session.user?.isAdmin == true {

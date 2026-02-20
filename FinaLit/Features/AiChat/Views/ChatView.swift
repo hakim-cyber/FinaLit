@@ -199,6 +199,14 @@ struct ChatView: View {
             .submitLabel(.send)
             .onSubmit {
                 Task {
+                    let isDraftEmpty = viewModel.draft
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                        .isEmpty
+                    if isDraftEmpty {
+                        KeyboardUX.dismiss()
+                        return
+                    }
+
                     viewModel.updateFinancialContext(mainVM.aiContext)
                     await viewModel.sendMessage(context: modelContext)
                 }
@@ -206,6 +214,14 @@ struct ChatView: View {
 
             Button {
                 Task {
+                    let isDraftEmpty = viewModel.draft
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                        .isEmpty
+                    if isDraftEmpty {
+                        KeyboardUX.dismiss()
+                        return
+                    }
+
                     viewModel.updateFinancialContext(mainVM.aiContext)
                     await viewModel.sendMessage(context: modelContext)
                 }
@@ -223,7 +239,7 @@ struct ChatView: View {
                     )
                     .clipShape(Circle())
             }
-            .disabled(viewModel.draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || viewModel.isSending)
+            .disabled(viewModel.isSending)
         }
     }
 

@@ -72,9 +72,7 @@ final class AdminViewModel {
     // MARK: - Load existing data
     func loadWeeks() async {
         do {
-            existingWeeks = try await db.fetchPublishedWeeks()
-            // Also fetch unpublished — admin sees all
-            // For now fetchPublishedWeeks works, extend later
+            existingWeeks = try await db.fetchAllWeeks()
         } catch {
             errorMessage = error.localizedDescription
         }

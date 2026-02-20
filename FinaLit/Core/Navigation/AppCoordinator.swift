@@ -20,7 +20,7 @@ enum AppNavigationCommand {
 // Lives ABOVE RootTabView. Owns selectedTab + fires commands down into tabs.
 @Observable
 class AppCoordinator {
-    var selectedTab: AppTab = .learn
+    var selectedTab: AppTab = .main
 
     // Each tab's coordinator is registered here when the tab appears
     // We use weak wrappers to avoid retain cycles
