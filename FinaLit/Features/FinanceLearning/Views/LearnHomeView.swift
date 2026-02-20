@@ -117,20 +117,26 @@ struct LearnHomeView: View {
                     .foregroundStyle(Color(hex: "4B5563"))
             }
             Spacer()
-            // Streak badge
-            VStack(spacing: 2) {
-                Text("🔥")
-                    .font(.title2)
-                Text("\(learnVM.learningSummary.currentStreak)")
-                    .font(.system(size: 16, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(.white)
-                Text("streak")
-                    .font(.system(size: 10, design: .monospaced))
-                    .foregroundStyle(Color(hex: "4B5563"))
+            HStack(spacing: 10) {
+                ProfileSettingsButton {
+                    coordinator.push(.settings, type: .fullScreenCover)
+                }
+
+                // Streak badge
+                VStack(spacing: 2) {
+                    Text("🔥")
+                        .font(.title2)
+                    Text("\(learnVM.learningSummary.currentStreak)")
+                        .font(.system(size: 16, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(.white)
+                    Text("streak")
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundStyle(Color(hex: "4B5563"))
+                }
+                .padding(12)
+                .background(Color(hex: "111118"))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
             }
-            .padding(12)
-            .background(Color(hex: "111118"))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
         }
         .padding(.horizontal, 20)
     }

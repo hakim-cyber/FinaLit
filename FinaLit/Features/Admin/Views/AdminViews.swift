@@ -27,13 +27,19 @@ struct AdminHomeView: View {
                 VStack(alignment: .leading, spacing: 28) {
 
                     // Header
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("⚙️ Admin Panel")
-                            .font(.system(size: 30, weight: .light, design: .serif))
-                            .foregroundStyle(.white)
-                        Text("Logged in as \(session.user?.email ?? "")")
-                            .font(.system(size: 12, design: .monospaced))
-                            .foregroundStyle(Color(hex: "4B5563"))
+                    HStack(alignment: .top) {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("⚙️ Admin Panel")
+                                .font(.system(size: 30, weight: .light, design: .serif))
+                                .foregroundStyle(.white)
+                            Text("Logged in as \(session.user?.email ?? "")")
+                                .font(.system(size: 12, design: .monospaced))
+                                .foregroundStyle(Color(hex: "4B5563"))
+                        }
+                        Spacer()
+                        ProfileSettingsButton {
+                            coordinator.push(.settings, type: .fullScreenCover)
+                        }
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 16)

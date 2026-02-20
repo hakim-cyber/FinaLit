@@ -11,6 +11,7 @@ import SwiftData
 struct ChatView: View {
     @Environment(ChatViewModel.self) private var viewModel
     @Environment(MainViewModel.self) private var mainVM
+    @Environment(Coordinator<ChatPages>.self) private var coordinator
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
@@ -110,22 +111,28 @@ struct ChatView: View {
 
             Spacer()
 
-            Button {
-                viewModel.clearChat(context: modelContext)
-            } label: {
-                Text("CLEAR")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(ChatPalette.accent)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 8)
-                    .background(ChatPalette.surface)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(ChatPalette.border, lineWidth: 1)
-                    )
+            HStack(spacing: 10) {
+                ProfileSettingsButton {
+                    coordinator.push(.settings, type: .fullScreenCover)
+                }
+
+                Button {
+                    viewModel.clearChat(context: modelContext)
+                } label: {
+                    Text("CLEAR")
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(ChatPalette.accent)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 8)
+                        .background(ChatPalette.surface)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(ChatPalette.border, lineWidth: 1)
+                        )
+                }
+                .disabled(viewModel.messages.isEmpty || viewModel.isSending)
             }
-            .disabled(viewModel.messages.isEmpty || viewModel.isSending)
         }
         .padding(.horizontal, 20)
         .padding(.top, 14)

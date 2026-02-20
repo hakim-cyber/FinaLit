@@ -14,6 +14,7 @@ import SwiftUI
 enum ChatPages: Coordinatable {
 
     case chat
+    case settings
     // ── Add new chat pages here ────────────────────────────────
     // case adviceDetail(String)    // messageID
 
@@ -21,6 +22,7 @@ enum ChatPages: Coordinatable {
     var id: String {
         switch self {
         case .chat: return "chat.main"
+        case .settings: return "chat.settings"
         }
     }
 
@@ -29,6 +31,7 @@ enum ChatPages: Coordinatable {
     var body: some View {
         switch self {
         case .chat: ChatView()
+        case .settings: CoordinatorStack(SettingsPages.home)
         }
     }
 }

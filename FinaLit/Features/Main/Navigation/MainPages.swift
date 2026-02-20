@@ -23,6 +23,7 @@ enum MainPages: Coordinatable {
     case goals
     case addGoal
     case goalDetail(String)              // goalID
+    case settings
 
     var id: String {
         switch self {
@@ -35,6 +36,7 @@ enum MainPages: Coordinatable {
         case .goals:                           return "main.goals"
         case .addGoal:                         return "main.addGoal"
         case .goalDetail(let id):              return "main.goal.\(id)"
+        case .settings:                        return "main.settings"
         }
     }
 
@@ -50,6 +52,7 @@ enum MainPages: Coordinatable {
         case .goals:                           GoalsView()
         case .addGoal:                         AddGoalView()
         case .goalDetail(let id):              GoalDetailView(goalID: id)
+        case .settings:                        CoordinatorStack(SettingsPages.home)
         }
     }
 }

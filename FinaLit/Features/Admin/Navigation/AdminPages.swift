@@ -19,6 +19,7 @@ enum AdminPages: Coordinatable {
     case addQuiz(String)         // dayID
     case addDailyTip
     case bulkImport
+    case settings
 
     var id: String {
         switch self {
@@ -29,6 +30,7 @@ enum AdminPages: Coordinatable {
         case .addQuiz(let id):   return "admin.addQuiz.\(id)"
         case .addDailyTip:       return "admin.addDailyTip"
         case .bulkImport:        return "admin.bulkImport"
+        case .settings:          return "admin.settings"
         }
     }
 
@@ -42,6 +44,7 @@ enum AdminPages: Coordinatable {
         case .addQuiz(let id):   AddQuizView(dayID: id)
         case .addDailyTip:       AddDailyTipView()
         case .bulkImport:        AddBulkImportView()
+        case .settings:          CoordinatorStack(SettingsPages.home)
         }
     }
 }

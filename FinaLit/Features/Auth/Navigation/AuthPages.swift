@@ -15,8 +15,7 @@ enum AuthPages: Coordinatable {
 
     case login
     case register
-    // ── Add new auth pages here ────────────────────────────────
-    // case forgotPassword
+    case forgotPassword
     // case verifyEmail
 
     // MARK: - Identifiable
@@ -24,6 +23,7 @@ enum AuthPages: Coordinatable {
         switch self {
         case .login:    return "auth.login"
         case .register: return "auth.register"
+        case .forgotPassword: return "auth.forgotPassword"
         }
     }
 
@@ -33,6 +33,7 @@ enum AuthPages: Coordinatable {
         switch self {
         case .login:    LoginView()
         case .register: RegisterView()
+        case .forgotPassword: ForgotPasswordView()
         }
     }
 }

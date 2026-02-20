@@ -90,6 +90,21 @@ final class AuthService {
         }
     }
 
+    // MARK: - Delete Account
+
+    @MainActor
+    func deleteCurrentUser() async throws {
+        guard let user = Auth.auth().currentUser else {
+            throw AuthError.noAuthenticatedUser
+        }
+
+        do {
+            try await user.delete()
+        } catch let error as NSError {
+            throw AuthError.map(error)
+        }
+    }
+
     deinit {
         if let authListener {
             Auth.auth().removeStateDidChangeListener(authListener)
@@ -108,6 +123,8 @@ enum AuthError: LocalizedError {
     case emailAlreadyInUse
     case weakPassword
     case networkError
+    case requiresRecentLogin
+    case noAuthenticatedUser
     case unknown(String)
 
     static func map(_ error: NSError) -> AuthError {
@@ -118,6 +135,7 @@ enum AuthError: LocalizedError {
         case .emailAlreadyInUse:   return .emailAlreadyInUse
         case .weakPassword:        return .weakPassword
         case .networkError:        return .networkError
+        case .requiresRecentLogin: return .requiresRecentLogin
         default:                   return .unknown(error.localizedDescription)
         }
     }
@@ -130,6 +148,10 @@ enum AuthError: LocalizedError {
         case .emailAlreadyInUse: return "An account with this email already exists."
         case .weakPassword:      return "Password must be at least 8 characters."
         case .networkError:      return "Network error. Please check your connection."
+        case .requiresRecentLogin:
+            return "Please log in again before deleting your account."
+        case .noAuthenticatedUser:
+            return "No active account session was found."
         case .unknown(let msg):  return msg
         }
     }

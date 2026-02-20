@@ -85,6 +85,51 @@ final class DatabaseService {
         try userDocument(uid).setData(from: BehaviorProfilePatch(behaviorProfile: profile), merge: true)
     }
 
+    // MARK: - Account Cleanup
+
+    /// Removes all user-scoped Firestore data used by the app, then deletes the root user document.
+    /// This is best-effort over known collections in this codebase.
+    func deleteAllUserData(uid: String) async throws {
+        let collectionPaths: [String] = [
+            FirestorePath.transactions(uid),
+            FirestorePath.recurring(uid),
+            FirestorePath.budgetLimits(uid),
+            FirestorePath.goals(uid),
+            FirestorePath.monthlySnapshots(uid),
+            FirestorePath.financialSummary(uid),
+            FirestorePath.debtAccounts(uid),
+            FirestorePath.monthClosures(uid),
+            FirestorePath.reflections(uid: uid),
+            FirestorePath.chat(uid),
+            "users/\(uid)/learningSummary"
+        ]
+
+        for path in collectionPaths {
+            try await deleteDocuments(in: path)
+        }
+
+        try await deleteWeekProgress(uid: uid)
+        try await db.collection(FirestorePath.users).document(uid).delete()
+    }
+
+    private func deleteWeekProgress(uid: String) async throws {
+        let weekSnapshot = try await db.collection(FirestorePath.weekProgress(uid: uid)).getDocuments()
+
+        for weekDocument in weekSnapshot.documents {
+            let weekID = weekDocument.documentID
+            try await deleteDocuments(in: FirestorePath.dayProgress(uid: uid, weekID: weekID))
+            try await weekDocument.reference.delete()
+        }
+    }
+
+    private func deleteDocuments(in collectionPath: String) async throws {
+        let snapshot = try await db.collection(collectionPath).getDocuments()
+
+        for document in snapshot.documents {
+            try await document.reference.delete()
+        }
+    }
+
 //    // MARK: - Chat History
 //
 //    func saveMessage(_ message: ChatMessage, uid: String) async throws {

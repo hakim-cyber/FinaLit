@@ -32,6 +32,10 @@ class UserSession {
     func updateProfile(_ profile: UserProfile) {
         user?.profile = profile
     }
+
+    func updateName(_ name: String) {
+        user?.name = name
+    }
     
     func updateFinancialProfile(_ profile: FinancialProfile) {
         user?.financialProfile = profile

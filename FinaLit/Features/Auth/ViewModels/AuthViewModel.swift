@@ -143,7 +143,12 @@ class AuthViewModel {
 
     // MARK: - Forgot Password
     func sendPasswordReset() async {
-        guard !email.isEmpty else {
+        await sendPasswordReset(to: email)
+    }
+
+    func sendPasswordReset(to rawEmail: String) async {
+        let trimmedEmail = rawEmail.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedEmail.isEmpty else {
             errorMessage = "Please enter your email address."
             return
         }
@@ -154,7 +159,7 @@ class AuthViewModel {
         defer { isLoading = false }
 
         do {
-            try await authService.sendPasswordReset(email: email)
+            try await authService.sendPasswordReset(email: trimmedEmail)
             successMessage = "Password reset email sent. Check your inbox."
         } catch {
             errorMessage = error.localizedDescription
@@ -173,9 +178,35 @@ class AuthViewModel {
         }
     }
 
+    // MARK: - Delete Account
+    func deleteAccount() async {
+        guard let uid = session.user?.id else {
+            errorMessage = "Session expired. Please log in again."
+            return
+        }
+
+        isLoading = true
+        clearMessages()
+        defer { isLoading = false }
+
+        do {
+            try await dbService.deleteAllUserData(uid: uid)
+            try await authService.deleteCurrentUser()
+            session.signOut()
+            clearForm()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
     // MARK: - Helpers
     func clearError() {
         errorMessage = nil
+    }
+
+    func clearMessages() {
+        errorMessage = nil
+        successMessage = nil
     }
 
     private func clearForm() {

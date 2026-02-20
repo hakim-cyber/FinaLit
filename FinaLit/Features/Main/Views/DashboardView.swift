@@ -196,8 +196,12 @@ struct DashboardView: View {
                     .foregroundStyle(.white)
             }
             Spacer()
-            // Month navigator
-            MonthNavigator()
+            HStack(spacing: 10) {
+                ProfileSettingsButton {
+                    coordinator.push(.settings, type: .fullScreenCover)
+                }
+                MonthNavigator()
+            }
         }
         .padding(.horizontal, 20)
     }

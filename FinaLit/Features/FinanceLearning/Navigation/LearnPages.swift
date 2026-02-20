@@ -23,6 +23,7 @@ enum LearnPages: Coordinatable {
     case quizReview(String, String)      // dayID, weekID
     case reflection(String, String)      // weekID, weekTitle
     case progress
+    case settings
 
     var id: String {
         switch self {
@@ -33,6 +34,7 @@ enum LearnPages: Coordinatable {
         case .quizReview(let d, let w):          return "learn.quizReview.\(d).\(w)"
         case .reflection(let w, _):              return "learn.reflection.\(w)"
         case .progress:                          return "learn.progress"
+        case .settings:                          return "learn.settings"
         }
     }
 
@@ -53,6 +55,8 @@ enum LearnPages: Coordinatable {
             ReflectionView(weekID: weekID, weekTitle: weekTitle)
         case .progress:
             LearningProgressView()
+        case .settings:
+            CoordinatorStack(SettingsPages.home)
         }
     }
 }
