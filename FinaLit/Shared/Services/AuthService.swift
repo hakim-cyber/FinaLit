@@ -90,6 +90,32 @@ final class AuthService {
         }
     }
 
+    // MARK: - Sensitive Operation Guard
+
+    /// Firebase account deletion often requires a very recent sign-in.
+    /// We gate destructive client-side operations to avoid partial delete states.
+    @MainActor
+    func ensureRecentLoginForSensitiveOperation(maxAgeSeconds: TimeInterval = 300) async throws {
+        guard let user = Auth.auth().currentUser else {
+            throw AuthError.noAuthenticatedUser
+        }
+
+        guard let lastSignInDate = user.metadata.lastSignInDate else {
+            throw AuthError.requiresRecentLogin
+        }
+
+        let age = Date().timeIntervalSince(lastSignInDate)
+        guard age <= maxAgeSeconds else {
+            throw AuthError.requiresRecentLogin
+        }
+
+        do {
+            _ = try await user.getIDTokenResult(forcingRefresh: true)
+        } catch let error as NSError {
+            throw AuthError.map(error)
+        }
+    }
+
     // MARK: - Delete Account
 
     @MainActor

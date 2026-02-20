@@ -119,6 +119,15 @@ final class MainViewModel {
         hasLoadedHome = false
     }
 
+    func handleSessionUserIDChange(_ userID: String?) {
+        guard loadedUID != userID else { return }
+
+        streamTask?.cancel()
+        streamTask = nil
+        resetStateForUserSwitch()
+        loadedUID = userID
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // MARK: - Real-Time Stream
     // Keeps transactions always fresh — recalculates on every update

@@ -190,6 +190,7 @@ class AuthViewModel {
         defer { isLoading = false }
 
         do {
+            try await authService.ensureRecentLoginForSensitiveOperation()
             try await dbService.deleteAllUserData(uid: uid)
             try await authService.deleteCurrentUser()
             session.signOut()

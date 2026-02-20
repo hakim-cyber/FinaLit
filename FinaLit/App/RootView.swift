@@ -13,6 +13,7 @@ import SwiftUI
 
 struct RootView: View {
     @Environment(UserSession.self) private var session
+    @Environment(MainViewModel.self) private var mainViewModel
 
     var body: some View {
         Group {
@@ -36,5 +37,8 @@ struct RootView: View {
         .animation(.easeInOut(duration: 0.3), value: session.isRestoringSession)
         .animation(.easeInOut(duration: 0.3), value: session.isAuthenticated)
         .animation(.easeInOut(duration: 0.3), value: session.hasCompletedOnboarding)
+        .onChange(of: session.user?.id) { _, newUserID in
+            mainViewModel.handleSessionUserIDChange(newUserID)
+        }
     }
 }
