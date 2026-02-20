@@ -8,30 +8,48 @@
 
 // MainPages.swift
 // Features/Main/Navigation/
+// MainPages.swift
+// Features/Main/Navigation/
 
 import SwiftUI
 
 enum MainPages: Coordinatable {
-
     case dashboard
-    // ── Add new main pages here ────────────────────────────────
-    // case addExpense
-    // case expenseDetail(String)   // pass IDs as associated values
-    // case insights
-    // case profile
+    case addTransaction
+    case transactions
+    case transactionDetail(String)       // transactionID
+    case budget
+    case insights
+    case goals
+    case addGoal
+    case goalDetail(String)              // goalID
 
-    // MARK: - Identifiable
     var id: String {
         switch self {
-        case .dashboard: return "main.dashboard"
+        case .dashboard:                       return "main.dashboard"
+        case .addTransaction:                  return "main.addTransaction"
+        case .transactions:                    return "main.transactions"
+        case .transactionDetail(let id):       return "main.tx.\(id)"
+        case .budget:                          return "main.budget"
+        case .insights:                        return "main.insights"
+        case .goals:                           return "main.goals"
+        case .addGoal:                         return "main.addGoal"
+        case .goalDetail(let id):              return "main.goal.\(id)"
         }
     }
 
-    // MARK: - View
     @ViewBuilder
     var body: some View {
         switch self {
-        case .dashboard: Text("Dashboard View")  // replace with DashboardView()
+        case .dashboard:                       DashboardView()
+        case .addTransaction:                  AddTransactionView()
+        case .transactions:                    TransactionsView()
+        case .transactionDetail(let id):       TransactionDetailView(transactionID: id)
+        case .budget:                          BudgetView()
+        case .insights:                        InsightsView()
+        case .goals:                           GoalsView()
+        case .addGoal:                         AddGoalView()
+        case .goalDetail(let id):              GoalDetailView(goalID: id)
         }
     }
 }
