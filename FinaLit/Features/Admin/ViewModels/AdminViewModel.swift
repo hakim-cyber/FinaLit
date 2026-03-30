@@ -31,12 +31,10 @@ final class AdminViewModel {
     var lessonDayNumber:   String = ""
     var lessonCategory:    String = ""
     var lessonTitle:       String = ""
-    var conceptDefinition: String = ""
-    var whyItMatters:      String = ""
-    var realLifeExample:   String = ""
-    var miniCaseScenario:  String = ""
-    var dailyActionTask:   String = ""
     var difficultyLevel:   DifficultyLevel = .beginner
+    var lessonContentMode: LessonContentMode = .article
+    var lessonBody: String = ""
+    var lessonBlocks: [LessonContentBlockDraft] = []
 
     // MARK: - Quiz Form
     var quizWeekNumber: String = ""
@@ -148,9 +146,18 @@ final class AdminViewModel {
 
     // MARK: - Save Lesson
     func saveLesson() async -> (Bool, String) {
-        guard !lessonTitle.isEmpty,
-              !conceptDefinition.isEmpty else {
-            errorMessage = "Title and definition are required."
+        let trimmedTitle = lessonTitle.adminCleanedText
+        let trimmedCategory = lessonCategory.adminCleanedText
+        let trimmedBody = lessonBody.adminCleanedText
+        let builtBlocks = lessonBlocks.compactMap(\.builtBlock)
+
+        guard !trimmedTitle.isEmpty else {
+            errorMessage = "Title is required."
+            return (false, "")
+        }
+
+        guard !trimmedBody.isEmpty || !builtBlocks.isEmpty else {
+            errorMessage = "Add lesson body text or at least one content block."
             return (false, "")
         }
         isLoading    = true
@@ -159,22 +166,20 @@ final class AdminViewModel {
 
         let id = UUID().uuidString
         let lesson = Lesson(
-            id:                id,
-            weekNumber:        Int(lessonWeekNumber) ?? 0,
-            dayNumber:         Int(lessonDayNumber) ?? 0,
-            category:          lessonCategory,
-            title:             lessonTitle,
-            conceptDefinition: conceptDefinition,
-            whyItMatters:      whyItMatters,
-            realLifeExample:   realLifeExample,
-            miniCaseScenario:  miniCaseScenario,
-            dailyActionTask:   dailyActionTask,
-            difficultyLevel:   difficultyLevel.rawValue
+            id: id,
+            weekNumber: Int(lessonWeekNumber) ?? 0,
+            dayNumber: Int(lessonDayNumber) ?? 0,
+            category: trimmedCategory,
+            title: trimmedTitle,
+            difficultyLevel: difficultyLevel.rawValue,
+            contentMode: lessonContentMode,
+            body: trimmedBody,
+            blocks: builtBlocks
         )
 
         do {
             try db.createLesson(lesson)
-            successMessage = "Lesson '\(lessonTitle)' saved ✓\nLesson ID: \(id)"
+            successMessage = "Lesson '\(trimmedTitle)' saved ✓\nLesson ID: \(id)"
             clearLessonForm()
             return (true, id)
         } catch {
@@ -327,18 +332,26 @@ final class AdminViewModel {
         for lesson in lessons {
             let lessonID = resolvedID(lesson.id)
             let difficulty = resolvedDifficulty(lesson.difficultyLevel)
+            let contentMode = lesson.contentMode ?? .article
+            let blocks = (lesson.blocks ?? []).map { block in
+                LessonContentBlock(
+                    id: resolvedID(block.id),
+                    kind: block.kind ?? .paragraph,
+                    title: block.title ?? "",
+                    text: block.text ?? "",
+                    items: block.items ?? []
+                )
+            }
             let model = Lesson(
                 id: lessonID,
                 weekNumber: lesson.weekNumber,
                 dayNumber: lesson.dayNumber,
                 category: lesson.category,
                 title: lesson.title,
-                conceptDefinition: lesson.conceptDefinition,
-                whyItMatters: lesson.whyItMatters,
-                realLifeExample: lesson.realLifeExample,
-                miniCaseScenario: lesson.miniCaseScenario,
-                dailyActionTask: lesson.dailyActionTask,
-                difficultyLevel: difficulty.rawValue
+                difficultyLevel: difficulty.rawValue,
+                contentMode: contentMode,
+                body: lesson.body ?? "",
+                blocks: blocks
             )
             try db.createLesson(model)
             createdLessons += 1
@@ -587,6 +600,16 @@ final class AdminViewModel {
         questions.remove(at: index)
     }
 
+    // MARK: - Lesson content block helpers
+    func addLessonBlock() {
+        lessonBlocks.append(LessonContentBlockDraft())
+    }
+
+    func removeLessonBlock(at index: Int) {
+        guard lessonBlocks.indices.contains(index) else { return }
+        lessonBlocks.remove(at: index)
+    }
+
     // MARK: - Clear forms
     func clearWeekForm() {
         weekNumber = ""; weekTitle = ""; weekDescription = ""; isPublished = false
@@ -596,9 +619,9 @@ final class AdminViewModel {
     }
     func clearLessonForm() {
         lessonWeekNumber = ""; lessonDayNumber = ""; lessonCategory = ""
-        lessonTitle = ""; conceptDefinition = ""; whyItMatters = ""
-        realLifeExample = ""; miniCaseScenario = ""; dailyActionTask = ""
+        lessonTitle = ""; lessonBody = ""; lessonBlocks = []
         difficultyLevel = .beginner
+        lessonContentMode = .article
     }
     func clearQuizForm() {
         quizWeekNumber = ""; quizDayNumber = ""
@@ -653,11 +676,20 @@ final class AdminViewModel {
           "dayNumber": 1,
           "category": "Budgeting",
           "title": "Opportunity Cost",
-          "conceptDefinition": "Definition...",
-          "whyItMatters": "Why it matters...",
-          "realLifeExample": "Example...",
-          "miniCaseScenario": "Scenario...",
-          "dailyActionTask": "Action...",
+          "contentMode": "hybrid",
+          "body": "Start with a short intro paragraph here.",
+          "blocks": [
+            {
+              "kind": "section",
+              "title": "What It Means",
+              "text": "Explain the concept in simple language."
+            },
+            {
+              "kind": "action",
+              "title": "Today's Action",
+              "text": "Write down one financial tradeoff you made this week."
+            }
+          ],
           "difficultyLevel": "Beginner"
         }
       ],
@@ -703,6 +735,35 @@ final class AdminViewModel {
     """
 }
 
+struct LessonContentBlockDraft: Identifiable {
+    let id = UUID()
+    var kind: LessonContentBlockKind = .section
+    var title: String = ""
+    var text: String = ""
+    var itemsText: String = ""
+
+    var builtBlock: LessonContentBlock? {
+        let cleanTitle = title.adminCleanedText
+        let cleanText = text.adminCleanedText
+        let cleanItems = itemsText
+            .split(separator: "\n")
+            .map { String($0).adminCleanedText }
+            .filter { !$0.isEmpty }
+
+        guard !cleanTitle.isEmpty || !cleanText.isEmpty || !cleanItems.isEmpty else {
+            return nil
+        }
+
+        return LessonContentBlock(
+            id: UUID().uuidString,
+            kind: kind,
+            title: cleanTitle,
+            text: cleanText,
+            items: cleanItems
+        )
+    }
+}
+
 // MARK: - Quiz Question Draft
 // In-memory draft for building quiz questions in the form
 // Converted to QuizQuestion on save
@@ -745,12 +806,18 @@ private struct BulkLessonImport: Decodable {
     let dayNumber: Int
     let category: String
     let title: String
-    let conceptDefinition: String
-    let whyItMatters: String
-    let realLifeExample: String
-    let miniCaseScenario: String
-    let dailyActionTask: String
+    let contentMode: LessonContentMode?
+    let body: String?
+    let blocks: [BulkLessonContentBlockImport]?
     let difficultyLevel: String?
+}
+
+private struct BulkLessonContentBlockImport: Decodable {
+    let id: String?
+    let kind: LessonContentBlockKind?
+    let title: String?
+    let text: String?
+    let items: [String]?
 }
 
 private struct BulkQuizImport: Decodable {
@@ -817,5 +884,16 @@ private enum AdminBulkImportError: LocalizedError {
         case .invalidTipDate(let raw):
             return "Invalid daily tip date '\(raw)'. Use ISO-8601 or yyyy-MM-dd."
         }
+    }
+}
+
+private extension String {
+    var adminCleanedText: String {
+        replacingOccurrences(of: "\u{00A0}", with: " ")
+            .replacingOccurrences(of: "\u{2028}", with: "\n")
+            .replacingOccurrences(of: "\u{2029}", with: "\n")
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

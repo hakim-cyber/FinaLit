@@ -5,10 +5,6 @@
 //  Created by aplle on 2/20/26.
 //
 
-
-// LessonDetailView.swift
-// Features/Learn/Views/
-
 import SwiftUI
 
 struct LessonDetailView: View {
@@ -17,7 +13,6 @@ struct LessonDetailView: View {
 
     @Environment(LearnViewModel.self)          private var learnVM
     @Environment(Coordinator<LearnPages>.self) private var coordinator
-    @State private var scrollOffset: CGFloat = 0
     @State private var hasMarkedRead = false
 
     var body: some View {
@@ -27,54 +22,24 @@ struct LessonDetailView: View {
             if learnVM.isLoadingLesson {
                 LearnLoadingView()
             } else if let lesson = learnVM.currentLesson {
-                // ── Scrollable content ─────────────────────────────────────
                 ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 0) {
-                        // Header
+                    LazyVStack(alignment: .leading, spacing: 0) {
                         lessonHeader(lesson)
 
-                        // Sections
-                        LessonSection(
-                            number: "01",
-                            title: "What Is It?",
-                            content: lesson.conceptDefinition,
-                            accent: "6366F1"
-                        )
-                        LessonSection(
-                            number: "02",
-                            title: "Why It Matters",
-                            content: lesson.whyItMatters,
-                            accent: "8B5CF6"
-                        )
-                        LessonSection(
-                            number: "03",
-                            title: "Real-Life Example",
-                            content: lesson.realLifeExample,
-                            accent: "06B6D4"
-                        )
-                        LessonSection(
-                            number: "04",
-                            title: "Mini Case",
-                            content: lesson.miniCaseScenario,
-                            accent: "FACC15",
-                            isCase: true
-                        )
-                        LessonSection(
-                            number: "05",
-                            title: "Today's Action",
-                            content: lesson.dailyActionTask,
-                            accent: "10B981",
-                            isAction: true
-                        )
+                        let nodes = renderNodes(for: lesson)
+                        if nodes.isEmpty {
+                            LessonParagraphBlock(text: "This lesson is empty.")
+                        } else {
+                            ForEach(nodes) { node in
+                                LessonRenderNodeView(node: node)
+                            }
+                        }
 
-                        // Bottom padding for button
                         Spacer(minLength: 120)
                     }
                 }
 
-                // ── Fixed bottom button ────────────────────────────────────
                 VStack(spacing: 0) {
-                    // Gradient fade
                     LinearGradient(
                         colors: [Color(hex: "0A0A0F").opacity(0), Color(hex: "0A0A0F")],
                         startPoint: .top,
@@ -117,12 +82,147 @@ struct LessonDetailView: View {
         .task { await learnVM.loadLesson(lessonID: lessonID) }
     }
 
-    // MARK: - Header
+    private func renderNodes(for lesson: Lesson) -> [LessonRenderNode] {
+        let explicitNodes = lesson.normalizedBlocks.map {
+            LessonRenderNode(
+                kind: $0.kind,
+                title: $0.title,
+                text: $0.text,
+                items: $0.normalizedItems
+            )
+        }
+        let articleNodes = parseBody(lesson.cleanedBody, preferStructured: false)
+        let structuredBodyNodes = parseBody(lesson.cleanedBody, preferStructured: true)
+
+        let rawNodes: [LessonRenderNode]
+        switch lesson.effectiveContentMode {
+        case .article:
+            rawNodes = articleNodes.isEmpty ? explicitNodes : articleNodes
+        case .sectioned:
+            rawNodes = explicitNodes.isEmpty ? structuredBodyNodes : explicitNodes
+        case .hybrid:
+            rawNodes = articleNodes + explicitNodes
+        case .auto:
+            rawNodes = explicitNodes.isEmpty ? structuredBodyNodes : articleNodes + explicitNodes
+        }
+
+        return numberedNodes(rawNodes)
+    }
+
+    private func parseBody(_ body: String, preferStructured: Bool) -> [LessonRenderNode] {
+        let normalized = body.lessonNormalizedBody
+        guard !normalized.isEmpty else { return [] }
+
+        let chunks = normalized
+            .replacingOccurrences(of: "\n{3,}", with: "\n\n", options: .regularExpression)
+            .components(separatedBy: "\n\n")
+            .map(\.lessonTrimmedText)
+            .filter { !$0.isEmpty }
+
+        return chunks.flatMap { parseChunk($0, preferStructured: preferStructured) }
+    }
+
+    private func parseChunk(_ chunk: String, preferStructured: Bool) -> [LessonRenderNode] {
+        let lines = chunk
+            .components(separatedBy: .newlines)
+            .map(\.lessonTrimmedText)
+            .filter { !$0.isEmpty }
+
+        guard !lines.isEmpty else { return [] }
+
+        if preferStructured, let sectionNode = parseStructuredSection(lines) {
+            return [sectionNode]
+        }
+
+        if let headingTitle = parseMarkdownHeading(lines.first ?? "") {
+            let rest = Array(lines.dropFirst()).joined(separator: "\n").lessonTrimmedText
+            var nodes = [LessonRenderNode(kind: .heading, title: headingTitle)]
+            if !rest.isEmpty {
+                nodes.append(LessonRenderNode(kind: .paragraph, text: rest))
+            }
+            return nodes
+        }
+
+        if let items = parseBulletItems(lines) {
+            return [LessonRenderNode(kind: .bulletList, items: items)]
+        }
+
+        if let items = parseNumberedItems(lines) {
+            return [LessonRenderNode(kind: .numberedList, items: items)]
+        }
+
+        return [LessonRenderNode(kind: .paragraph, text: chunk)]
+    }
+
+    private func parseStructuredSection(_ lines: [String]) -> LessonRenderNode? {
+        guard let first = lines.first else { return nil }
+        let range = first.range(
+            of: #"^\d+\.\s+(.+)$"#,
+            options: .regularExpression
+        )
+
+        guard let range else { return nil }
+
+        let title = String(first[range]).replacingOccurrences(
+            of: #"^\d+\.\s+"#,
+            with: "",
+            options: .regularExpression
+        )
+        let content = Array(lines.dropFirst()).joined(separator: "\n").lessonTrimmedText
+        return LessonRenderNode(kind: .section, title: title, text: content)
+    }
+
+    private func parseMarkdownHeading(_ line: String) -> String? {
+        let range = line.range(of: #"^#{1,3}\s+(.+)$"#, options: .regularExpression)
+        guard let range else { return nil }
+
+        return String(line[range])
+            .replacingOccurrences(of: #"^#{1,3}\s+"#, with: "", options: .regularExpression)
+            .lessonTrimmedText
+    }
+
+    private func parseBulletItems(_ lines: [String]) -> [String]? {
+        let items = lines.compactMap { line -> String? in
+            let trimmed = line.lessonTrimmedText
+            guard trimmed.hasPrefix("- ") || trimmed.hasPrefix("* ") || trimmed.hasPrefix("• ") else {
+                return nil
+            }
+            return String(trimmed.dropFirst(2)).lessonTrimmedText
+        }
+
+        return items.count == lines.count ? items : nil
+    }
+
+    private func parseNumberedItems(_ lines: [String]) -> [String]? {
+        let items = lines.compactMap { line -> String? in
+            let range = line.range(of: #"^\d+\.\s+(.+)$"#, options: .regularExpression)
+            guard let range else { return nil }
+
+            return String(line[range])
+                .replacingOccurrences(of: #"^\d+\.\s+"#, with: "", options: .regularExpression)
+                .lessonTrimmedText
+        }
+
+        return items.count == lines.count ? items : nil
+    }
+
+    private func numberedNodes(_ nodes: [LessonRenderNode]) -> [LessonRenderNode] {
+        var sectionIndex = 0
+
+        return nodes.map { node in
+            guard node.usesSectionChrome else { return node }
+
+            sectionIndex += 1
+            var updated = node
+            updated.sectionNumber = sectionIndex
+            return updated
+        }
+    }
+
     private func lessonHeader(_ lesson: Lesson) -> some View {
         let difficulty = DifficultyLevel(rawValue: lesson.difficultyLevel) ?? .beginner
 
-      return  VStack(alignment: .leading, spacing: 12) {
-            // Difficulty badge
+        return VStack(alignment: .leading, spacing: 12) {
             Text(lesson.difficultyLevel.uppercased())
                 .font(.system(size: 10, weight: .semibold, design: .monospaced))
                 .foregroundStyle(difficultyColor(difficulty))
@@ -164,9 +264,7 @@ struct LessonDetailView: View {
         }
     }
 
-    // MARK: - Actions
     private func handleReadComplete() async {
-        // Find weekID from the days cache
         guard let weekID = findWeekID() else { return }
 
         if !hasMarkedRead {
@@ -175,7 +273,6 @@ struct LessonDetailView: View {
             hasMarkedRead = true
         }
 
-        // Navigate to quiz
         let days = learnVM.daysCache.values.flatMap { $0 }
         if let day = days.first(where: { $0.id == dayID }) {
             coordinator.push(.quiz(day.quizID, dayID, weekID))
@@ -192,18 +289,172 @@ struct LessonDetailView: View {
     }
 }
 
-// MARK: - Lesson Section
-struct LessonSection: View {
+private struct LessonRenderNode: Identifiable {
+    let id = UUID()
+    let kind: LessonContentBlockKind
+    var title: String = ""
+    var text: String = ""
+    var items: [String] = []
+    var sectionNumber: Int?
+
+    var usesSectionChrome: Bool {
+        switch kind {
+        case .section, .action, .caseStudy, .callout:
+            return true
+        default:
+            return false
+        }
+    }
+}
+
+private struct LessonRenderNodeView: View {
+    let node: LessonRenderNode
+
+    var body: some View {
+        switch node.kind {
+        case .section:
+            LessonSection(
+                number: formattedSectionNumber,
+                title: node.title.isEmpty ? "Section" : node.title,
+                content: node.text,
+                accent: standardSectionAccent
+            )
+        case .action:
+            LessonSection(
+                number: formattedSectionNumber,
+                title: node.title.isEmpty ? "Today's Action" : node.title,
+                content: node.text,
+                accent: "10B981",
+                style: .action
+            )
+        case .caseStudy:
+            LessonSection(
+                number: formattedSectionNumber,
+                title: node.title.isEmpty ? "Case Study" : node.title,
+                content: node.text,
+                accent: "FACC15",
+                style: .caseStudy
+            )
+        case .callout:
+            LessonSection(
+                number: formattedSectionNumber,
+                title: node.title.isEmpty ? "Callout" : node.title,
+                content: node.text,
+                accent: "06B6D4",
+                style: .callout
+            )
+        case .quote:
+            LessonQuoteBlock(text: node.text.isEmpty ? node.title : node.text)
+        case .heading:
+            LessonHeadingBlock(text: node.title.isEmpty ? node.text : node.title)
+        case .bulletList:
+            LessonListBlock(items: node.items, ordered: false)
+        case .numberedList:
+            LessonListBlock(items: node.items, ordered: true)
+        case .paragraph:
+            LessonParagraphBlock(text: node.text)
+        }
+    }
+
+    private var formattedSectionNumber: String {
+        guard let sectionNumber = node.sectionNumber else { return "00" }
+        return String(format: "%02d", sectionNumber)
+    }
+
+    private var standardSectionAccent: String {
+        let palette = ["6366F1", "8B5CF6", "06B6D4", "FACC15", "10B981"]
+        let index = max((node.sectionNumber ?? 1) - 1, 0) % palette.count
+        return palette[index]
+    }
+}
+
+private struct LessonHeadingBlock: View {
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .font(.system(size: 22, weight: .light, design: .serif))
+            .foregroundStyle(.white)
+            .lineSpacing(4)
+            .padding(.horizontal, 20)
+            .padding(.top, 12)
+            .padding(.bottom, 4)
+    }
+}
+
+private struct LessonParagraphBlock: View {
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .font(.system(size: 16, design: .serif))
+            .foregroundStyle(Color(hex: "D1D5DB"))
+            .lineSpacing(7)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 10)
+    }
+}
+
+private struct LessonListBlock: View {
+    let items: [String]
+    let ordered: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                HStack(alignment: .top, spacing: 10) {
+                    Text(ordered ? "\(index + 1)." : "•")
+                        .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(Color(hex: "6366F1"))
+                    Text(item)
+                        .font(.system(size: 16, design: .serif))
+                        .foregroundStyle(Color(hex: "D1D5DB"))
+                        .lineSpacing(6)
+                }
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 10)
+    }
+}
+
+private struct LessonQuoteBlock: View {
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .font(.system(size: 16, design: .serif))
+            .foregroundStyle(Color(hex: "E5E7EB"))
+            .lineSpacing(6)
+            .italic()
+            .padding(16)
+            .background(Color(hex: "111118"))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color(hex: "1F2937"), lineWidth: 1)
+            )
+            .padding(.horizontal, 20)
+            .padding(.vertical, 10)
+    }
+}
+
+private enum LessonSectionStyle {
+    case standard
+    case caseStudy
+    case action
+    case callout
+}
+
+private struct LessonSection: View {
     let number: String
     let title: String
     let content: String
     let accent: String
-    var isCase: Bool   = false
-    var isAction: Bool = false
+    var style: LessonSectionStyle = .standard
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            // Section header
             HStack(spacing: 10) {
                 Text(number)
                     .font(.system(size: 11, weight: .semibold, design: .monospaced))
@@ -217,45 +468,7 @@ struct LessonSection: View {
                     .foregroundStyle(Color(hex: "4B5563"))
             }
 
-            // Content
-            if isAction {
-                // Action box
-                HStack(alignment: .top, spacing: 12) {
-                    Text("→")
-                        .font(.system(size: 16, design: .monospaced))
-                        .foregroundStyle(Color(hex: accent))
-                    Text(content)
-                        .font(.system(size: 15, design: .monospaced))
-                        .foregroundStyle(Color(hex: "D1FAE5"))
-                        .lineSpacing(5)
-                }
-                .padding(16)
-                .background(Color(hex: "10B981").opacity(0.07))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color(hex: "10B981").opacity(0.2), lineWidth: 1)
-                )
-            } else if isCase {
-                // Case scenario box
-                Text(content)
-                    .font(.system(size: 15, design: .serif))
-                    .foregroundStyle(Color(hex: "FEF3C7"))
-                    .lineSpacing(5)
-                    .italic()
-                    .padding(16)
-                    .background(Color(hex: "FACC15").opacity(0.07))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color(hex: "FACC15").opacity(0.2), lineWidth: 1)
-                    )
-            } else {
-                Text(content)
-                    .font(.system(size: 16, design: .serif))
-                    .foregroundStyle(Color(hex: "D1D5DB"))
-                    .lineSpacing(6)
-            }
+            sectionContent
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 20)
@@ -263,5 +476,73 @@ struct LessonSection: View {
         Divider()
             .background(Color(hex: "111118"))
             .padding(.horizontal, 20)
+    }
+
+    @ViewBuilder
+    private var sectionContent: some View {
+        switch style {
+        case .action:
+            HStack(alignment: .top, spacing: 12) {
+                Text("→")
+                    .font(.system(size: 16, design: .monospaced))
+                    .foregroundStyle(Color(hex: accent))
+                Text(content)
+                    .font(.system(size: 15, design: .monospaced))
+                    .foregroundStyle(Color(hex: "D1FAE5"))
+                    .lineSpacing(5)
+            }
+            .padding(16)
+            .background(Color(hex: "10B981").opacity(0.07))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color(hex: "10B981").opacity(0.2), lineWidth: 1)
+            )
+        case .caseStudy:
+            Text(content)
+                .font(.system(size: 15, design: .serif))
+                .foregroundStyle(Color(hex: "FEF3C7"))
+                .lineSpacing(5)
+                .italic()
+                .padding(16)
+                .background(Color(hex: "FACC15").opacity(0.07))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color(hex: "FACC15").opacity(0.2), lineWidth: 1)
+                )
+        case .callout:
+            Text(content)
+                .font(.system(size: 15, design: .serif))
+                .foregroundStyle(Color(hex: "CFFAFE"))
+                .lineSpacing(5)
+                .padding(16)
+                .background(Color(hex: "06B6D4").opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color(hex: "06B6D4").opacity(0.2), lineWidth: 1)
+                )
+        case .standard:
+            Text(content)
+                .font(.system(size: 16, design: .serif))
+                .foregroundStyle(Color(hex: "D1D5DB"))
+                .lineSpacing(6)
+        }
+    }
+}
+
+private extension String {
+    var lessonTrimmedText: String {
+        trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    var lessonNormalizedBody: String {
+        replacingOccurrences(of: "\u{00A0}", with: " ")
+            .replacingOccurrences(of: "\u{2028}", with: "\n")
+            .replacingOccurrences(of: "\u{2029}", with: "\n")
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n")
+            .lessonTrimmedText
     }
 }

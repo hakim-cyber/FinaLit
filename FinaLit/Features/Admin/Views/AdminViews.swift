@@ -250,7 +250,6 @@ struct AddDayView: View {
 struct AddLessonView: View {
     let dayID: String
     @Environment(AdminViewModel.self)          private var adminVM
-    @Environment(Coordinator<AdminPages>.self) private var coordinator
     @State private var savedLessonID: String?
 
     var body: some View {
@@ -281,11 +280,67 @@ struct AddLessonView: View {
                 .pickerStyle(.segmented)
             }
 
-            AdminTextArea(label: "1️⃣ WHAT IS IT (Concept Definition)", placeholder: "Short definition...", text: adminVM.conceptDefinition)
-            AdminTextArea(label: "2️⃣ WHY IT MATTERS", placeholder: "Impact explanation...", text: adminVM.whyItMatters)
-            AdminTextArea(label: "3️⃣ REAL-LIFE EXAMPLE", placeholder: "Relatable example...", text: adminVM.realLifeExample)
-            AdminTextArea(label: "4️⃣ MINI CASE SCENARIO", placeholder: "Small decision scenario...", text: adminVM.miniCaseScenario)
-            AdminTextArea(label: "5️⃣ TODAY'S ACTION", placeholder: "Practical step for today...", text: adminVM.dailyActionTask)
+            VStack(alignment: .leading, spacing: 8) {
+                Text("CONTENT MODE")
+                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(Color(hex: "4B5563"))
+                Picker("Content Mode", selection: adminVM.lessonContentMode) {
+                    ForEach(LessonContentMode.allCases) {
+                        Text($0.label).tag($0)
+                    }
+                }
+                .pickerStyle(.segmented)
+
+                Text("Article keeps the lesson as long-form text. Auto and hybrid can combine text with blocks. Sectioned focuses on divided content.")
+                    .font(.system(size: 11, design: .monospaced))
+                    .foregroundStyle(Color(hex: "4B5563"))
+            }
+
+            AdminTextArea(
+                label: "BODY / ARTICLE CONTENT",
+                placeholder: "Paste the full lesson text here. Long-form text stays readable by default, and auto mode can detect structured sections when the text is clearly divided.",
+                text: adminVM.lessonBody,
+                minHeight: 220
+            )
+
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("CONTENT BLOCKS")
+                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .foregroundStyle(Color(hex: "4B5563"))
+                        Text("Optional blocks for sectioned or hybrid lessons. Use these when you want guaranteed divided UI.")
+                            .font(.system(size: 11, design: .monospaced))
+                            .foregroundStyle(Color(hex: "4B5563"))
+                    }
+                    Spacer()
+                    Button {
+                        self.adminVM.addLessonBlock()
+                    } label: {
+                        Label("Add Block", systemImage: "plus.circle")
+                            .font(.system(size: 13, design: .monospaced))
+                            .foregroundStyle(Color(hex: "6366F1"))
+                    }
+                }
+
+                if self.adminVM.lessonBlocks.isEmpty {
+                    Text("No blocks yet. Article mode only needs body text.")
+                        .font(.system(size: 12, design: .monospaced))
+                        .foregroundStyle(Color(hex: "374151"))
+                        .padding(14)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color(hex: "111118"))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color(hex: "1F2937"), lineWidth: 1)
+                        )
+                } else {
+                    ForEach(Array(self.adminVM.lessonBlocks.enumerated()), id: \.element.id) { index, _ in
+                        LessonContentBlockDraftCard(index: index)
+                    }
+                }
+            }
 
             AdminSaveButton(label: "Save Lesson", isLoading: self.adminVM.isLoading) {
                 Task {
@@ -321,6 +376,86 @@ struct AddLessonView: View {
         }
         .adminFeedback(success: nil, error: self.adminVM.errorMessage) {
             self.adminVM.clearMessages()
+        }
+    }
+}
+
+struct LessonContentBlockDraftCard: View {
+    let index: Int
+    @Environment(AdminViewModel.self) private var adminVM
+
+    var body: some View {
+        if adminVM.lessonBlocks.indices.contains(index) {
+            let kindBinding = Binding<LessonContentBlockKind>(
+                get: { adminVM.lessonBlocks[index].kind },
+                set: { adminVM.lessonBlocks[index].kind = $0 }
+            )
+            let titleBinding = Binding<String>(
+                get: { adminVM.lessonBlocks[index].title },
+                set: { adminVM.lessonBlocks[index].title = $0 }
+            )
+            let textBinding = Binding<String>(
+                get: { adminVM.lessonBlocks[index].text },
+                set: { adminVM.lessonBlocks[index].text = $0 }
+            )
+            let itemsBinding = Binding<String>(
+                get: { adminVM.lessonBlocks[index].itemsText },
+                set: { adminVM.lessonBlocks[index].itemsText = $0 }
+            )
+
+            VStack(alignment: .leading, spacing: 14) {
+                HStack {
+                    Text("BLOCK \(String(format: "%02d", index + 1))")
+                        .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(Color(hex: "6366F1"))
+                    Spacer()
+                    Button(role: .destructive) {
+                        adminVM.removeLessonBlock(at: index)
+                    } label: {
+                        Label("Remove", systemImage: "trash")
+                            .font(.system(size: 12, design: .monospaced))
+                            .foregroundStyle(Color(hex: "F87171"))
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("KIND")
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(Color(hex: "4B5563"))
+                    Picker("Block Kind", selection: kindBinding) {
+                        ForEach(LessonContentBlockKind.allCases) {
+                            Text($0.label).tag($0)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .tint(.white)
+                }
+
+                AdminField(label: "TITLE (OPTIONAL)", placeholder: "Personal Budget", text: titleBinding)
+
+                if kindBinding.wrappedValue.usesItems {
+                    AdminTextArea(
+                        label: "ITEMS (ONE PER LINE)",
+                        placeholder: "First point\nSecond point\nThird point",
+                        text: itemsBinding,
+                        minHeight: 120
+                    )
+                } else {
+                    AdminTextArea(
+                        label: "TEXT",
+                        placeholder: "Write the block content here...",
+                        text: textBinding,
+                        minHeight: 150
+                    )
+                }
+            }
+            .padding(14)
+            .background(Color(hex: "111118"))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color(hex: "1F2937"), lineWidth: 1)
+            )
         }
     }
 }
@@ -658,6 +793,7 @@ struct AdminTextArea: View {
     let label:       String
     let placeholder: String
     @Binding var text: String
+    var minHeight: CGFloat = 80
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -676,7 +812,7 @@ struct AdminTextArea: View {
                     .font(.system(size: 14, design: .serif))
                     .foregroundStyle(Color(hex: "D1D5DB"))
                     .scrollContentBackground(.hidden)
-                    .frame(minHeight: 80)
+                    .frame(minHeight: minHeight)
                     .padding(8)
             }
             .background(Color(hex: "111118"))
