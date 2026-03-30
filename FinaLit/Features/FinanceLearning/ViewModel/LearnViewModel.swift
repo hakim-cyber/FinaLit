@@ -246,6 +246,7 @@ final class LearnViewModel {
 
     // Called when user taps an answer option
     func answerQuestion(questionID: String, selectedIndex: Int) {
+        guard !questionID.isEmpty else { return }
         guard currentQuizAnswers[questionID] == nil else { return } // already answered
         currentQuizAnswers[questionID]  = selectedIndex
         currentQuizRevealed[questionID] = true
@@ -266,16 +267,15 @@ final class LearnViewModel {
     var currentQuizScore: Int {
         guard let quiz = currentQuiz else { return 0 }
         return quiz.questions.filter { question in
-            currentQuizAnswers[question.id ?? ""] == question.correctIndex
+            currentQuizAnswers[question.id] == question.correctIndex
         }.count
     }
 
     var wrongQuestionIDs: [String] {
         guard let quiz = currentQuiz else { return [] }
         return quiz.questions.compactMap { question in
-            guard let id = question.id else { return nil }
-            let answered = currentQuizAnswers[id]
-            return answered != question.correctIndex ? id : nil
+            let answered = currentQuizAnswers[question.id]
+            return answered != question.correctIndex ? question.id : nil
         }
     }
 

@@ -83,7 +83,7 @@ struct QuizView: View {
                                             showingExplanation = true
                                         }
                                         learnVM.answerQuestion(
-                                            questionID:    question.id ?? "",
+                                            questionID:    question.id,
                                             selectedIndex: index
                                         )
                                     }

@@ -27,7 +27,7 @@ struct QuizReviewView: View {
     private var wrongQuestions: [QuizQuestion] {
         guard let quiz else { return [] }
         let wrongIDs = dayProgress?.wrongQuestionIDs ?? []
-        return quiz.questions.filter { wrongIDs.contains($0.id ?? "") }
+        return quiz.questions.filter { wrongIDs.contains($0.id) }
     }
 
     private var score: Int    { dayProgress?.quizScore ?? 0 }
@@ -77,7 +77,7 @@ struct QuizReviewView: View {
                             ForEach(wrongQuestions) { question in
                                 WrongAnswerCard(
                                     question:      question,
-                                    userIndex:     learnVM.currentQuizAnswers[question.id ?? ""]
+                                    userIndex:     learnVM.currentQuizAnswers[question.id]
                                 )
                             }
                         }

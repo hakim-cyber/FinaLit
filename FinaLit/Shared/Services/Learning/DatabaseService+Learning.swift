@@ -424,7 +424,7 @@ extension DatabaseService {
                 throw DBError.notFound
             }
 
-            return try snapshot.data(as: Quiz.self)
+            return try snapshot.data(as: Quiz.self).normalizedQuestionIDs()
         } catch {
             throw mapDBError(error)
         }
@@ -626,4 +626,3 @@ extension DatabaseService {
         }
     }
 }
-
