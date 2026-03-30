@@ -33,10 +33,10 @@ final class ChatViewModel {
 
     init(
         session: UserSession,
-        repository: LocalChatRepository = LocalChatRepository(),
-        contextBuilder: ChatAdvisorContextBuilder = ChatAdvisorContextBuilder(),
-        memoryService: ChatConversationMemoryService = ChatConversationMemoryService(),
-        aiService: any AIChatService = GeminiAIChatService()
+        repository: LocalChatRepository,
+        contextBuilder: ChatAdvisorContextBuilder,
+        memoryService: ChatConversationMemoryService ,
+        aiService: any AIChatService 
     ) {
         self.session = session
         self.repository = repository

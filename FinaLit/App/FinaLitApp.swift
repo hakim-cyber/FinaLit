@@ -44,7 +44,7 @@ struct FinaLitApp: App {
         _learnViewModel = State(initialValue: LearnViewModel(db: dbService, session: session))
         _adminViewModel  = State(initialValue: AdminViewModel(db: dbService))
         _mainViewModel = State(initialValue: MainViewModel(db: dbService, session: session))
-        _chatViewModel = State(initialValue: ChatViewModel(session: session))
+        _chatViewModel = State(initialValue: ChatViewModel(session: session, repository: LocalChatRepository(), contextBuilder: ChatAdvisorContextBuilder(), memoryService: ChatConversationMemoryService(), aiService:GeminiAIChatService() ))
     }
 
     var body: some Scene {

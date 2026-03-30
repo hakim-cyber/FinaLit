@@ -10,7 +10,7 @@
 import SwiftUI
 
 @Observable
-class Coordinator<CoordinatorPage: Coordinatable> {
+final class Coordinator<CoordinatorPage: Coordinatable> {
     var path: NavigationPath = NavigationPath()
     var sheet: CoordinatorPage?
     var fullScreenCover: CoordinatorPage?
@@ -46,4 +46,6 @@ class Coordinator<CoordinatorPage: Coordinatable> {
     func popToRoot() {
         path.removeLast(path.count)
     }
+
+    deinit {}
 }
