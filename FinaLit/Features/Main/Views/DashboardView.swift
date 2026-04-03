@@ -907,50 +907,32 @@ struct AddDebtSheet: View {
         (parsedBalance ?? 0) > 0
     }
 
+    private func saveDebtAccount() {
+        guard let value = parsedBalance else { return }
+        Task {
+            let saved = await mainVM.addDebtAccount(
+                name: accountName,
+                balance: value,
+                annualInterestRate: normalizedAPR,
+                minimumMonthlyPayment: normalizedMinimumPayment
+            )
+            if saved { dismiss() }
+        }
+    }
+
     var body: some View {
-        ZStack {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+        NavigationStack {
+            ZStack {
+                Color(hex: "0A0A0F").ignoresSafeArea()
 
-            VStack(alignment: .leading, spacing: 16) {
-                Text("Add Debt Account")
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundStyle(.white)
-
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("ACCOUNT NAME")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(Color(hex: "4B5563"))
-                    TextField("e.g. Credit Card", text: $accountName)
-                        .font(.system(size: 16))
-                        .foregroundStyle(.white)
-                        .padding(12)
-                        .background(Color(hex: "111118"))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "1F2937"), lineWidth: 1))
-                }
-
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("CURRENT BALANCE")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(Color(hex: "4B5563"))
-                    TextField("0", text: $balance)
-                        .font(.system(size: 24, weight: .medium))
-                        .foregroundStyle(.white)
-                        .keyboardType(.decimalPad)
-                        .tint(Color(hex: "6366F1"))
-                        .padding(.vertical, 6)
-                    Divider().background(Color(hex: "1F2937"))
-                }
-
-                HStack(spacing: 10) {
+                VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("APR % (OPTIONAL)")
+                        Text("ACCOUNT NAME")
                             .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
-                        TextField("e.g. 19.9", text: $annualInterestRate)
-                            .font(.system(size: 14))
+                        TextField("e.g. Credit Card", text: $accountName)
+                            .font(.system(size: 16))
                             .foregroundStyle(.white)
-                            .keyboardType(.decimalPad)
                             .padding(12)
                             .background(Color(hex: "111118"))
                             .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -958,51 +940,68 @@ struct AddDebtSheet: View {
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("MIN PAYMENT (OPTIONAL)")
+                        Text("CURRENT BALANCE")
                             .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
-                        TextField("e.g. 50", text: $minimumPayment)
-                            .font(.system(size: 14))
+                        TextField("0", text: $balance)
+                            .font(.system(size: 24, weight: .medium))
                             .foregroundStyle(.white)
                             .keyboardType(.decimalPad)
-                            .padding(12)
-                            .background(Color(hex: "111118"))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "1F2937"), lineWidth: 1))
+                            .tint(Color(hex: "6366F1"))
+                            .padding(.vertical, 6)
+                        Divider().background(Color(hex: "1F2937"))
                     }
-                }
 
-                Spacer(minLength: 4)
+                    HStack(spacing: 10) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("APR % (OPTIONAL)")
+                                .font(.system(size: 10, weight: .semibold))
+                                .foregroundStyle(Color(hex: "4B5563"))
+                            TextField("e.g. 19.9", text: $annualInterestRate)
+                                .font(.system(size: 14))
+                                .foregroundStyle(.white)
+                                .keyboardType(.decimalPad)
+                                .padding(12)
+                                .background(Color(hex: "111118"))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "1F2937"), lineWidth: 1))
+                        }
 
-                Button {
-                    guard let value = parsedBalance else { return }
-                    Task {
-                        let saved = await mainVM.addDebtAccount(
-                            name: accountName,
-                            balance: value,
-                            annualInterestRate: normalizedAPR,
-                            minimumMonthlyPayment: normalizedMinimumPayment
-                        )
-                        if saved { dismiss() }
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("MIN PAYMENT (OPTIONAL)")
+                                .font(.system(size: 10, weight: .semibold))
+                                .foregroundStyle(Color(hex: "4B5563"))
+                            TextField("e.g. 50", text: $minimumPayment)
+                                .font(.system(size: 14))
+                                .foregroundStyle(.white)
+                                .keyboardType(.decimalPad)
+                                .padding(12)
+                                .background(Color(hex: "111118"))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "1F2937"), lineWidth: 1))
+                        }
                     }
-                } label: {
-                    Text("Save Debt Account")
-                        .font(.system(size: 14))
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(
-                            isValid
-                                ? LinearGradient(colors: [Color(hex: "6366F1"), Color(hex: "4F46E5")],
-                                                 startPoint: .leading, endPoint: .trailing)
-                                : LinearGradient(colors: [Color(hex: "1F2937"), Color(hex: "1F2937")],
-                                                 startPoint: .leading, endPoint: .trailing)
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    Spacer(minLength: 4)
                 }
-                .disabled(!isValid || mainVM.isSubmitting)
+                .padding(20)
             }
-            .padding(20)
+            .navigationTitle("Add Debt Account")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Save") {
+                        saveDebtAccount()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(!isValid || mainVM.isSubmitting)
+                }
+            }
         }
     }
 }
@@ -1015,6 +1014,7 @@ struct PayDebtSheet: View {
     @State private var selectedDebtID: String = ""
     @State private var amount: String = ""
     @State private var note: String = ""
+    @State private var showDebtAccountPicker = false
 
     init(onAddDebt: @escaping () -> Void = {}) {
         self.onAddDebt = onAddDebt
@@ -1040,58 +1040,26 @@ struct PayDebtSheet: View {
         }
     }
 
+    private func submitPayment() {
+        guard let account = selectedAccount, let value = parsedAmount else { return }
+        Task {
+            let paid = await mainVM.payDebt(account: account, amount: value, note: note)
+            if paid { dismiss() }
+        }
+    }
+
     var body: some View {
-        ZStack {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+        NavigationStack {
+            ZStack {
+                Color(hex: "0A0A0F").ignoresSafeArea()
 
-            VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Text("Pay Debt")
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundStyle(.white)
-                    Spacer()
-                    Button("Add Debt") {
-                        openAddDebt()
-                    }
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(Color(hex: "F97316"))
-                }
+                VStack(alignment: .leading, spacing: 16) {
+                    debtAccountSection
 
-                if mainVM.activeDebtAccounts.isEmpty {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("No active debt accounts.")
+                    if mainVM.activeDebtAccounts.isEmpty {
+                        Text("Create a debt account first to record a payment.")
                             .font(.system(size: 13))
                             .foregroundStyle(Color(hex: "6B7280"))
-
-                        Button {
-                            openAddDebt()
-                        } label: {
-                            HStack(spacing: 8) {
-                                Image(systemName: "plus.circle.fill")
-                                Text("Create debt account")
-                            }
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 10)
-                            .background(Color(hex: "F97316").opacity(0.2))
-                            .clipShape(Capsule())
-                        }
-                        .buttonStyle(.plain)
-                    }
-                } else {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("ACCOUNT")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(Color(hex: "4B5563"))
-                        Picker("Debt Account", selection: $selectedDebtID) {
-                            ForEach(mainVM.activeDebtAccounts) { account in
-                                Text("\(account.name) - \(formatCurrency(account.currentBalance))")
-                                    .tag(account.id ?? "")
-                            }
-                        }
-                        .pickerStyle(.menu)
-                        .tint(.white)
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
@@ -1119,40 +1087,151 @@ struct PayDebtSheet: View {
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                             .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "1F2937"), lineWidth: 1))
                     }
-                }
 
-                Spacer(minLength: 4)
-
-                Button {
-                    guard let account = selectedAccount, let value = parsedAmount else { return }
-                    Task {
-                        let paid = await mainVM.payDebt(account: account, amount: value, note: note)
-                        if paid { dismiss() }
-                    }
-                } label: {
-                    Text("Confirm Payment")
-                        .font(.system(size: 14))
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(
-                            isValid
-                                ? LinearGradient(colors: [Color(hex: "6366F1"), Color(hex: "4F46E5")],
-                                                 startPoint: .leading, endPoint: .trailing)
-                                : LinearGradient(colors: [Color(hex: "1F2937"), Color(hex: "1F2937")],
-                                                 startPoint: .leading, endPoint: .trailing)
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    Spacer(minLength: 4)
                 }
-                .disabled(!isValid || mainVM.isSubmitting)
+                .padding(20)
             }
-            .padding(20)
+            .navigationTitle("Pay Debt")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Add") {
+                        submitPayment()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(!isValid || mainVM.isSubmitting)
+                }
+            }
         }
         .onAppear {
             if selectedDebtID.isEmpty {
                 selectedDebtID = mainVM.activeDebtAccounts.first?.id ?? ""
             }
         }
+    }
+
+    private var debtAccountSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("ACCOUNT")
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundStyle(Color(hex: "4B5563"))
+
+            HStack(spacing: 10) {
+                Button {
+                    guard !mainVM.activeDebtAccounts.isEmpty else { return }
+                    showDebtAccountPicker = true
+                } label: {
+                    HStack(spacing: 12) {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(selectedAccount?.name ?? "No debt account selected")
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundStyle(.white)
+
+                            Text(selectedAccount.map { formatCurrency($0.currentBalance) } ?? "Tap + to create a debt account")
+                                .font(.system(size: 12))
+                                .foregroundStyle(Color(hex: "6B7280"))
+                        }
+
+                        Spacer()
+
+                        Image(systemName: "chevron.up.chevron.down")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundStyle(mainVM.activeDebtAccounts.isEmpty ? Color(hex: "374151") : Color(hex: "9CA3AF"))
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 14)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color(hex: "111118"))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color(hex: "1F2937"), lineWidth: 1)
+                    )
+                }
+                .buttonStyle(.plain)
+                .disabled(mainVM.activeDebtAccounts.isEmpty)
+                .popover(isPresented: $showDebtAccountPicker, arrowEdge: .top) {
+                    debtAccountPickerPopover
+                        .presentationCompactAdaptation(.popover)
+                }
+
+                Button {
+                    openAddDebt()
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 48, height: 48)
+                        .background(Color(hex: "F97316").opacity(0.2))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color(hex: "F97316").opacity(0.35), lineWidth: 1)
+                        )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    private var debtAccountPickerPopover: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Select Debt Account")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(.white)
+
+                ForEach(mainVM.activeDebtAccounts) { account in
+                    Button {
+                        selectedDebtID = account.id ?? ""
+                        showDebtAccountPicker = false
+                    } label: {
+                        HStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(account.name)
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundStyle(.white)
+
+                                Text(formatCurrency(account.currentBalance))
+                                    .font(.system(size: 12))
+                                    .foregroundStyle(Color(hex: "6B7280"))
+                            }
+
+                            Spacer()
+
+                            if account.id == selectedAccount?.id {
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundStyle(Color(hex: "F97316"))
+                            }
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 14)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color(hex: account.id == selectedAccount?.id ? "171724" : "111118"))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(
+                                    Color(hex: account.id == selectedAccount?.id ? "F97316" : "1F2937").opacity(account.id == selectedAccount?.id ? 0.35 : 1),
+                                    lineWidth: 1
+                                )
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(16)
+        }
+        .frame(width: 320)
+        .background(Color(hex: "0A0A0F"))
     }
 }
 
