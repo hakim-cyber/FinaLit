@@ -527,6 +527,22 @@ final class MainViewModel {
         recalculate()
     }
 
+    var selectedMonthDate: Date {
+        monthDate(from: selectedMonth) ?? maximumSelectableMonthDate
+    }
+
+    var maximumSelectableMonthDate: Date {
+        startOfMonth(for: Date())
+    }
+
+    func setSelectedMonth(from date: Date) {
+        let normalizedDate = min(startOfMonth(for: date), maximumSelectableMonthDate)
+        let normalizedMonth = monthString(from: normalizedDate)
+        guard normalizedMonth != selectedMonth else { return }
+        selectedMonth = normalizedMonth
+        recalculate()
+    }
+
     var isCurrentMonth: Bool {
         selectedMonth == Self.currentMonthString()
     }
@@ -977,19 +993,37 @@ final class MainViewModel {
     }
 
     private func displayMonth(_ month: String) -> String {
+        guard let date = monthDate(from: month) else { return month }
+
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM"
-        guard let date = formatter.date(from: month) else { return month }
         formatter.dateFormat = "MMMM yyyy"
         return formatter.string(from: date)
+    }
+
+    private func monthDate(from month: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM"
+        return formatter.date(from: month)
+    }
+
+    private func monthString(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM"
+        return formatter.string(from: date)
+    }
+
+    private func startOfMonth(for date: Date) -> Date {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month], from: date)
+        return calendar.date(from: components) ?? date
     }
 
     private func defaultFormDateForSelectedMonth() -> Date {
         guard !isCurrentMonth else { return Date() }
 
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM"
-        guard let monthDate = formatter.date(from: selectedMonth) else { return Date() }
+        guard let monthDate = monthDate(from: selectedMonth) else { return Date() }
 
         let calendar = Calendar.current
         let todayDay = calendar.component(.day, from: Date())
@@ -1001,12 +1035,10 @@ final class MainViewModel {
     }
 
     private func offsetMonth(_ month: String, by offset: Int) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM"
-        guard let date    = formatter.date(from: month),
+        guard let date    = monthDate(from: month),
               let newDate = Calendar.current.date(byAdding: .month, value: offset, to: date)
         else { return month }
-        return formatter.string(from: newDate)
+        return monthString(from: newDate)
     }
 
     static func currentMonthString() -> String {

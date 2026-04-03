@@ -22,8 +22,6 @@ struct ChatView: View {
             ChatPalette.background.ignoresSafeArea()
 
             VStack(spacing: 0) {
-                header
-
                 ScrollViewReader { proxy in
                     ScrollView(showsIndicators: false) {
                         VStack(alignment: .leading, spacing: 14) {
@@ -85,7 +83,31 @@ struct ChatView: View {
                     )
             }
         }
-        .navigationBarHidden(true)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Clear") {
+                    viewModel.clearChat(context: modelContext)
+                }
+                .foregroundStyle(Color.primary)
+             
+                .disabled(viewModel.messages.isEmpty || viewModel.isSending)
+               
+            }
+            if #available(iOS 26.0, *) {
+                ToolbarSpacer(.flexible, placement: .topBarTrailing)
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    coordinator.push(.settings, type: .fullScreenCover)
+                } label: {
+                    Image(systemName: "gearshape")
+                       
+                }
+                .foregroundStyle(Color.primary)
+            }
+        }
+       
         .task {
             if mainVM.aiContext == nil && !mainVM.isLoadingHome {
                 await mainVM.loadHome()
@@ -105,48 +127,6 @@ struct ChatView: View {
         } message: {
             Text("To answer questions, FinaLit sends your message and selected financial profile data to Google Gemini through Firebase AI Logic.")
         }
-    }
-
-    private var header: some View {
-        HStack(alignment: .top, spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("FinaLit")
-                    .font(.system(size: 34, weight: .light, design: .serif))
-                    .foregroundStyle(.white)
-
-                Text("AI Financial Advisor")
-                    .font(.system(size: 13, design: .monospaced))
-                    .foregroundStyle(ChatPalette.muted)
-            }
-
-            Spacer()
-
-            HStack(spacing: 10) {
-                ProfileSettingsButton {
-                    coordinator.push(.settings, type: .fullScreenCover)
-                }
-
-                Button {
-                    viewModel.clearChat(context: modelContext)
-                } label: {
-                    Text("CLEAR")
-                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                        .foregroundStyle(ChatPalette.accent)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 8)
-                        .background(ChatPalette.surface)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(ChatPalette.border, lineWidth: 1)
-                        )
-                }
-                .disabled(viewModel.messages.isEmpty || viewModel.isSending)
-            }
-        }
-        .padding(.horizontal, 20)
-        .padding(.top, 14)
-        .padding(.bottom, 8)
     }
 
     private var disclaimerCard: some View {

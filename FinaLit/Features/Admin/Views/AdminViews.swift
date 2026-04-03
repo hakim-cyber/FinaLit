@@ -17,7 +17,6 @@ import UIKit
 // MARK: - Admin Home
 struct AdminHomeView: View {
     @Environment(Coordinator<AdminPages>.self) private var coordinator
-    @Environment(UserSession.self)            private var session
 
     var body: some View {
         ZStack {
@@ -25,25 +24,6 @@ struct AdminHomeView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 28) {
-
-                    // Header
-                    HStack(alignment: .top) {
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text("⚙️ Admin Panel")
-                                .font(.system(size: 30, weight: .light, design: .serif))
-                                .foregroundStyle(.white)
-                            Text("Logged in as \(session.user?.email ?? "")")
-                                .font(.system(size: 12, design: .monospaced))
-                                .foregroundStyle(Color(hex: "4B5563"))
-                        }
-                        Spacer()
-                        ProfileSettingsButton {
-                            coordinator.push(.settings, type: .fullScreenCover)
-                        }
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 16)
-
                     // Section: Content
                     AdminSection(title: "LEARNING CONTENT") {
                         AdminMenuRow(
@@ -95,7 +75,18 @@ struct AdminHomeView: View {
                 }
             }
         }
-        .navigationBarHidden(true)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    coordinator.push(.settings, type: .fullScreenCover)
+                } label: {
+                    Image(systemName: "gearshape")
+                        .foregroundStyle(Color.primary)
+                }
+            }
+        }
+        .toolbarBackground(.visible, for: .navigationBar)
     }
 }
 

@@ -13,7 +13,6 @@ import SwiftUI
 
 struct DashboardView: View {
     @Environment(MainViewModel.self)           private var mainVM
-    @Environment(UserSession.self)             private var session
     @Environment(Coordinator<MainPages>.self)  private var coordinator
     @State private var showPayDebtSheet = false
     @State private var showAddDebtSheet = false
@@ -21,6 +20,8 @@ struct DashboardView: View {
     @State private var showCloseMonthDialog = false
     @State private var closeMonthSuccessMessage: String?
     @State private var closeMonthToastTask: Task<Void, Never>?
+    @State private var showMonthPicker = false
+    @State private var monthPickerDate = Date()
 
     var body: some View {
         ZStack {
@@ -31,8 +32,6 @@ struct DashboardView: View {
             } else {
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 24) {
-
-                        headerSection
                         balanceHeroCard
                         statsRow
                         quickActions
@@ -108,7 +107,36 @@ struct DashboardView: View {
                 }
             }
         }
-        .navigationBarHidden(true)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    monthPickerDate = mainVM.selectedMonthDate
+                    showMonthPicker = true
+                } label: {
+                    HStack(spacing: 6) {
+                        Text(mainVM.selectedMonthDisplay)
+                        Image(systemName: "chevron.down")
+                            .font(.caption.weight(.semibold))
+                    }
+                    .foregroundStyle(Color.primary)
+                }
+                .popover(isPresented: $showMonthPicker, arrowEdge: .top) {
+                    monthPickerPopover
+                        .presentationCompactAdaptation(.popover)
+                }
+            }
+
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    coordinator.push(.settings, type: .fullScreenCover)
+                } label: {
+                    Image(systemName: "gearshape")
+                        .foregroundStyle(Color.primary)
+                }
+            }
+        }
+        .toolbarBackground(.visible, for: .navigationBar)
         .task { await mainVM.loadHome() }
         .sheet(isPresented: $showPayDebtSheet) {
             PayDebtSheet(onAddDebt: {
@@ -146,6 +174,27 @@ struct DashboardView: View {
         .onDisappear {
             closeMonthToastTask?.cancel()
         }
+    }
+
+    private var monthPickerPopover: some View {
+        DatePicker(
+            "Select month",
+            selection: Binding(
+                get: { monthPickerDate },
+                set: { newValue in
+                    monthPickerDate = newValue
+                    mainVM.setSelectedMonth(from: newValue)
+                    showMonthPicker = false
+                }
+            ),
+            in: ...mainVM.maximumSelectableMonthDate,
+            displayedComponents: .date
+        )
+        .datePickerStyle(.graphical)
+        .labelsHidden()
+        .padding(16)
+        .frame(width: 320)
+    
     }
 
     private var isShowingErrorAlert: Binding<Bool> {
@@ -193,37 +242,6 @@ struct DashboardView: View {
         guard let date = formatter.date(from: month) else { return month }
         formatter.dateFormat = "MMMM yyyy"
         return formatter.string(from: date)
-    }
-
-    // MARK: - Header
-    private var headerSection: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(greeting)
-                    .font(.system(size: 14, design: .monospaced))
-                    .foregroundStyle(Color(hex: "4B5563"))
-                Text(session.user?.name.components(separatedBy: " ").first ?? "")
-                    .font(.system(size: 28, weight: .light, design: .serif))
-                    .foregroundStyle(.white)
-            }
-            Spacer()
-            HStack(spacing: 10) {
-                ProfileSettingsButton {
-                    coordinator.push(.settings, type: .fullScreenCover)
-                }
-                MonthNavigator()
-            }
-        }
-        .padding(.horizontal, 20)
-    }
-
-    private var greeting: String {
-        let hour = Calendar.current.component(.hour, from: Date())
-        switch hour {
-        case 0..<12:  return "good morning"
-        case 12..<17: return "good afternoon"
-        default:      return "good evening"
-        }
     }
 
     private var debtQuickActionSubtitle: String {
@@ -496,41 +514,6 @@ struct DashboardView: View {
                 .padding(.horizontal, 20)
             }
         }
-    }
-}
-
-// MARK: - Month Navigator
-struct MonthNavigator: View {
-    @Environment(MainViewModel.self) private var mainVM
-
-    var body: some View {
-        HStack(spacing: 12) {
-            Button {
-                mainVM.goToPreviousMonth()
-            } label: {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(Color(hex: "6B7280"))
-            }
-
-            Text(mainVM.selectedMonthDisplay)
-                .font(.system(size: 12, design: .monospaced))
-                .foregroundStyle(Color(hex: "9CA3AF"))
-                .frame(minWidth: 80)
-
-            Button {
-                mainVM.goToNextMonth()
-            } label: {
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(mainVM.isCurrentMonth ? Color(hex: "1F2937") : Color(hex: "6B7280"))
-            }
-            .disabled(mainVM.isCurrentMonth)
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 8)
-        .background(Color(hex: "111118"))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }
 

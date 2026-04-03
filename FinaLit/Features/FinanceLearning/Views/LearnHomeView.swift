@@ -14,7 +14,6 @@ import SwiftUI
 struct LearnHomeView: View {
     @Environment(LearnViewModel.self)              private var learnVM
     @Environment(Coordinator<LearnPages>.self)     private var coordinator
-    @Environment(UserSession.self)                 private var session
 
     var body: some View {
         ZStack {
@@ -23,10 +22,6 @@ struct LearnHomeView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 28) {
-
-                    // ── Header ─────────────────────────────────────────────
-                    headerSection
-
                     // ── Daily Tip ──────────────────────────────────────────
                     if let tip = learnVM.todaysTip {
                         DailyTipCard(tip: tip)
@@ -98,47 +93,37 @@ struct LearnHomeView: View {
                 LearnLoadingView()
             }
         }
-        .navigationBarHidden(true)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    coordinator.push(.progress)
+                } label: {
+                    Image(systemName: "flame.fill")
+                        .foregroundStyle(Color.orange)
+                    
+                }
+                
+              
+            }
+                if #available(iOS 26.0, *) {
+                    ToolbarSpacer(.flexible, placement: .topBarTrailing)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    coordinator.push(.settings, type: .fullScreenCover)
+                } label: {
+                    Image(systemName: "gearshape")
+                       
+                }
+                .foregroundStyle(Color.primary)
+            }
+        }
+       
         .task {
             await learnVM.onTabAppear()
             await learnVM.loadHome()
         }
-    }
-
-    // MARK: - Header
-    private var headerSection: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("FinaLit")
-                    .font(.system(size: 34, weight: .light, design: .serif))
-                    .foregroundStyle(.white)
-                Text("Learn Financial Literacy")
-                    .font(.system(size: 14, design: .monospaced))
-                    .foregroundStyle(Color(hex: "4B5563"))
-            }
-            Spacer()
-            HStack(spacing: 10) {
-                ProfileSettingsButton {
-                    coordinator.push(.settings, type: .fullScreenCover)
-                }
-
-                // Streak badge
-                VStack(spacing: 2) {
-                    Text("🔥")
-                        .font(.title2)
-                    Text("\(learnVM.learningSummary.currentStreak)")
-                        .font(.system(size: 16, weight: .semibold, design: .monospaced))
-                        .foregroundStyle(.white)
-                    Text("streak")
-                        .font(.system(size: 10, design: .monospaced))
-                        .foregroundStyle(Color(hex: "4B5563"))
-                }
-                .padding(12)
-                .background(Color(hex: "111118"))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-            }
-        }
-        .padding(.horizontal, 20)
     }
 }
 
