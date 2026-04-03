@@ -63,7 +63,7 @@ struct AddTransactionView: View {
                 } label: {
                     HStack {
                         Text("Save Transaction")
-                            .font(.system(size: 16, design: .monospaced))
+                            .font(.system(size: 16))
                         if mainVM.isSubmitting {
                             ProgressView().tint(.white).scaleEffect(0.8)
                         }
@@ -118,7 +118,7 @@ struct AddTransactionView: View {
                     }
                 } label: {
                     Text(type == .expense ? "Expense" : "Income")
-                        .font(.system(size: 15, design: .monospaced))
+                        .font(.system(size: 15))
                         .foregroundStyle(mainVM.formType == type ? .white : Color(hex: "4B5563"))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
@@ -141,15 +141,15 @@ struct AddTransactionView: View {
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("AMOUNT")
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(Color(hex: "4B5563"))
 
             HStack(alignment: .center, spacing: 4) {
                 Text(AppRegion.currencySymbol)
-                    .font(.system(size: 36, weight: .light, design: .serif))
+                    .font(.system(size: 36, weight: .medium))
                     .foregroundStyle(Color(hex: "374151"))
                 TextField("0", text: $mainVM.formAmount)
-                    .font(.system(size: 36, weight: .light, design: .serif))
+                    .font(.system(size: 36, weight: .medium))
                     .foregroundStyle(.white)
                     .keyboardType(.decimalPad)
                     .tint(Color(hex: "6366F1"))
@@ -164,7 +164,7 @@ struct AddTransactionView: View {
     private var categoryGrid: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("CATEGORY")
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(Color(hex: "4B5563"))
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 4), spacing: 8) {
@@ -186,10 +186,10 @@ struct AddTransactionView: View {
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("NOTE (OPTIONAL)")
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(Color(hex: "4B5563"))
             TextField("What was this for?", text: $mainVM.formNote)
-                .font(.system(size: 15, design: .serif))
+                .font(.system(size: 15))
                 .foregroundStyle(.white)
                 .padding(14)
                 .background(Color(hex: "111118"))
@@ -204,7 +204,7 @@ struct AddTransactionView: View {
 
         return VStack(alignment: .leading, spacing: 8) {
             Text("DATE")
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(Color(hex: "4B5563"))
             DatePicker("", selection: $mainVM.formDate, displayedComponents: .date)
                 .datePickerStyle(.compact)
@@ -220,10 +220,10 @@ struct AddTransactionView: View {
         return HStack {
             VStack(alignment: .leading, spacing: 3) {
                 Text("RECURRING MONTHLY")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
                 Text("Mark rent, salary, subscriptions")
-                    .font(.system(size: 12, design: .serif))
+                    .font(.system(size: 12))
                     .foregroundStyle(Color(hex: "374151"))
             }
             Spacer()
@@ -246,7 +246,7 @@ struct CategoryChip: View {
                     .font(.system(size: 16))
                     .foregroundStyle(isSelected ? Color(hex: category.color) : Color(hex: "4B5563"))
                 Text(category.rawValue.components(separatedBy: " ").first ?? category.rawValue)
-                    .font(.system(size: 9, design: .monospaced))
+                    .font(.system(size: 9))
                     .foregroundStyle(isSelected ? Color(hex: category.color) : Color(hex: "4B5563"))
                     .lineLimit(1)
             }

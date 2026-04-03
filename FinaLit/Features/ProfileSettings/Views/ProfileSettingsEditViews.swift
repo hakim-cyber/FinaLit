@@ -52,7 +52,7 @@ struct PersonalInfoEditView: View {
                     Text("Email (display only)")
                         .settingsFieldLabelStyle()
                     Text(session.user?.email ?? "No email")
-                        .font(.system(size: 15, design: .serif))
+                        .font(.system(size: 15))
                         .foregroundStyle(Color(hex: "9CA3AF"))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 14)
@@ -70,7 +70,7 @@ struct PersonalInfoEditView: View {
                             .settingsFieldLabelStyle()
                         Spacer()
                         Text("\(Int(age.rounded()))")
-                            .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 13, weight: .semibold))
                             .foregroundStyle(ProfileSettingsPalette.accent)
                     }
                     Slider(value: $age, in: 13...80, step: 1)

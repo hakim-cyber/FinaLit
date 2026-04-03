@@ -21,7 +21,7 @@ struct AuthLegalLinksRow: View {
                     Link("Terms of Use", destination: termsOfUseURL)
                 }
             }
-            .font(.system(size: 11, weight: .medium, design: .monospaced))
+            .font(.system(size: 11, weight: .semibold))
             .foregroundStyle(Color(hex: "6B7280"))
             .tint(Color(hex: "6B7280"))
             .frame(maxWidth: .infinity)

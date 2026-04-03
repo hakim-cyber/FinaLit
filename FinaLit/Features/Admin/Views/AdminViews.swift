@@ -98,7 +98,7 @@ struct AdminSection<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(title)
-                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(Color(hex: "4B5563"))
                 .padding(.horizontal, 20)
             VStack(spacing: 1) { content }
@@ -130,10 +130,10 @@ struct AdminMenuRow: View {
                 }
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
-                        .font(.system(size: 15, design: .serif))
+                        .font(.system(size: 15))
                         .foregroundStyle(.white)
                     Text(subtitle)
-                        .font(.system(size: 11, design: .monospaced))
+                        .font(.system(size: 11))
                         .foregroundStyle(Color(hex: "4B5563"))
                 }
                 Spacer()
@@ -166,7 +166,7 @@ struct AddWeekView: View {
 
             if !adminVM.isPublished.wrappedValue {
                 Text("Draft weeks are not visible to users until published.")
-                    .font(.system(size: 11, design: .monospaced))
+                    .font(.system(size: 11))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
 
@@ -197,7 +197,7 @@ struct AddDayView: View {
             // Week picker
             VStack(alignment: .leading, spacing: 8) {
                 Text("SELECT WEEK")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
                 Picker("Week", selection: $selectedWeekID) {
                     Text("Choose a week").tag("")
@@ -218,7 +218,7 @@ struct AddDayView: View {
                 AdminField(label: "LESSON ID", placeholder: "Paste lesson ID here", text: adminVM.lessonID)
                 AdminField(label: "QUIZ ID",   placeholder: "Paste quiz ID here",   text: adminVM.quizID)
                 Text("💡 Create the lesson and quiz first, then paste their IDs here.")
-                    .font(.system(size: 11, design: .monospaced))
+                    .font(.system(size: 11))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
 
@@ -261,7 +261,7 @@ struct AddLessonView: View {
             // Difficulty picker
             VStack(alignment: .leading, spacing: 8) {
                 Text("DIFFICULTY")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
                 Picker("Difficulty", selection: adminVM.difficultyLevel) {
                     ForEach([DifficultyLevel.beginner, .intermediate, .advanced], id: \.self) {
@@ -273,7 +273,7 @@ struct AddLessonView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("CONTENT MODE")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
                 Picker("Content Mode", selection: adminVM.lessonContentMode) {
                     ForEach(LessonContentMode.allCases) {
@@ -283,7 +283,7 @@ struct AddLessonView: View {
                 .pickerStyle(.segmented)
 
                 Text("Article keeps the lesson as long-form text. Auto and hybrid can combine text with blocks. Sectioned focuses on divided content.")
-                    .font(.system(size: 11, design: .monospaced))
+                    .font(.system(size: 11))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
 
@@ -298,10 +298,10 @@ struct AddLessonView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("CONTENT BLOCKS")
-                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
                         Text("Optional blocks for sectioned or hybrid lessons. Use these when you want guaranteed divided UI.")
-                            .font(.system(size: 11, design: .monospaced))
+                            .font(.system(size: 11))
                             .foregroundStyle(Color(hex: "4B5563"))
                     }
                     Spacer()
@@ -309,14 +309,14 @@ struct AddLessonView: View {
                         self.adminVM.addLessonBlock()
                     } label: {
                         Label("Add Block", systemImage: "plus.circle")
-                            .font(.system(size: 13, design: .monospaced))
+                            .font(.system(size: 13))
                             .foregroundStyle(Color(hex: "6366F1"))
                     }
                 }
 
                 if self.adminVM.lessonBlocks.isEmpty {
                     Text("No blocks yet. Article mode only needs body text.")
-                        .font(.system(size: 12, design: .monospaced))
+                        .font(.system(size: 12))
                         .foregroundStyle(Color(hex: "374151"))
                         .padding(14)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -346,10 +346,10 @@ struct AddLessonView: View {
             if let success = self.adminVM.successMessage {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(success)
-                        .font(.system(size: 13, design: .monospaced))
+                        .font(.system(size: 13))
                         .foregroundStyle(Color(hex: "10B981"))
                     Text("Copy the Lesson ID above and paste it when creating the Day.")
-                        .font(.system(size: 11, design: .monospaced))
+                        .font(.system(size: 11))
                         .foregroundStyle(Color(hex: "4B5563"))
                 }
                 .padding(14)
@@ -397,21 +397,21 @@ struct LessonContentBlockDraftCard: View {
             VStack(alignment: .leading, spacing: 14) {
                 HStack {
                     Text("BLOCK \(String(format: "%02d", index + 1))")
-                        .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 11, weight: .semibold))
                         .foregroundStyle(Color(hex: "6366F1"))
                     Spacer()
                     Button(role: .destructive) {
                         adminVM.removeLessonBlock(at: index)
                     } label: {
                         Label("Remove", systemImage: "trash")
-                            .font(.system(size: 12, design: .monospaced))
+                            .font(.system(size: 12))
                             .foregroundStyle(Color(hex: "F87171"))
                     }
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("KIND")
-                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 10, weight: .semibold))
                         .foregroundStyle(Color(hex: "4B5563"))
                     Picker("Block Kind", selection: kindBinding) {
                         ForEach(LessonContentBlockKind.allCases) {
@@ -482,7 +482,7 @@ struct AddQuizView: View {
                     Image(systemName: "plus.circle")
                     Text("Add Question")
                 }
-                .font(.system(size: 14, design: .monospaced))
+                .font(.system(size: 14))
                 .foregroundStyle(Color(hex: "6366F1"))
                 .frame(maxWidth: .infinity)
                 .padding(14)
@@ -501,7 +501,7 @@ struct AddQuizView: View {
 
             if let success = self.adminVM.successMessage {
                 Text(success)
-                    .font(.system(size: 13, design: .monospaced))
+                    .font(.system(size: 13))
                     .foregroundStyle(Color(hex: "10B981"))
                     .padding(14)
                     .background(Color(hex: "10B981").opacity(0.08))
@@ -531,7 +531,7 @@ struct QuizQuestionDraftView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("QUESTION \(index + 1)")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "6366F1"))
                 Spacer()
                 if adminVM.questions.count > 1 {
@@ -586,7 +586,7 @@ struct QuizQuestionDraftView: View {
                                 set: { adminVM.questions[index].options[optIndex] = $0 }
                             )
                         )
-                        .font(.system(size: 14, design: .monospaced))
+                        .font(.system(size: 14))
                         .foregroundStyle(.white)
                     }
                 }
@@ -596,7 +596,7 @@ struct QuizQuestionDraftView: View {
             .clipShape(RoundedRectangle(cornerRadius: 10))
 
             Text("● = correct answer")
-                .font(.system(size: 10, design: .monospaced))
+                .font(.system(size: 10))
                 .foregroundStyle(Color(hex: "4B5563"))
 
             AdminTextArea(
@@ -634,7 +634,7 @@ struct AddDailyTipView: View {
             // Date picker
             VStack(alignment: .leading, spacing: 8) {
                 Text("SHOW ON DATE")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
                 DatePicker("", selection: adminVM.tipDate, displayedComponents: .date)
                     .datePickerStyle(.graphical)
@@ -666,10 +666,10 @@ struct AddBulkImportView: View {
         AdminFormView(title: "Bulk JSON Import", icon: "doc.text.fill") {
             VStack(alignment: .leading, spacing: 8) {
                 Text("PASTE AI JSON")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
                 Text("Use one universal JSON payload to create weeks, lessons, quizzes, days, and tips in one action.")
-                    .font(.system(size: 12, design: .monospaced))
+                    .font(.system(size: 12))
                     .foregroundStyle(Color(hex: "9CA3AF"))
             }
 
@@ -688,7 +688,7 @@ struct AddBulkImportView: View {
                     copiedTemplate = true
                 } label: {
                     Label(copiedTemplate ? "Template Copied" : "Copy Template", systemImage: "doc.on.doc")
-                        .font(.system(size: 12, design: .monospaced))
+                        .font(.system(size: 12))
                         .foregroundStyle(Color(hex: copiedTemplate ? "10B981" : "6366F1"))
                 }
 
@@ -701,7 +701,7 @@ struct AddBulkImportView: View {
                     #endif
                 } label: {
                     Label(pastedPayload ? "Pasted" : "Paste Clipboard", systemImage: "doc.text")
-                        .font(.system(size: 12, design: .monospaced))
+                        .font(.system(size: 12))
                         .foregroundStyle(Color(hex: pastedPayload ? "10B981" : "22D3EE"))
                 }
             }
@@ -740,7 +740,7 @@ struct AdminFormView<Content: View>: View {
                         Image(systemName: icon)
                             .foregroundStyle(Color(hex: "6366F1"))
                         Text(title)
-                            .font(.system(size: 24, weight: .light, design: .serif))
+                            .font(.system(size: 24, weight: .medium))
                             .foregroundStyle(.white)
                     }
                     .padding(.top, 8)
@@ -764,10 +764,10 @@ struct AdminField: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(label)
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(Color(hex: "4B5563"))
             TextField(placeholder, text: $text)
-                .font(.system(size: 15, design: .monospaced))
+                .font(.system(size: 15))
                 .foregroundStyle(.white)
                 .padding(12)
                 .background(Color(hex: "111118"))
@@ -789,18 +789,18 @@ struct AdminTextArea: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(label)
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(Color(hex: "4B5563"))
             ZStack(alignment: .topLeading) {
                 if text.isEmpty {
                     Text(placeholder)
-                        .font(.system(size: 14, design: .serif))
+                        .font(.system(size: 14))
                         .foregroundStyle(Color(hex: "374151"))
                         .padding(12)
                         .allowsHitTesting(false)
                 }
                 TextEditor(text: $text)
-                    .font(.system(size: 14, design: .serif))
+                    .font(.system(size: 14))
                     .foregroundStyle(Color(hex: "D1D5DB"))
                     .scrollContentBackground(.hidden)
                     .frame(minHeight: minHeight)
@@ -823,7 +823,7 @@ struct AdminToggle: View {
     var body: some View {
         HStack {
             Text(label)
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(Color(hex: "4B5563"))
             Spacer()
             Toggle("", isOn: $isOn)
@@ -841,7 +841,7 @@ struct AdminSaveButton: View {
         Button(action: action) {
             HStack {
                 Text(label)
-                    .font(.system(size: 16, design: .monospaced))
+                    .font(.system(size: 16))
                 if isLoading {
                     ProgressView().tint(.white).scaleEffect(0.8)
                 }
@@ -871,11 +871,11 @@ struct AdminCreatedIDCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(title.uppercased())
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(Color(hex: "4B5563"))
 
             Text(value)
-                .font(.system(size: 13, design: .monospaced))
+                .font(.system(size: 13))
                 .foregroundStyle(.white)
                 .textSelection(.enabled)
 
@@ -887,12 +887,12 @@ struct AdminCreatedIDCard: View {
                     copied = true
                 } label: {
                     Label(copied ? "Copied" : "Copy ID", systemImage: copied ? "checkmark" : "doc.on.doc")
-                        .font(.system(size: 12, design: .monospaced))
+                        .font(.system(size: 12))
                         .foregroundStyle(Color(hex: copied ? "10B981" : "6366F1"))
                 }
 
                 Text(hint)
-                    .font(.system(size: 11, design: .monospaced))
+                    .font(.system(size: 11))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
         }

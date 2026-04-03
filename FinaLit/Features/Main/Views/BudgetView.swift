@@ -27,7 +27,7 @@ struct BudgetView: View {
                         Image(systemName: "calendar")
                             .font(.system(size: 10))
                         Text(mainVM.selectedMonthDisplay.uppercased())
-                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 10, weight: .semibold))
                     }
                     .foregroundStyle(Color(hex: "6B7280"))
                     .padding(.horizontal, 12)
@@ -40,7 +40,7 @@ struct BudgetView: View {
                     // ── Edit toggle ────────────────────────────────────────
                     HStack {
                         Text("Set monthly limits per category.")
-                            .font(.system(size: 13, design: .monospaced))
+                            .font(.system(size: 13))
                             .foregroundStyle(Color(hex: "4B5563"))
                         Spacer()
                         Button(isEditing ? "Save" : "Edit") {
@@ -48,7 +48,7 @@ struct BudgetView: View {
                             else         { startEditing() }
                             isEditing.toggle()
                         }
-                        .font(.system(size: 13, design: .monospaced))
+                        .font(.system(size: 13))
                         .foregroundStyle(Color(hex: "6366F1"))
                     }
                     .padding(.horizontal, 20)
@@ -143,10 +143,10 @@ struct BudgetCategoryCard: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(category.rawValue)
-                        .font(.system(size: 15, design: .serif))
+                        .font(.system(size: 15))
                         .foregroundStyle(.white)
                     Text("Spent: \(formatCurrency(spent))")
-                        .font(.system(size: 11, design: .monospaced))
+                        .font(.system(size: 11))
                         .foregroundStyle(Color(hex: "4B5563"))
                 }
 
@@ -155,10 +155,10 @@ struct BudgetCategoryCard: View {
                 if isEditing {
                     HStack(spacing: 4) {
                         Text(AppRegion.currencySymbol)
-                            .font(.system(size: 14, design: .monospaced))
+                            .font(.system(size: 14))
                             .foregroundStyle(Color(hex: "4B5563"))
                         TextField("Limit", text: $editingText)
-                            .font(.system(size: 14, design: .monospaced))
+                            .font(.system(size: 14))
                             .foregroundStyle(.white)
                             .keyboardType(.decimalPad)
                             .frame(width: 70)
@@ -167,15 +167,15 @@ struct BudgetCategoryCard: View {
                 } else if let limit {
                     VStack(alignment: .trailing, spacing: 2) {
                         Text(formatCurrency(limit))
-                            .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 14, weight: .semibold))
                             .foregroundStyle(isOver ? Color(hex: "F87171") : .white)
                         Text("limit")
-                            .font(.system(size: 10, design: .monospaced))
+                            .font(.system(size: 10))
                             .foregroundStyle(Color(hex: "4B5563"))
                     }
                 } else {
                     Text("No limit")
-                        .font(.system(size: 12, design: .monospaced))
+                        .font(.system(size: 12))
                         .foregroundStyle(Color(hex: "374151"))
                 }
             }
@@ -222,12 +222,12 @@ struct TotalBudgetCard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("TOTAL BUDGET")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
                 Spacer()
                 if totalLimit > 0 {
                     Text("\(formatCurrency(spent)) / \(formatCurrency(totalLimit))")
-                        .font(.system(size: 13, design: .monospaced))
+                        .font(.system(size: 13))
                         .foregroundStyle(spent > totalLimit ? Color(hex: "F87171") : .white)
                 }
             }
@@ -250,7 +250,7 @@ struct TotalBudgetCard: View {
                 .frame(height: 6)
             } else {
                 Text("Set limits above to track your total budget.")
-                    .font(.system(size: 12, design: .monospaced))
+                    .font(.system(size: 12))
                     .foregroundStyle(Color(hex: "374151"))
             }
         }
@@ -279,7 +279,7 @@ struct InsightsView: View {
                         // ── Quick stats ────────────────────────────────────
                         VStack(alignment: .leading, spacing: 10) {
                             Text("MONTHLY OVERVIEW")
-                                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 11, weight: .semibold))
                                 .foregroundStyle(Color(hex: "4B5563"))
                                 .padding(.horizontal, 20)
 
@@ -321,7 +321,7 @@ struct InsightsView: View {
                     // ── All insights ───────────────────────────────────────
                     VStack(alignment: .leading, spacing: 10) {
                         Text("SMART INSIGHTS")
-                            .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 11, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
                             .padding(.horizontal, 20)
 
@@ -330,7 +330,7 @@ struct InsightsView: View {
                                 Text("✨")
                                     .font(.system(size: 36))
                                 Text("Add transactions to see insights")
-                                    .font(.system(size: 15, design: .serif))
+                                    .font(.system(size: 15))
                                     .foregroundStyle(Color(hex: "374151"))
                             }
                             .frame(maxWidth: .infinity)
@@ -347,7 +347,7 @@ struct InsightsView: View {
                     if !mainVM.recentSnapshots.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("SPENDING HISTORY")
-                                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 11, weight: .semibold))
                                 .foregroundStyle(Color(hex: "4B5563"))
                                 .padding(.horizontal, 20)
 
@@ -390,10 +390,10 @@ struct InsightCard: View {
             }
             VStack(alignment: .leading, spacing: 5) {
                 Text(insight.title)
-                    .font(.system(size: 15, weight: .medium, design: .serif))
+                    .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
                 Text(insight.message)
-                    .font(.system(size: 12, design: .monospaced))
+                    .font(.system(size: 12))
                     .foregroundStyle(Color(hex: "6B7280"))
                     .lineSpacing(3)
                     .fixedSize(horizontal: false, vertical: true)
@@ -422,12 +422,12 @@ struct InsightStatCard: View {
                 .font(.system(size: 16))
             VStack(alignment: .leading, spacing: 2) {
                 Text(value)
-                    .font(.system(size: 18, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 18, weight: .semibold))
                     .foregroundStyle(.white)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
                 Text(label)
-                    .font(.system(size: 10, design: .monospaced))
+                    .font(.system(size: 10))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
         }
@@ -467,7 +467,7 @@ struct SpendingHistoryChart: View {
                             }
                         }
                         Text(String(snapshot.month.suffix(2)))
-                            .font(.system(size: 9, design: .monospaced))
+                            .font(.system(size: 9))
                             .foregroundStyle(Color(hex: "4B5563"))
                     }
                 }
@@ -479,7 +479,7 @@ struct SpendingHistoryChart: View {
                 Spacer()
                 Text(formatCurrency(maxExpense))
             }
-            .font(.system(size: 9, design: .monospaced))
+            .font(.system(size: 9))
             .foregroundStyle(Color(hex: "374151"))
         }
         .padding(16)

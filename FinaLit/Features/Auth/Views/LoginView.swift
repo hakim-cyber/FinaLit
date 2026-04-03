@@ -23,10 +23,10 @@ struct LoginView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Welcome back")
-                            .font(.system(size: 34, weight: .light, design: .serif))
+                            .font(.system(size: 34, weight: .medium))
                             .foregroundStyle(.white)
                         Text("Log in to continue your financial journey.")
-                            .font(.system(size: 13, design: .monospaced))
+                            .font(.system(size: 13))
                             .foregroundStyle(AuthPalette.muted)
                     }
 
@@ -37,7 +37,7 @@ struct LoginView: View {
 
                         VStack(alignment: .leading, spacing: 8) {
                             Text("EMAIL")
-                                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 10, weight: .semibold))
                                 .foregroundStyle(AuthPalette.muted)
                             TextField("name@email.com", text: $viewModel.email)
                                 .textInputAutocapitalization(.never)
@@ -48,7 +48,7 @@ struct LoginView: View {
 
                         VStack(alignment: .leading, spacing: 8) {
                             Text("PASSWORD")
-                                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 10, weight: .semibold))
                                 .foregroundStyle(AuthPalette.muted)
                             SecureField("Enter password", text: $viewModel.password)
                                 .textInputAutocapitalization(.never)
@@ -61,7 +61,7 @@ struct LoginView: View {
                             Button("Forgot password?") {
                                 coordinator.push(.forgotPassword)
                             }
-                            .font(.system(size: 12, weight: .medium, design: .monospaced))
+                            .font(.system(size: 12, weight: .semibold))
                             .foregroundStyle(AuthPalette.accent)
                         }
 
@@ -77,7 +77,7 @@ struct LoginView: View {
                                         .tint(.white)
                                 }
                                 Text(viewModel.isLoading ? "Logging In..." : "Log In")
-                                    .font(.system(size: 15, weight: .semibold, design: .monospaced))
+                                    .font(.system(size: 15, weight: .semibold))
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
@@ -98,7 +98,7 @@ struct LoginView: View {
                         Button("Don't have an account? Create one") {
                             coordinator.push(.register)
                         }
-                        .font(.system(size: 13, weight: .medium, design: .monospaced))
+                        .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(AuthPalette.accent)
                         .frame(maxWidth: .infinity)
                         .padding(.top, 4)
@@ -150,10 +150,10 @@ struct ForgotPasswordView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Reset password")
-                            .font(.system(size: 34, weight: .light, design: .serif))
+                            .font(.system(size: 34, weight: .medium))
                             .foregroundStyle(.white)
                         Text("We will send a reset link to your email.")
-                            .font(.system(size: 13, design: .monospaced))
+                            .font(.system(size: 13))
                             .foregroundStyle(AuthPalette.muted)
                     }
 
@@ -168,7 +168,7 @@ struct ForgotPasswordView: View {
 
                         VStack(alignment: .leading, spacing: 8) {
                             Text("EMAIL")
-                                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 10, weight: .semibold))
                                 .foregroundStyle(AuthPalette.muted)
                             TextField("name@email.com", text: $viewModel.email)
                                 .textInputAutocapitalization(.never)
@@ -189,7 +189,7 @@ struct ForgotPasswordView: View {
                                         .tint(.white)
                                 }
                                 Text(viewModel.isLoading ? "Sending..." : "Send Reset Link")
-                                    .font(.system(size: 15, weight: .semibold, design: .monospaced))
+                                    .font(.system(size: 15, weight: .semibold))
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
@@ -210,7 +210,7 @@ struct ForgotPasswordView: View {
                         Button("Back to Log In") {
                             coordinator.pop()
                         }
-                        .font(.system(size: 13, weight: .medium, design: .monospaced))
+                        .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(AuthPalette.accent)
                         .frame(maxWidth: .infinity)
                         .padding(.top, 4)
@@ -243,7 +243,7 @@ private struct AuthErrorBanner: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundStyle(Color(hex: "F87171"))
             Text(message)
-                .font(.system(size: 12, design: .monospaced))
+                .font(.system(size: 12))
                 .foregroundStyle(Color(hex: "FCA5A5"))
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -265,7 +265,7 @@ private struct AuthSuccessBanner: View {
             Image(systemName: "checkmark.circle.fill")
                 .foregroundStyle(Color(hex: "10B981"))
             Text(message)
-                .font(.system(size: 12, design: .monospaced))
+                .font(.system(size: 12))
                 .foregroundStyle(Color(hex: "6EE7B7"))
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -291,7 +291,7 @@ private enum AuthPalette {
 private struct AuthInputFieldModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 15, design: .serif))
+            .font(.system(size: 15))
             .foregroundStyle(.white)
             .padding(.horizontal, 14)
             .frame(height: 50)

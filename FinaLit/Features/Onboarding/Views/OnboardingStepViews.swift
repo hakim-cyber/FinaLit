@@ -44,7 +44,7 @@ struct OnboardingPersonalInfoView: View {
                             .onboardingFieldLabelStyle()
                         Spacer()
                         Text("\(Int(viewModel.age.rounded()))")
-                            .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 13, weight: .semibold))
                             .foregroundStyle(OnboardingPalette.accent)
                     }
                     Slider(value: $viewModel.age, in: 13...70, step: 1)
@@ -271,7 +271,7 @@ struct OnboardingSavingsEmergencyView: View {
                         Spacer()
                         Stepper(value: $viewModel.emergencyFundMonths, in: 0...24) {
                             Text("\(viewModel.emergencyFundMonths) months")
-                                .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 13, weight: .semibold))
                                 .foregroundStyle(.white)
                         }
                     }
@@ -348,7 +348,7 @@ struct OnboardingDebtView: View {
                                 Image(systemName: "plus.circle.fill")
                                 Text("Add another debt")
                             }
-                            .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 13, weight: .semibold))
                             .foregroundStyle(Color(hex: "F87171"))
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
@@ -362,7 +362,7 @@ struct OnboardingDebtView: View {
                                 .onboardingFieldLabelStyle()
                             Spacer()
                             Text(currency(viewModel.totalDebtAmount))
-                                .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 13, weight: .semibold))
                                 .foregroundStyle(.white)
                         }
                         .padding(12)
@@ -620,7 +620,7 @@ struct OnboardingSpendingWeaknessesView: View {
         ) {
             VStack(alignment: .leading, spacing: 10) {
                 Text("\(viewModel.spendingWeaknesses.count)/\(viewModel.maxWeaknessSelections) selected")
-                    .font(.system(size: 11, design: .monospaced))
+                    .font(.system(size: 11))
                     .foregroundStyle(OnboardingPalette.muted)
 
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 130), spacing: 10)], spacing: 10) {
@@ -672,7 +672,7 @@ struct OnboardingHobbiesView: View {
         ) {
             VStack(alignment: .leading, spacing: 12) {
                 Text("\(viewModel.normalizedHobbies.count)/\(viewModel.maxHobbySelections) selected")
-                    .font(.system(size: 11, design: .monospaced))
+                    .font(.system(size: 11))
                     .foregroundStyle(OnboardingPalette.muted)
 
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 130), spacing: 10)], spacing: 10) {
@@ -815,7 +815,7 @@ private struct OnboardingStepScaffold<Content: View>: View {
                                 Spacer()
 
                                 Text("STEP \(page.stepNumber) OF \(OnboardingPages.totalSteps)")
-                                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                                    .font(.system(size: 11, weight: .semibold))
                                     .foregroundStyle(OnboardingPalette.muted)
                             }
 
@@ -825,11 +825,11 @@ private struct OnboardingStepScaffold<Content: View>: View {
 
                         VStack(alignment: .leading, spacing: 6) {
                             Text(title)
-                                .font(.system(size: 30, weight: .light, design: .serif))
+                                .font(.system(size: 30, weight: .medium))
                                 .foregroundStyle(.white)
                                 .fixedSize(horizontal: false, vertical: true)
                             Text(subtitle)
-                                .font(.system(size: 13, design: .monospaced))
+                                .font(.system(size: 13))
                                 .foregroundStyle(OnboardingPalette.muted)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
@@ -848,7 +848,7 @@ private struct OnboardingStepScaffold<Content: View>: View {
                                         .tint(.white)
                                 }
                                 Text(primaryTitle)
-                                    .font(.system(size: 15, weight: .semibold, design: .monospaced))
+                                    .font(.system(size: 15, weight: .semibold))
                             }
                             .frame(maxWidth: .infinity)
                             .frame(height: 52)
@@ -867,7 +867,7 @@ private struct OnboardingStepScaffold<Content: View>: View {
                         .disabled(!isPrimaryEnabled || isLoading)
 
                         Text("Educational guidance, not financial advice.")
-                            .font(.system(size: 11, design: .monospaced))
+                            .font(.system(size: 11))
                             .foregroundStyle(OnboardingPalette.muted)
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
@@ -897,11 +897,11 @@ private struct MoneySlider: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text(title)
-                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(OnboardingPalette.muted)
                 Spacer()
                 Text(currency(snapped(value)))
-                    .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(.white)
             }
 
@@ -944,7 +944,7 @@ private struct TogglePill: View {
     var body: some View {
         Button(action: onTap) {
             Text(title)
-                .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(isSelected ? Color.white : OnboardingPalette.muted)
                 .frame(maxWidth: .infinity)
                 .frame(height: 42)
@@ -977,10 +977,10 @@ private struct RiskSelectionCard: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
-                        .font(.system(size: 16, weight: .medium, design: .serif))
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.white)
                     Text(subtitle)
-                        .font(.system(size: 11, design: .monospaced))
+                        .font(.system(size: 11))
                         .foregroundStyle(OnboardingPalette.muted)
                 }
 
@@ -1012,7 +1012,7 @@ private struct KnowledgeLevelCard: View {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     Text(title)
-                        .font(.system(size: 16, weight: .medium, design: .serif))
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.white)
                     Spacer()
                     if isSelected {
@@ -1022,7 +1022,7 @@ private struct KnowledgeLevelCard: View {
                 }
 
                 Text(description)
-                    .font(.system(size: 11, design: .monospaced))
+                    .font(.system(size: 11))
                     .foregroundStyle(OnboardingPalette.muted)
 
                 GeometryReader { geo in
@@ -1064,11 +1064,11 @@ private struct SelectableRowCard: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
-                        .font(.system(size: 16, weight: .medium, design: .serif))
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.white)
                     if !subtitle.isEmpty {
                         Text(subtitle)
-                            .font(.system(size: 11, design: .monospaced))
+                            .font(.system(size: 11))
                             .minimumScaleFactor(0.6)
                             .foregroundStyle(OnboardingPalette.muted)
                     }
@@ -1106,10 +1106,10 @@ private struct ChipButton: View {
             HStack(spacing: 6) {
                 if !icon.isEmpty {
                     Image(systemName: icon)
-                        .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 11, weight: .semibold))
                 }
                 Text(title)
-                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 11, weight: .semibold))
             }
             .lineLimit(1)
             .padding(.horizontal, 12)
@@ -1156,7 +1156,7 @@ private struct AuthErrorBanner: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundStyle(Color(hex: "F87171"))
             Text(message)
-                .font(.system(size: 12, design: .monospaced))
+                .font(.system(size: 12))
                 .foregroundStyle(Color(hex: "FCA5A5"))
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -1182,7 +1182,7 @@ private enum OnboardingPalette {
 private struct OnboardingInputFieldModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 15, design: .serif))
+            .font(.system(size: 15))
             .foregroundStyle(.white)
             .padding(.horizontal, 14)
             .frame(height: 50)
@@ -1197,7 +1197,7 @@ private struct OnboardingInputFieldModifier: ViewModifier {
 private struct OnboardingTextAreaModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 15, design: .serif))
+            .font(.system(size: 15))
             .foregroundStyle(.white)
             .padding(14)
             .background(OnboardingPalette.background.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
@@ -1218,7 +1218,7 @@ private extension View {
     }
 
     func onboardingFieldLabelStyle() -> some View {
-        font(.system(size: 11, weight: .semibold, design: .monospaced))
+        font(.system(size: 11, weight: .semibold))
             .foregroundStyle(OnboardingPalette.muted)
     }
 }

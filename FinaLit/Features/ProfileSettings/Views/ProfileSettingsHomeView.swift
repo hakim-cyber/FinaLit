@@ -142,7 +142,7 @@ struct ProfileSettingsHomeView: View {
                 Button("Done") {
                     dismiss()
                 }
-                .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(ProfileSettingsPalette.accent)
             }
         }
@@ -283,13 +283,13 @@ struct ProfileSettingsHomeView: View {
 
                 VStack(alignment: .leading, spacing: 14) {
                     Text("For security, confirm your password to continue account deletion.")
-                        .font(.system(size: 13, design: .monospaced))
+                        .font(.system(size: 13))
                         .foregroundStyle(ProfileSettingsPalette.muted)
 
                     SecureField("Current password", text: $reauthPassword)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
-                        .font(.system(size: 15, design: .serif))
+                        .font(.system(size: 15))
                         .foregroundStyle(.white)
                         .padding(.horizontal, 14)
                         .frame(height: 50)
@@ -307,7 +307,7 @@ struct ProfileSettingsHomeView: View {
                                     .tint(.white)
                             }
                             Text(isReauthenticating ? "Verifying..." : "Verify & Delete")
-                                .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 14, weight: .semibold))
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
@@ -327,7 +327,7 @@ struct ProfileSettingsHomeView: View {
                         showReauthSheet = false
                         reauthPassword = ""
                     }
-                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(ProfileSettingsPalette.muted)
                 }
             }
@@ -345,7 +345,7 @@ private struct SettingsSectionCard<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(title)
-                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(ProfileSettingsPalette.muted)
                 .padding(.horizontal, 4)
 
@@ -410,7 +410,7 @@ private struct SettingsValueRow: View {
             iconTint: Color(hex: "9CA3AF")
         ) {
             Text(value)
-                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(Color(hex: "9CA3AF"))
         }
     }
@@ -437,10 +437,10 @@ private struct SettingsRowShell<Accessory: View>: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
-                    .font(.system(size: 15, design: .serif))
+                    .font(.system(size: 15))
                     .foregroundStyle(titleTint)
                 Text(subtitle)
-                    .font(.system(size: 11, design: .monospaced))
+                    .font(.system(size: 11))
                     .foregroundStyle(ProfileSettingsPalette.muted)
                     .lineLimit(1)
             }

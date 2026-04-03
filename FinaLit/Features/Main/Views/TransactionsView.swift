@@ -75,7 +75,7 @@ struct TransactionsView: View {
                         .foregroundStyle(Color(hex: "4B5563"))
                         .font(.system(size: 14))
                     TextField("Search transactions...", text: $searchText)
-                        .font(.system(size: 14, design: .monospaced))
+                        .font(.system(size: 14))
                         .foregroundStyle(.white)
                         .tint(Color(hex: "6366F1"))
                 }
@@ -89,7 +89,7 @@ struct TransactionsView: View {
                 if filtered.isEmpty {
                     Spacer()
                     Text(searchText.isEmpty ? "No transactions" : "No results")
-                        .font(.system(size: 16, design: .serif))
+                        .font(.system(size: 16))
                         .foregroundStyle(Color(hex: "374151"))
                     Spacer()
                 } else {
@@ -98,7 +98,7 @@ struct TransactionsView: View {
                             ForEach(grouped) { group in
                                 VStack(alignment: .leading, spacing: 8) {
                                     Text(group.label.uppercased())
-                                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                                        .font(.system(size: 10, weight: .semibold))
                                         .foregroundStyle(Color(hex: "4B5563"))
                                         .padding(.horizontal, 20)
 
@@ -133,7 +133,7 @@ struct TransactionsView: View {
                 Image(systemName: "calendar")
                     .font(.system(size: 10))
                 Text(mainVM.selectedMonthDisplay.uppercased())
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
             }
             .foregroundStyle(Color(hex: "6B7280"))
             .padding(.horizontal, 12)
@@ -144,10 +144,10 @@ struct TransactionsView: View {
             HStack(spacing: 0) {
                 VStack(spacing: 2) {
                     Text(formatCurrency(mainVM.currentMonthIncome.reduce(0) { $0 + $1.amount }))
-                        .font(.system(size: 16, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(Color(hex: "10B981"))
                     Text("Income")
-                        .font(.system(size: 10, design: .monospaced))
+                        .font(.system(size: 10))
                         .foregroundStyle(Color(hex: "4B5563"))
                 }
                 .frame(maxWidth: .infinity)
@@ -156,10 +156,10 @@ struct TransactionsView: View {
 
                 VStack(spacing: 2) {
                     Text(formatCurrency(mainVM.currentMonthExpenses.reduce(0) { $0 + $1.amount }))
-                        .font(.system(size: 16, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(Color(hex: "F87171"))
                     Text("Expenses")
-                        .font(.system(size: 10, design: .monospaced))
+                        .font(.system(size: 10))
                         .foregroundStyle(Color(hex: "4B5563"))
                 }
                 .frame(maxWidth: .infinity)
@@ -168,10 +168,10 @@ struct TransactionsView: View {
 
                 VStack(spacing: 2) {
                     Text("\(mainVM.currentMonthTransactions.count)")
-                        .font(.system(size: 16, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.white)
                     Text("Total")
-                        .font(.system(size: 10, design: .monospaced))
+                        .font(.system(size: 10))
                         .foregroundStyle(Color(hex: "4B5563"))
                 }
                 .frame(maxWidth: .infinity)
@@ -203,7 +203,7 @@ struct FilterPill: View {
     var body: some View {
         Button(action: onTap) {
             Text(label)
-                .font(.system(size: 12, design: .monospaced))
+                .font(.system(size: 12))
                 .foregroundStyle(isActive ? .white : Color(hex: "4B5563"))
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
@@ -250,11 +250,11 @@ struct TransactionDetailView: View {
                             }
 
                             Text(formatSignedCurrency(amount: tx.amount, isIncome: tx.isIncome))
-                                .font(.system(size: 40, weight: .light, design: .serif))
+                                .font(.system(size: 40, weight: .medium))
                                 .foregroundStyle(tx.isIncome ? Color(hex: "10B981") : .white)
 
                             Text(tx.type == .income ? "Income" : "Expense")
-                                .font(.system(size: 12, design: .monospaced))
+                                .font(.system(size: 12))
                                 .foregroundStyle(Color(hex: "4B5563"))
                         }
                         .frame(maxWidth: .infinity)
@@ -281,7 +281,7 @@ struct TransactionDetailView: View {
                                 Image(systemName: "trash")
                                 Text("Delete Transaction")
                             }
-                            .font(.system(size: 15, design: .monospaced))
+                            .font(.system(size: 15))
                             .foregroundStyle(Color(hex: "F87171"))
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
@@ -293,7 +293,7 @@ struct TransactionDetailView: View {
                 }
             } else {
                 Text("Transaction not found")
-                    .font(.system(size: 16, design: .serif))
+                    .font(.system(size: 16))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
         }
@@ -322,11 +322,11 @@ struct DetailRow: View {
     var body: some View {
         HStack {
             Text(label)
-                .font(.system(size: 13, design: .monospaced))
+                .font(.system(size: 13))
                 .foregroundStyle(Color(hex: "4B5563"))
             Spacer()
             Text(value)
-                .font(.system(size: 14, design: .serif))
+                .font(.system(size: 14))
                 .foregroundStyle(.white)
         }
         .padding(.horizontal, 16)

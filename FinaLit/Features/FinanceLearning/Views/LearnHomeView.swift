@@ -39,7 +39,7 @@ struct LearnHomeView: View {
                     // ── Weeks ──────────────────────────────────────────────
                     VStack(alignment: .leading, spacing: 12) {
                         Text("YOUR CURRICULUM")
-                            .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 11, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
                             .padding(.horizontal, 20)
 
@@ -56,10 +56,10 @@ struct LearnHomeView: View {
                                 Text("📚")
                                     .font(.system(size: 48))
                                 Text("No lessons yet")
-                                    .font(.system(size: 20, design: .serif))
+                                    .font(.system(size: 20))
                                     .foregroundStyle(.white)
                                 Text("Check back soon — content is being added.")
-                                    .font(.system(size: 13, design: .monospaced))
+                                    .font(.system(size: 13))
                                     .foregroundStyle(Color(hex: "4B5563"))
                                     .multilineTextAlignment(.center)
                             }
@@ -136,21 +136,21 @@ struct DailyTipCard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("TODAY'S INSIGHT")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "10B981"))
                 Spacer()
                 Text(tip.category.uppercased())
-                    .font(.system(size: 10, design: .monospaced))
+                    .font(.system(size: 10))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
 
             Text(tip.title)
-                .font(.system(size: 18, weight: .medium, design: .serif))
+                .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(.white)
 
             if expanded {
                 Text(tip.body)
-                    .font(.system(size: 14, design: .monospaced))
+                    .font(.system(size: 14))
                     .foregroundStyle(Color(hex: "9CA3AF"))
                     .lineSpacing(4)
                     .transition(.opacity.combined(with: .move(edge: .top)))
@@ -159,7 +159,7 @@ struct DailyTipCard: View {
             Button(expanded ? "Show less ↑" : "Read more ↓") {
                 withAnimation(.easeInOut(duration: 0.2)) { expanded.toggle() }
             }
-            .font(.system(size: 12, design: .monospaced))
+            .font(.system(size: 12))
             .foregroundStyle(Color(hex: "10B981"))
         }
         .padding(20)
@@ -199,10 +199,10 @@ struct ContinueBanner: View {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("CONTINUE WHERE YOU LEFT OFF")
-                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 10, weight: .semibold))
                         .foregroundStyle(Color(hex: "6366F1"))
                     Text("Day \(dayNumber)")
-                        .font(.system(size: 18, weight: .medium, design: .serif))
+                        .font(.system(size: 18, weight: .semibold))
                         .foregroundStyle(.white)
                 }
                 Spacer()
@@ -254,12 +254,12 @@ struct StatCell: View {
     var body: some View {
         VStack(spacing: 3) {
             Text(value)
-                .font(.system(size: small ? 12 : 18, weight: .semibold, design: .monospaced))
+                .font(.system(size: small ? 12 : 18, weight: .semibold))
                 .foregroundStyle(.white)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
             Text(label)
-                .font(.system(size: 10, design: .monospaced))
+                .font(.system(size: 10))
                 .foregroundStyle(Color(hex: "4B5563"))
         }
         .frame(maxWidth: .infinity)
@@ -291,17 +291,17 @@ struct WeekRowCard: View {
                         .foregroundStyle(Color(hex: "374151"))
                 } else {
                     Text("\(week.weekNumber)")
-                        .font(.system(size: 16, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(Color(hex: "6366F1"))
                 }
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(week.title)
-                    .font(.system(size: 16, weight: .medium, design: .serif))
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(isLocked ? Color(hex: "374151") : .white)
                 Text(week.description)
-                    .font(.system(size: 12, design: .monospaced))
+                    .font(.system(size: 12))
                     .foregroundStyle(Color(hex: "4B5563"))
                     .lineLimit(1)
             }

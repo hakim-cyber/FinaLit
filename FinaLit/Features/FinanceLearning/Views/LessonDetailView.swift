@@ -52,7 +52,7 @@ struct LessonDetailView: View {
                     } label: {
                         HStack {
                             Text(hasMarkedRead ? "Continue to Quiz →" : "I've read this ✓")
-                                .font(.system(size: 16, design: .monospaced))
+                                .font(.system(size: 16))
                             if learnVM.isSubmitting {
                                 ProgressView()
                                     .tint(.white)
@@ -224,7 +224,7 @@ struct LessonDetailView: View {
 
         return VStack(alignment: .leading, spacing: 12) {
             Text(lesson.difficultyLevel.uppercased())
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(difficultyColor(difficulty))
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
@@ -232,18 +232,18 @@ struct LessonDetailView: View {
                 .clipShape(Capsule())
 
             Text(lesson.title)
-                .font(.system(size: 30, weight: .light, design: .serif))
+                .font(.system(size: 30, weight: .medium))
                 .foregroundStyle(.white)
                 .lineSpacing(4)
 
             HStack(spacing: 12) {
                 Label(lesson.category, systemImage: "tag")
-                    .font(.system(size: 12, design: .monospaced))
+                    .font(.system(size: 12))
                     .foregroundStyle(Color(hex: "4B5563"))
                 Text("·")
                     .foregroundStyle(Color(hex: "374151"))
                 Label("Day \(lesson.dayNumber)", systemImage: "calendar")
-                    .font(.system(size: 12, design: .monospaced))
+                    .font(.system(size: 12))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
 
@@ -373,7 +373,7 @@ private struct LessonHeadingBlock: View {
 
     var body: some View {
         Text(text)
-            .font(.system(size: 22, weight: .light, design: .serif))
+            .font(.system(size: 22, weight: .medium))
             .foregroundStyle(.white)
             .lineSpacing(4)
             .padding(.horizontal, 20)
@@ -387,7 +387,7 @@ private struct LessonParagraphBlock: View {
 
     var body: some View {
         Text(text)
-            .font(.system(size: 16, design: .serif))
+            .font(.system(size: 16))
             .foregroundStyle(Color(hex: "D1D5DB"))
             .lineSpacing(7)
             .padding(.horizontal, 20)
@@ -404,10 +404,10 @@ private struct LessonListBlock: View {
             ForEach(Array(items.enumerated()), id: \.offset) { index, item in
                 HStack(alignment: .top, spacing: 10) {
                     Text(ordered ? "\(index + 1)." : "•")
-                        .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(Color(hex: "6366F1"))
                     Text(item)
-                        .font(.system(size: 16, design: .serif))
+                        .font(.system(size: 16))
                         .foregroundStyle(Color(hex: "D1D5DB"))
                         .lineSpacing(6)
                 }
@@ -423,7 +423,7 @@ private struct LessonQuoteBlock: View {
 
     var body: some View {
         Text(text)
-            .font(.system(size: 16, design: .serif))
+            .font(.system(size: 16))
             .foregroundStyle(Color(hex: "E5E7EB"))
             .lineSpacing(6)
             .italic()
@@ -457,14 +457,14 @@ private struct LessonSection: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 10) {
                 Text(number)
-                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(Color(hex: accent))
                 Rectangle()
                     .fill(Color(hex: accent).opacity(0.4))
                     .frame(height: 1)
                     .frame(maxWidth: .infinity)
                 Text(title.uppercased())
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
 
@@ -484,10 +484,10 @@ private struct LessonSection: View {
         case .action:
             HStack(alignment: .top, spacing: 12) {
                 Text("→")
-                    .font(.system(size: 16, design: .monospaced))
+                    .font(.system(size: 16))
                     .foregroundStyle(Color(hex: accent))
                 Text(content)
-                    .font(.system(size: 15, design: .monospaced))
+                    .font(.system(size: 15))
                     .foregroundStyle(Color(hex: "D1FAE5"))
                     .lineSpacing(5)
             }
@@ -500,7 +500,7 @@ private struct LessonSection: View {
             )
         case .caseStudy:
             Text(content)
-                .font(.system(size: 15, design: .serif))
+                .font(.system(size: 15))
                 .foregroundStyle(Color(hex: "FEF3C7"))
                 .lineSpacing(5)
                 .italic()
@@ -513,7 +513,7 @@ private struct LessonSection: View {
                 )
         case .callout:
             Text(content)
-                .font(.system(size: 15, design: .serif))
+                .font(.system(size: 15))
                 .foregroundStyle(Color(hex: "CFFAFE"))
                 .lineSpacing(5)
                 .padding(16)
@@ -525,7 +525,7 @@ private struct LessonSection: View {
                 )
         case .standard:
             Text(content)
-                .font(.system(size: 16, design: .serif))
+                .font(.system(size: 16))
                 .foregroundStyle(Color(hex: "D1D5DB"))
                 .lineSpacing(6)
         }

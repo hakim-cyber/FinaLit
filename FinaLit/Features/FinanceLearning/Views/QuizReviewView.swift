@@ -51,10 +51,10 @@ struct QuizReviewView: View {
                             Text("🏆")
                                 .font(.system(size: 48))
                             Text("Perfect score!")
-                                .font(.system(size: 22, design: .serif))
+                                .font(.system(size: 22))
                                 .foregroundStyle(.white)
                             Text("You got every question right.")
-                                .font(.system(size: 14, design: .monospaced))
+                                .font(.system(size: 14))
                                 .foregroundStyle(Color(hex: "6B7280"))
                         }
                         .frame(maxWidth: .infinity)
@@ -70,7 +70,7 @@ struct QuizReviewView: View {
                         // Wrong answers review
                         VStack(alignment: .leading, spacing: 14) {
                             Text("REVIEW YOUR MISTAKES")
-                                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 11, weight: .semibold))
                                 .foregroundStyle(Color(hex: "F87171"))
                                 .padding(.horizontal, 20)
 
@@ -88,7 +88,7 @@ struct QuizReviewView: View {
                         coordinator.popToRoot()
                     } label: {
                         Text("Back to Lessons")
-                            .font(.system(size: 16, design: .monospaced))
+                            .font(.system(size: 16))
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 18)
                             .background(
@@ -127,10 +127,10 @@ struct ScoreCard: View {
             // Big score
             VStack(spacing: 6) {
                 Text("\(score)/\(total)")
-                    .font(.system(size: 56, weight: .light, design: .monospaced))
+                    .font(.system(size: 56, weight: .medium))
                     .foregroundStyle(.white)
                 Text("\(percentage)% correct")
-                    .font(.system(size: 14, design: .monospaced))
+                    .font(.system(size: 14))
                     .foregroundStyle(passed ? Color(hex: "10B981") : Color(hex: "F87171"))
             }
 
@@ -140,7 +140,7 @@ struct ScoreCard: View {
                     .fill(passed ? Color(hex: "10B981") : Color(hex: "F87171"))
                     .frame(width: 8, height: 8)
                 Text(passed ? "Day Complete — Next day unlocked" : "Keep studying — You'll get it!")
-                    .font(.system(size: 12, design: .monospaced))
+                    .font(.system(size: 12))
                     .foregroundStyle(passed ? Color(hex: "10B981") : Color(hex: "F87171"))
             }
             .padding(.horizontal, 16)
@@ -174,7 +174,7 @@ struct WrongAnswerCard: View {
         VStack(alignment: .leading, spacing: 14) {
             // Question
             Text(question.questionText)
-                .font(.system(size: 15, design: .serif))
+                .font(.system(size: 15))
                 .foregroundStyle(.white)
                 .lineSpacing(4)
 
@@ -196,7 +196,7 @@ struct WrongAnswerCard: View {
 
             // Explanation
             Text(question.explanation)
-                .font(.system(size: 13, design: .monospaced))
+                .font(.system(size: 13))
                 .foregroundStyle(Color(hex: "6B7280"))
                 .lineSpacing(4)
                 .padding(.top, 4)
@@ -224,10 +224,10 @@ struct AnswerRow: View {
                 .font(.system(size: 14))
             VStack(alignment: .leading, spacing: 2) {
                 Text(label.uppercased())
-                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 9, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
                 Text(text)
-                    .font(.system(size: 14, design: .serif))
+                    .font(.system(size: 14))
                     .foregroundStyle(correct ? Color(hex: "10B981") : Color(hex: "F87171"))
             }
         }

@@ -32,13 +32,13 @@ struct WeekDetailView: View {
                     if let week {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("WEEK \(week.weekNumber)")
-                                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 11, weight: .semibold))
                                 .foregroundStyle(Color(hex: "6366F1"))
                             Text(week.title)
-                                .font(.system(size: 28, weight: .light, design: .serif))
+                                .font(.system(size: 28, weight: .medium))
                                 .foregroundStyle(.white)
                             Text(week.description)
-                                .font(.system(size: 14, design: .monospaced))
+                                .font(.system(size: 14))
                                 .foregroundStyle(Color(hex: "6B7280"))
                         }
                         .padding(.horizontal, 20)
@@ -57,7 +57,7 @@ struct WeekDetailView: View {
                             }
                         } else if learnVM.days(for: weekID).isEmpty {
                             Text("Days coming soon...")
-                                .font(.system(size: 14, design: .monospaced))
+                                .font(.system(size: 14))
                                 .foregroundStyle(Color(hex: "4B5563"))
                                 .padding(40)
                                 .frame(maxWidth: .infinity)
@@ -126,7 +126,7 @@ struct WeekProgressBar: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text("\(completedCount) of \(totalNonReflection) days complete")
-                    .font(.system(size: 12, design: .monospaced))
+                    .font(.system(size: 12))
                     .foregroundStyle(Color(hex: "6B7280"))
                 Spacer()
             }
@@ -176,7 +176,7 @@ struct DayRowCard: View {
                     .fill(iconBackground)
                     .frame(width: 42, height: 42)
                 Image(systemName: iconName)
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(iconColor)
             }
 
@@ -184,7 +184,7 @@ struct DayRowCard: View {
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 6) {
                     Text(day.isReflection ? "Reflection Day" : "Day \(day.dayNumber)")
-                        .font(.system(size: 15, weight: .medium, design: .serif))
+                        .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(isLocked ? Color(hex: "374151") : .white)
                     if day.isReflection {
                         Text("📝")
@@ -200,7 +200,7 @@ struct DayRowCard: View {
                     }
                 } else if day.isReflection {
                     Text(isLocked ? "Complete all days first" : "Write your week reflection")
-                        .font(.system(size: 11, design: .monospaced))
+                        .font(.system(size: 11))
                         .foregroundStyle(Color(hex: "4B5563"))
                 }
 
@@ -209,7 +209,7 @@ struct DayRowCard: View {
                    let total = progress?.totalQuestions,
                    quizDone {
                     Text("\(score)/\(total) correct")
-                        .font(.system(size: 11, design: .monospaced))
+                        .font(.system(size: 11))
                         .foregroundStyle(progress?.isPassed == true ? Color(hex: "10B981") : Color(hex: "F87171"))
                 }
             }
@@ -271,7 +271,7 @@ struct StatusDot: View {
                 .fill(done ? Color(hex: "10B981") : Color(hex: "374151"))
                 .frame(width: 5, height: 5)
             Text(label)
-                .font(.system(size: 10, design: .monospaced))
+                .font(.system(size: 10))
                 .foregroundStyle(done ? Color(hex: "10B981") : Color(hex: "4B5563"))
         }
     }

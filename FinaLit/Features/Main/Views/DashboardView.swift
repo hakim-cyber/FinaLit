@@ -56,7 +56,7 @@ struct DashboardView: View {
                             .foregroundStyle(Color(hex: "10B981"))
                             .font(.system(size: 14))
                         Text(closeMonthSuccessMessage)
-                            .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 12, weight: .semibold))
                             .foregroundStyle(.white)
                             .multilineTextAlignment(.leading)
                     }
@@ -254,19 +254,19 @@ struct DashboardView: View {
         VStack(alignment: .leading, spacing: 20) {
             VStack(alignment: .leading, spacing: 6) {
                 Text("CURRENT BALANCE")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
 
                 if let summary = mainVM.summary {
                     Text(formatCompactCurrency(summary.currentBalance))
-                        .font(.system(size: 42, weight: .light, design: .serif))
+                        .font(.system(size: 42, weight: .medium))
                         .foregroundStyle(summary.currentBalance >= 0 ? .white : Color(hex: "F87171"))
                         .lineLimit(1)
                         .minimumScaleFactor(0.35)
                         .allowsTightening(true)
                 } else {
                     Text("\(AppRegion.currencySymbol) —")
-                        .font(.system(size: 42, weight: .light, design: .serif))
+                        .font(.system(size: 42, weight: .medium))
                         .foregroundStyle(Color(hex: "374151"))
                 }
             }
@@ -277,7 +277,7 @@ struct DashboardView: View {
                     Image(systemName: summary.financialStability.icon)
                         .font(.system(size: 11))
                     Text(summary.financialStability.rawValue)
-                        .font(.system(size: 11, design: .monospaced))
+                        .font(.system(size: 11))
                 }
                 .foregroundStyle(Color(hex: summary.financialStability.color))
                 .padding(.horizontal, 12)
@@ -328,7 +328,7 @@ struct DashboardView: View {
     private var quickActions: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("ACTIONS")
-                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(Color(hex: "4B5563"))
                 .padding(.horizontal, 20)
 
@@ -382,13 +382,13 @@ struct DashboardView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Text("INSIGHTS")
-                            .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 11, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
                         Spacer()
                         Button("See all →") {
                             coordinator.push(.insights)
                         }
-                        .font(.system(size: 11, design: .monospaced))
+                        .font(.system(size: 11))
                         .foregroundStyle(Color(hex: "6366F1"))
                     }
                     .padding(.horizontal, 20)
@@ -413,13 +413,13 @@ struct DashboardView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack {
                         Text("THIS MONTH")
-                            .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 11, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
                         Spacer()
                         Button("Budget →") {
                             coordinator.push(.budget)
                         }
-                        .font(.system(size: 11, design: .monospaced))
+                        .font(.system(size: 11))
                         .foregroundStyle(Color(hex: "6366F1"))
                     }
                     .padding(.horizontal, 20)
@@ -440,7 +440,7 @@ struct DashboardView: View {
                         Button("View all categories →") {
                             coordinator.push(.budget)
                         }
-                        .font(.system(size: 12, design: .monospaced))
+                        .font(.system(size: 12))
                         .foregroundStyle(Color(hex: "4B5563"))
                         .padding(.horizontal, 20)
                     }
@@ -454,13 +454,13 @@ struct DashboardView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("GOALS")
-                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
                 Spacer()
                 Button(mainVM.activeGoals.isEmpty ? "New goal →" : "See all →") {
                     coordinator.push(mainVM.activeGoals.isEmpty ? .addGoal : .goals)
                 }
-                .font(.system(size: 11, design: .monospaced))
+                .font(.system(size: 11))
                 .foregroundStyle(Color(hex: "6366F1"))
             }
             .padding(.horizontal, 20)
@@ -487,13 +487,13 @@ struct DashboardView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("RECENT")
-                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
                 Spacer()
                 Button("All transactions →") {
                     coordinator.push(.transactions)
                 }
-                .font(.system(size: 11, design: .monospaced))
+                .font(.system(size: 11))
                 .foregroundStyle(Color(hex: "6366F1"))
             }
             .padding(.horizontal, 20)
@@ -532,12 +532,12 @@ struct StatMiniCard: View {
                 .font(.system(size: 16))
             VStack(alignment: .leading, spacing: 2) {
                 Text(value)
-                    .font(.system(size: 17, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 17, weight: .semibold))
                     .foregroundStyle(.white)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
                 Text(label)
-                    .font(.system(size: 10, design: .monospaced))
+                    .font(.system(size: 10))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
         }
@@ -560,11 +560,11 @@ struct InsightChip: View {
                 .foregroundStyle(Color(hex: insight.color))
             VStack(alignment: .leading, spacing: 2) {
                 Text(insight.title)
-                    .font(.system(size: 12, weight: .medium, design: .serif))
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(.white)
                     .lineLimit(1)
                 Text(insight.message)
-                    .font(.system(size: 10, design: .monospaced))
+                    .font(.system(size: 10))
                     .foregroundStyle(Color(hex: "6B7280"))
                     .lineLimit(2)
             }
@@ -606,21 +606,21 @@ struct CategoryRow: View {
                         .foregroundStyle(Color(hex: category.color))
                         .frame(width: 20)
                     Text(category.rawValue)
-                        .font(.system(size: 14, design: .serif))
+                        .font(.system(size: 14))
                         .foregroundStyle(.white)
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 1) {
                     Text(formatCurrency(amount))
-                        .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(isOverBudget ? Color(hex: "F87171") : .white)
                     if let limit {
                         Text("of \(formatCurrency(limit))")
-                            .font(.system(size: 10, design: .monospaced))
+                            .font(.system(size: 10))
                             .foregroundStyle(Color(hex: "4B5563"))
                     } else {
                         Text("\(String(format: "%.0f", percentage))%")
-                            .font(.system(size: 10, design: .monospaced))
+                            .font(.system(size: 10))
                             .foregroundStyle(Color(hex: "4B5563"))
                     }
                 }
@@ -696,24 +696,24 @@ struct GoalPreviewCard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text(goal.title)
-                    .font(.system(size: 15, design: .serif))
+                    .font(.system(size: 15))
                     .foregroundStyle(.white)
                 Spacer()
                 Text("\(String(format: "%.0f", goal.progressPercentage))%")
-                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(Color(hex: "6366F1"))
             }
             HStack {
                 Text(formatCurrency(goal.currentAmount))
-                    .font(.system(size: 13, design: .monospaced))
+                    .font(.system(size: 13))
                     .foregroundStyle(Color(hex: "9CA3AF"))
                 Text("of \(formatCurrency(goal.targetAmount))")
-                    .font(.system(size: 13, design: .monospaced))
+                    .font(.system(size: 13))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
             if let monthlyPaceText {
                 Text(monthlyPaceText)
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(monthlyPaceColor)
             }
             GeometryReader { geo in
@@ -748,11 +748,11 @@ struct EmptyGoalsPreviewCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("No active goals yet")
-                .font(.system(size: 15, design: .serif))
+                .font(.system(size: 15))
                 .foregroundStyle(.white)
 
             Text("Create your first goal and start tracking progress from your dashboard.")
-                .font(.system(size: 12, design: .monospaced))
+                .font(.system(size: 12))
                 .foregroundStyle(Color(hex: "6B7280"))
                 .fixedSize(horizontal: false, vertical: true)
 
@@ -761,7 +761,7 @@ struct EmptyGoalsPreviewCard: View {
                     Image(systemName: "plus.circle.fill")
                     Text("Create your first goal")
                 }
-                .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(.white)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
@@ -793,16 +793,16 @@ struct TransactionRow: View {
             }
             VStack(alignment: .leading, spacing: 2) {
                 Text(transaction.note.isEmpty ? transaction.category.rawValue : transaction.note)
-                    .font(.system(size: 14, design: .serif))
+                    .font(.system(size: 14))
                     .foregroundStyle(.white)
                     .lineLimit(1)
                 Text(transaction.date.formatted(date: .abbreviated, time: .omitted))
-                    .font(.system(size: 11, design: .monospaced))
+                    .font(.system(size: 11))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
             Spacer()
             Text(formatSignedCurrency(amount: transaction.amount, isIncome: transaction.isIncome))
-                .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(transaction.isIncome ? Color(hex: "10B981") : .white)
         }
         .padding(12)
@@ -816,10 +816,10 @@ struct EmptyTransactionsCard: View {
             Text("💸")
                 .font(.system(size: 36))
             Text("No transactions yet")
-                .font(.system(size: 16, design: .serif))
+                .font(.system(size: 16))
                 .foregroundStyle(.white)
             Text("Tap + to add your first transaction")
-                .font(.system(size: 12, design: .monospaced))
+                .font(.system(size: 12))
                 .foregroundStyle(Color(hex: "4B5563"))
         }
         .frame(maxWidth: .infinity)
@@ -846,11 +846,11 @@ struct QuickActionCard: View {
                     .foregroundStyle(Color(hex: colorHex))
 
                 Text(title)
-                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(.white)
 
                 Text(subtitle)
-                    .font(.system(size: 10, design: .monospaced))
+                    .font(.system(size: 10))
                     .foregroundStyle(Color(hex: "6B7280"))
                     .lineLimit(2)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -913,15 +913,15 @@ struct AddDebtSheet: View {
 
             VStack(alignment: .leading, spacing: 16) {
                 Text("Add Debt Account")
-                    .font(.system(size: 20, weight: .medium, design: .serif))
+                    .font(.system(size: 20, weight: .semibold))
                     .foregroundStyle(.white)
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("ACCOUNT NAME")
-                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 10, weight: .semibold))
                         .foregroundStyle(Color(hex: "4B5563"))
                     TextField("e.g. Credit Card", text: $accountName)
-                        .font(.system(size: 16, design: .serif))
+                        .font(.system(size: 16))
                         .foregroundStyle(.white)
                         .padding(12)
                         .background(Color(hex: "111118"))
@@ -931,10 +931,10 @@ struct AddDebtSheet: View {
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("CURRENT BALANCE")
-                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 10, weight: .semibold))
                         .foregroundStyle(Color(hex: "4B5563"))
                     TextField("0", text: $balance)
-                        .font(.system(size: 24, weight: .light, design: .serif))
+                        .font(.system(size: 24, weight: .medium))
                         .foregroundStyle(.white)
                         .keyboardType(.decimalPad)
                         .tint(Color(hex: "6366F1"))
@@ -945,10 +945,10 @@ struct AddDebtSheet: View {
                 HStack(spacing: 10) {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("APR % (OPTIONAL)")
-                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
                         TextField("e.g. 19.9", text: $annualInterestRate)
-                            .font(.system(size: 14, design: .monospaced))
+                            .font(.system(size: 14))
                             .foregroundStyle(.white)
                             .keyboardType(.decimalPad)
                             .padding(12)
@@ -959,10 +959,10 @@ struct AddDebtSheet: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("MIN PAYMENT (OPTIONAL)")
-                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
                         TextField("e.g. 50", text: $minimumPayment)
-                            .font(.system(size: 14, design: .monospaced))
+                            .font(.system(size: 14))
                             .foregroundStyle(.white)
                             .keyboardType(.decimalPad)
                             .padding(12)
@@ -987,7 +987,7 @@ struct AddDebtSheet: View {
                     }
                 } label: {
                     Text("Save Debt Account")
-                        .font(.system(size: 14, design: .monospaced))
+                        .font(.system(size: 14))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
@@ -1047,20 +1047,20 @@ struct PayDebtSheet: View {
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
                     Text("Pay Debt")
-                        .font(.system(size: 20, weight: .medium, design: .serif))
+                        .font(.system(size: 20, weight: .semibold))
                         .foregroundStyle(.white)
                     Spacer()
                     Button("Add Debt") {
                         openAddDebt()
                     }
-                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(Color(hex: "F97316"))
                 }
 
                 if mainVM.activeDebtAccounts.isEmpty {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("No active debt accounts.")
-                            .font(.system(size: 13, design: .monospaced))
+                            .font(.system(size: 13))
                             .foregroundStyle(Color(hex: "6B7280"))
 
                         Button {
@@ -1070,7 +1070,7 @@ struct PayDebtSheet: View {
                                 Image(systemName: "plus.circle.fill")
                                 Text("Create debt account")
                             }
-                            .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 13, weight: .semibold))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 10)
@@ -1082,7 +1082,7 @@ struct PayDebtSheet: View {
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("ACCOUNT")
-                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
                         Picker("Debt Account", selection: $selectedDebtID) {
                             ForEach(mainVM.activeDebtAccounts) { account in
@@ -1096,10 +1096,10 @@ struct PayDebtSheet: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("AMOUNT")
-                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
                         TextField("0", text: $amount)
-                            .font(.system(size: 28, weight: .light, design: .serif))
+                            .font(.system(size: 28, weight: .medium))
                             .foregroundStyle(.white)
                             .keyboardType(.decimalPad)
                             .tint(Color(hex: "6366F1"))
@@ -1109,10 +1109,10 @@ struct PayDebtSheet: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("NOTE (OPTIONAL)")
-                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
                         TextField("Debt payment", text: $note)
-                            .font(.system(size: 14, design: .serif))
+                            .font(.system(size: 14))
                             .foregroundStyle(.white)
                             .padding(12)
                             .background(Color(hex: "111118"))
@@ -1131,7 +1131,7 @@ struct PayDebtSheet: View {
                     }
                 } label: {
                     Text("Confirm Payment")
-                        .font(.system(size: 14, design: .monospaced))
+                        .font(.system(size: 14))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
@@ -1182,17 +1182,17 @@ struct GoalContributionSheet: View {
 
             VStack(alignment: .leading, spacing: 16) {
                 Text("Add to Goal")
-                    .font(.system(size: 20, weight: .medium, design: .serif))
+                    .font(.system(size: 20, weight: .semibold))
                     .foregroundStyle(.white)
 
                 if mainVM.activeGoals.isEmpty {
                     Text("No active goals to contribute to.")
-                        .font(.system(size: 13, design: .monospaced))
+                        .font(.system(size: 13))
                         .foregroundStyle(Color(hex: "6B7280"))
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("GOAL")
-                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
                         Picker("Goal", selection: $selectedGoalID) {
                             ForEach(mainVM.activeGoals) { goal in
@@ -1206,10 +1206,10 @@ struct GoalContributionSheet: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("CONTRIBUTION")
-                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
                         TextField("0", text: $amount)
-                            .font(.system(size: 28, weight: .light, design: .serif))
+                            .font(.system(size: 28, weight: .medium))
                             .foregroundStyle(.white)
                             .keyboardType(.decimalPad)
                             .tint(Color(hex: "6366F1"))
@@ -1220,7 +1220,7 @@ struct GoalContributionSheet: View {
                     if let goal = selectedGoal {
                         let remaining = max(goal.targetAmount - goal.currentAmount, 0)
                         Text("Remaining: \(formatCurrency(remaining))")
-                            .font(.system(size: 11, design: .monospaced))
+                            .font(.system(size: 11))
                             .foregroundStyle(Color(hex: "6B7280"))
                     }
                 }
@@ -1235,7 +1235,7 @@ struct GoalContributionSheet: View {
                     }
                 } label: {
                     Text("Contribute")
-                        .font(.system(size: 14, design: .monospaced))
+                        .font(.system(size: 14))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)

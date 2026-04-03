@@ -57,7 +57,7 @@ struct ChatView: View {
 
                 if let error = viewModel.errorMessage, !error.isEmpty {
                     Text(error)
-                        .font(.system(size: 11, design: .monospaced))
+                        .font(.system(size: 11))
                         .foregroundStyle(ChatPalette.error)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 20)
@@ -133,11 +133,11 @@ struct ChatView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .top, spacing: 8) {
                 Text("NOTICE")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(ChatPalette.warning)
 
                 Text("Educational guidance only. Not professional financial advice.")
-                    .font(.system(size: 11, design: .monospaced))
+                    .font(.system(size: 11))
                     .foregroundStyle(ChatPalette.warningText)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -147,7 +147,7 @@ struct ChatView: View {
 
             HStack(spacing: 10) {
                 Text(viewModel.hasAIDataSharingConsent ? "AI data sharing: Enabled" : "AI data sharing: Off")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(ChatPalette.warningText)
 
                 Spacer()
@@ -159,7 +159,7 @@ struct ChatView: View {
                         showConsentPrompt = true
                     }
                 }
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(ChatPalette.warning)
             }
         }
@@ -175,15 +175,15 @@ struct ChatView: View {
     private var emptyState: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Start a financial question")
-                .font(.system(size: 18, weight: .medium, design: .serif))
+                .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(.white)
 
             Text("Try: \"Can I afford a 900\(AppRegion.currencySymbol) laptop?\"")
-                .font(.system(size: 12, design: .monospaced))
+                .font(.system(size: 12))
                 .foregroundStyle(ChatPalette.muted)
 
             Text("Or: \"How should I begin investing safely?\"")
-                .font(.system(size: 12, design: .monospaced))
+                .font(.system(size: 12))
                 .foregroundStyle(ChatPalette.muted)
         }
         .padding(16)
@@ -205,7 +205,7 @@ struct ChatView: View {
                 axis: .vertical
             )
             .lineLimit(1...4)
-            .font(.system(size: 14, design: .monospaced))
+            .font(.system(size: 14))
             .foregroundStyle(.white)
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
@@ -225,7 +225,7 @@ struct ChatView: View {
                 requestSend()
             } label: {
                 Image(systemName: "arrow.up")
-                    .font(.system(size: 16, weight: .bold))
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(width: 44, height: 44)
                     .background(
@@ -249,11 +249,11 @@ struct ChatView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 Text(isUser ? "YOU" : "ADVISOR")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(isUser ? Color.white.opacity(0.85) : ChatPalette.accent)
 
                 Text(message.text)
-                    .font(.system(size: 15, design: .serif))
+                    .font(.system(size: 15))
                     .foregroundStyle(isUser ? .white : ChatPalette.messageText)
                     .lineSpacing(4)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -278,11 +278,11 @@ struct ChatView: View {
       return  HStack {
             VStack(alignment: .leading, spacing: 8) {
                 Text("ADVISOR")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(ChatPalette.accent)
 
                 Text(hasText ? (displayText ?? "") : "Thinking...")
-                    .font(.system(size: hasText ? 15 : 14, design: hasText ? .serif : .monospaced))
+                    .font(.system(size: hasText ? 15 : 14))
                     .foregroundStyle(hasText ? ChatPalette.messageText : ChatPalette.muted)
                     .lineSpacing(4)
             }

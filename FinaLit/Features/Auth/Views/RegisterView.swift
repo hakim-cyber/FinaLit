@@ -42,10 +42,10 @@ struct RegisterView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Create account")
-                            .font(.system(size: 34, weight: .light, design: .serif))
+                            .font(.system(size: 34, weight: .medium))
                             .foregroundStyle(.white)
                         Text("Set up your profile to personalize your financial path.")
-                            .font(.system(size: 13, design: .monospaced))
+                            .font(.system(size: 13))
                             .foregroundStyle(AuthPalette.muted)
                     }
 
@@ -56,21 +56,21 @@ struct RegisterView: View {
 
                         VStack(alignment: .leading, spacing: 8) {
                             Text("NAME")
-                                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 10, weight: .semibold))
                                 .foregroundStyle(AuthPalette.muted)
                             TextField("John", text: $viewModel.name)
                                 .authInputStyle()
 
                             if viewModel.name.isEmpty == false && trimmedName.isEmpty {
                                 Text("Name cannot be only spaces.")
-                                    .font(.system(size: 11, design: .monospaced))
+                                    .font(.system(size: 11))
                                     .foregroundStyle(Color(hex: "F87171"))
                             }
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
                             Text("EMAIL")
-                                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 10, weight: .semibold))
                                 .foregroundStyle(AuthPalette.muted)
                             TextField("name@email.com", text: $viewModel.email)
                                 .textInputAutocapitalization(.never)
@@ -80,14 +80,14 @@ struct RegisterView: View {
 
                             if !trimmedEmail.isEmpty && !isEmailValid {
                                 Text("Please enter a valid email address.")
-                                    .font(.system(size: 11, design: .monospaced))
+                                    .font(.system(size: 11))
                                     .foregroundStyle(Color(hex: "F87171"))
                             }
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
                             Text("PASSWORD")
-                                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 10, weight: .semibold))
                                 .foregroundStyle(AuthPalette.muted)
                             SecureField("Minimum 8 characters", text: $viewModel.password)
                                 .textInputAutocapitalization(.never)
@@ -96,14 +96,14 @@ struct RegisterView: View {
 
                             if !viewModel.password.isEmpty && !isPasswordValid {
                                 Text("Password must be at least 8 characters.")
-                                    .font(.system(size: 11, design: .monospaced))
+                                    .font(.system(size: 11))
                                     .foregroundStyle(Color(hex: "F87171"))
                             }
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
                             Text("CONFIRM PASSWORD")
-                                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 10, weight: .semibold))
                                 .foregroundStyle(AuthPalette.muted)
                             SecureField("Re-enter password", text: $viewModel.confirmPassword)
                                 .textInputAutocapitalization(.never)
@@ -112,7 +112,7 @@ struct RegisterView: View {
 
                             if !viewModel.confirmPassword.isEmpty && !doPasswordsMatch {
                                 Text("Passwords do not match.")
-                                    .font(.system(size: 11, design: .monospaced))
+                                    .font(.system(size: 11))
                                     .foregroundStyle(Color(hex: "F87171"))
                             }
                         }
@@ -129,7 +129,7 @@ struct RegisterView: View {
                                         .tint(.white)
                                 }
                                 Text(viewModel.isLoading ? "Creating..." : "Create Account")
-                                    .font(.system(size: 15, weight: .semibold, design: .monospaced))
+                                    .font(.system(size: 15, weight: .semibold))
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
@@ -150,7 +150,7 @@ struct RegisterView: View {
                         Button("Already have an account? Log In") {
                             coordinator.pop()
                         }
-                        .font(.system(size: 13, weight: .medium, design: .monospaced))
+                        .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(AuthPalette.accent)
                         .frame(maxWidth: .infinity)
                         .padding(.top, 4)
@@ -193,7 +193,7 @@ private struct AuthErrorBanner: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundStyle(Color(hex: "F87171"))
             Text(message)
-                .font(.system(size: 12, design: .monospaced))
+                .font(.system(size: 12))
                 .foregroundStyle(Color(hex: "FCA5A5"))
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -219,7 +219,7 @@ private enum AuthPalette {
 private struct AuthInputFieldModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 15, design: .serif))
+            .font(.system(size: 15))
             .foregroundStyle(.white)
             .padding(.horizontal, 14)
             .frame(height: 50)

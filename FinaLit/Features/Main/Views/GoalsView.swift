@@ -30,7 +30,7 @@ struct GoalsView: View {
                     } else {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("ACTIVE GOALS")
-                                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 11, weight: .semibold))
                                 .foregroundStyle(Color(hex: "4B5563"))
                                 .padding(.horizontal, 20)
 
@@ -48,7 +48,7 @@ struct GoalsView: View {
                     if !mainVM.completedGoals.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("COMPLETED")
-                                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 11, weight: .semibold))
                                 .foregroundStyle(Color(hex: "4B5563"))
                                 .padding(.horizontal, 20)
 
@@ -76,7 +76,7 @@ struct GoalsView: View {
                             Image(systemName: "plus")
                                 .font(.system(size: 14, weight: .semibold))
                             Text("New Goal")
-                                .font(.system(size: 14, design: .monospaced))
+                                .font(.system(size: 14))
                         }
                         .foregroundStyle(.white)
                         .padding(.horizontal, 20)
@@ -135,11 +135,11 @@ struct GoalCard: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(goal.title)
-                        .font(.system(size: 17, weight: .medium, design: .serif))
+                        .font(.system(size: 17, weight: .semibold))
                         .foregroundStyle(.white)
                     if let deadline = goal.deadline {
                         Text("Due \(deadline.formatted(date: .abbreviated, time: .omitted))")
-                            .font(.system(size: 11, design: .monospaced))
+                            .font(.system(size: 11))
                             .foregroundStyle(Color(hex: "4B5563"))
                     }
                 }
@@ -150,7 +150,7 @@ struct GoalCard: View {
                         .font(.system(size: 20))
                 } else {
                     Text("\(String(format: "%.0f", goal.progressPercentage))%")
-                        .font(.system(size: 18, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 18, weight: .semibold))
                         .foregroundStyle(Color(hex: "6366F1"))
                 }
             }
@@ -159,19 +159,19 @@ struct GoalCard: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(formatCurrency(goal.currentAmount))
-                        .font(.system(size: 20, weight: .light, design: .serif))
+                        .font(.system(size: 20, weight: .medium))
                         .foregroundStyle(.white)
                     Text("saved")
-                        .font(.system(size: 10, design: .monospaced))
+                        .font(.system(size: 10))
                         .foregroundStyle(Color(hex: "4B5563"))
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(formatCurrency(goal.targetAmount))
-                        .font(.system(size: 16, design: .monospaced))
+                        .font(.system(size: 16))
                         .foregroundStyle(Color(hex: "6B7280"))
                     Text("target")
-                        .font(.system(size: 10, design: .monospaced))
+                        .font(.system(size: 10))
                         .foregroundStyle(Color(hex: "4B5563"))
                 }
             }
@@ -181,7 +181,7 @@ struct GoalCard: View {
                     Image(systemName: "speedometer")
                         .font(.system(size: 10))
                     Text(monthlyPaceText)
-                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 10, weight: .semibold))
                 }
                 .foregroundStyle(monthlyPaceColor)
             }
@@ -229,10 +229,10 @@ struct EmptyGoalsCard: View {
             Text("🎯")
                 .font(.system(size: 40))
             Text("No goals yet")
-                .font(.system(size: 18, design: .serif))
+                .font(.system(size: 18))
                 .foregroundStyle(.white)
             Text("Set a financial goal to track your progress.")
-                .font(.system(size: 13, design: .monospaced))
+                .font(.system(size: 13))
                 .foregroundStyle(Color(hex: "4B5563"))
                 .multilineTextAlignment(.center)
         }
@@ -292,7 +292,7 @@ struct AddGoalView: View {
     private var templatesSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("TEMPLATES")
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(Color(hex: "4B5563"))
 
             ScrollView(.horizontal, showsIndicators: false) {
@@ -303,11 +303,11 @@ struct AddGoalView: View {
                         } label: {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(template.title)
-                                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                                    .font(.system(size: 12, weight: .semibold))
                                     .foregroundStyle(.white)
                                     .lineLimit(1)
                                 Text("\(formatCurrency(template.targetAmount)) - \(template.hint)")
-                                    .font(.system(size: 10, design: .monospaced))
+                                    .font(.system(size: 10))
                                     .foregroundStyle(Color(hex: "6B7280"))
                             }
                             .frame(width: 165, alignment: .leading)
@@ -336,12 +336,12 @@ struct AddGoalView: View {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(Color(hex: "10B981"))
                 Text("Goal created")
-                    .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(.white)
             }
 
             Text("\"\(createdGoalTitle)\" is now active.")
-                .font(.system(size: 12, design: .monospaced))
+                .font(.system(size: 12))
                 .foregroundStyle(Color(hex: "9CA3AF"))
 
             HStack(spacing: 10) {
@@ -349,7 +349,7 @@ struct AddGoalView: View {
                     openCreatedGoal()
                 } label: {
                     Text("View Goal")
-                        .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(.white)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 10)
@@ -361,7 +361,7 @@ struct AddGoalView: View {
                     coordinator.pop()
                 } label: {
                     Text("Done")
-                        .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(Color(hex: "9CA3AF"))
                         .padding(.horizontal, 14)
                         .padding(.vertical, 10)
@@ -423,10 +423,10 @@ struct AddGoalView: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("GOAL NAME")
-                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
                         TextField("e.g. Emergency Fund", text: $title)
-                            .font(.system(size: 18, design: .serif))
+                            .font(.system(size: 18))
                             .foregroundStyle(.white)
                             .padding(16)
                             .background(Color(hex: "111118"))
@@ -436,14 +436,14 @@ struct AddGoalView: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("TARGET AMOUNT")
-                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
                         HStack(spacing: 4) {
                             Text(AppRegion.currencySymbol)
-                                .font(.system(size: 32, weight: .light, design: .serif))
+                                .font(.system(size: 32, weight: .medium))
                                 .foregroundStyle(Color(hex: "374151"))
                             TextField("5,000", text: $targetAmount)
-                                .font(.system(size: 32, weight: .light, design: .serif))
+                                .font(.system(size: 32, weight: .medium))
                                 .foregroundStyle(.white)
                                 .keyboardType(.decimalPad)
                                 .tint(Color(hex: "6366F1"))
@@ -455,7 +455,7 @@ struct AddGoalView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Text("SET DEADLINE")
-                                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 10, weight: .semibold))
                                 .foregroundStyle(Color(hex: "4B5563"))
                             Spacer()
                             Toggle("", isOn: $hasDeadline)
@@ -495,7 +495,7 @@ struct AddGoalView: View {
                 } label: {
                     HStack {
                         Text("Create Goal")
-                            .font(.system(size: 16, design: .monospaced))
+                            .font(.system(size: 16))
                         if mainVM.isSubmitting {
                             ProgressView().tint(.white).scaleEffect(0.8)
                         }
@@ -554,17 +554,17 @@ struct GoalDetailView: View {
                         // ── Add contribution ───────────────────────────────
                         VStack(alignment: .leading, spacing: 12) {
                             Text("ADD CONTRIBUTION")
-                                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 10, weight: .semibold))
                                 .foregroundStyle(Color(hex: "4B5563"))
                                 .padding(.horizontal, 20)
 
                             HStack(spacing: 12) {
                                 HStack(spacing: 4) {
                                     Text(AppRegion.currencySymbol)
-                                        .font(.system(size: 16, design: .monospaced))
+                                        .font(.system(size: 16))
                                         .foregroundStyle(Color(hex: "4B5563"))
                                     TextField("Contribution", text: $newAmount)
-                                        .font(.system(size: 16, design: .monospaced))
+                                        .font(.system(size: 16))
                                         .foregroundStyle(.white)
                                         .keyboardType(.decimalPad)
                                         .tint(Color(hex: "6366F1"))
@@ -582,7 +582,7 @@ struct GoalDetailView: View {
                                         }
                                     }
                                 }
-                                .font(.system(size: 14, design: .monospaced))
+                                .font(.system(size: 14))
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 20)
                                 .padding(.vertical, 14)
@@ -598,11 +598,11 @@ struct GoalDetailView: View {
                         if remaining > 0 {
                             HStack {
                                 Text("Still needed:")
-                                    .font(.system(size: 13, design: .monospaced))
+                                    .font(.system(size: 13))
                                     .foregroundStyle(Color(hex: "4B5563"))
                                 Spacer()
                                 Text(formatCurrency(remaining))
-                                    .font(.system(size: 16, weight: .semibold, design: .monospaced))
+                                    .font(.system(size: 16, weight: .semibold))
                                     .foregroundStyle(Color(hex: "6366F1"))
                             }
                             .padding(.horizontal, 32)
@@ -616,7 +616,7 @@ struct GoalDetailView: View {
                                 Image(systemName: "trash")
                                 Text("Delete Goal")
                             }
-                            .font(.system(size: 14, design: .monospaced))
+                            .font(.system(size: 14))
                             .foregroundStyle(Color(hex: "F87171"))
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 14)

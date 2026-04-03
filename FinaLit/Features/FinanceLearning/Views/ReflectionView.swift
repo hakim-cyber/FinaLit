@@ -36,10 +36,10 @@ struct ReflectionView: View {
                         Text("📝")
                             .font(.system(size: 36))
                         Text("Week Reflection")
-                            .font(.system(size: 30, weight: .light, design: .serif))
+                            .font(.system(size: 30, weight: .medium))
                             .foregroundStyle(.white)
                         Text(weekTitle)
-                            .font(.system(size: 14, design: .monospaced))
+                            .font(.system(size: 14))
                             .foregroundStyle(Color(hex: "6366F1"))
                     }
 
@@ -53,20 +53,20 @@ struct ReflectionView: View {
                     // ── Text editor ────────────────────────────────────────
                     VStack(alignment: .leading, spacing: 8) {
                         Text("YOUR REFLECTION")
-                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
 
                         ZStack(alignment: .topLeading) {
                             if content.isEmpty {
                                 Text("Write your thoughts here... (min \(minLength) characters)")
-                                    .font(.system(size: 15, design: .serif))
+                                    .font(.system(size: 15))
                                     .foregroundStyle(Color(hex: "374151"))
                                     .padding(.top, 14)
                                     .padding(.leading, 16)
                                     .allowsHitTesting(false)
                             }
                             TextEditor(text: $content)
-                                .font(.system(size: 15, design: .serif))
+                                .font(.system(size: 15))
                                 .foregroundStyle(Color(hex: "D1D5DB"))
                                 .scrollContentBackground(.hidden)
                                 .background(Color.clear)
@@ -88,16 +88,16 @@ struct ReflectionView: View {
                         HStack {
                             if !canSubmit && charCount > 0 {
                                 Text("\(minLength - charCount) more characters needed")
-                                    .font(.system(size: 11, design: .monospaced))
+                                    .font(.system(size: 11))
                                     .foregroundStyle(Color(hex: "F87171"))
                             } else if canSubmit {
                                 Text("✓ Ready to submit")
-                                    .font(.system(size: 11, design: .monospaced))
+                                    .font(.system(size: 11))
                                     .foregroundStyle(Color(hex: "10B981"))
                             }
                             Spacer()
                             Text("\(charCount)")
-                                .font(.system(size: 11, design: .monospaced))
+                                .font(.system(size: 11))
                                 .foregroundStyle(canSubmit ? Color(hex: "10B981") : Color(hex: "4B5563"))
                         }
                     }
@@ -132,7 +132,7 @@ struct ReflectionView: View {
                 } label: {
                     HStack {
                         Text("Submit Reflection")
-                            .font(.system(size: 16, design: .monospaced))
+                            .font(.system(size: 16))
                         if learnVM.isSubmitting {
                             ProgressView().tint(.white).scaleEffect(0.8)
                         }
@@ -200,11 +200,11 @@ struct ReflectionPrompt: View {
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             Text(number)
-                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(Color(hex: "6366F1"))
                 .padding(.top, 2)
             Text(text)
-                .font(.system(size: 14, design: .serif))
+                .font(.system(size: 14))
                 .foregroundStyle(Color(hex: "9CA3AF"))
                 .lineSpacing(3)
         }
@@ -268,7 +268,7 @@ struct LearningProgressView: View {
                     // ── Week timeline ──────────────────────────────────────
                     VStack(alignment: .leading, spacing: 12) {
                         Text("WEEK HISTORY")
-                            .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                            .font(.system(size: 11, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
                             .padding(.horizontal, 20)
 
@@ -284,7 +284,7 @@ struct LearningProgressView: View {
                     if !learnVM.reflections.isEmpty {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("YOUR REFLECTIONS")
-                                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 11, weight: .semibold))
                                 .foregroundStyle(Color(hex: "4B5563"))
                                 .padding(.horizontal, 20)
 
@@ -333,10 +333,10 @@ struct LevelBadge: View {
                 .font(.system(size: 36))
             VStack(alignment: .leading, spacing: 4) {
                 Text("YOUR LEVEL")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
                 Text(level.rawValue)
-                    .font(.system(size: 22, weight: .medium, design: .serif))
+                    .font(.system(size: 22, weight: .semibold))
                     .foregroundStyle(Color(hex: levelColor))
             }
         }
@@ -366,10 +366,10 @@ struct ProgressStatCard: View {
                 .font(.system(size: 18))
             VStack(alignment: .leading, spacing: 3) {
                 Text(value)
-                    .font(.system(size: 26, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 26, weight: .semibold))
                     .foregroundStyle(.white)
                 Text(label)
-                    .font(.system(size: 11, design: .monospaced))
+                    .font(.system(size: 11))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
         }
@@ -401,19 +401,19 @@ struct WeekTimelineRow: View {
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(weekTitle)
-                    .font(.system(size: 15, design: .serif))
+                    .font(.system(size: 15))
                     .foregroundStyle(weekProgress.isCompleted ? .white : Color(hex: "4B5563"))
                 if let date = weekProgress.completedAt {
                     Text(date.formatted(date: .abbreviated, time: .omitted))
-                        .font(.system(size: 11, design: .monospaced))
+                        .font(.system(size: 11))
                         .foregroundStyle(Color(hex: "6B7280"))
                 } else if weekProgress.isUnlocked {
                     Text("In progress")
-                        .font(.system(size: 11, design: .monospaced))
+                        .font(.system(size: 11))
                         .foregroundStyle(Color(hex: "6366F1"))
                 } else {
                     Text("Locked")
-                        .font(.system(size: 11, design: .monospaced))
+                        .font(.system(size: 11))
                         .foregroundStyle(Color(hex: "374151"))
                 }
             }
@@ -442,15 +442,15 @@ struct ReflectionHistoryCard: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text(reflection.weekTitle)
-                    .font(.system(size: 14, weight: .medium, design: .serif))
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(.white)
                 Spacer()
                 Text(reflection.submittedAt.formatted(date: .abbreviated, time: .omitted))
-                    .font(.system(size: 11, design: .monospaced))
+                    .font(.system(size: 11))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
             Text(reflection.content)
-                .font(.system(size: 13, design: .serif))
+                .font(.system(size: 13))
                 .foregroundStyle(Color(hex: "6B7280"))
                 .lineLimit(3)
                 .lineSpacing(3)

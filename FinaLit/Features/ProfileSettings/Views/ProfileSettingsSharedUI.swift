@@ -55,11 +55,11 @@ struct ProfileSettingsFormScaffold<Content: View>: View {
                     VStack(alignment: .leading, spacing: 20) {
                         VStack(alignment: .leading, spacing: 6) {
                             Text(title)
-                                .font(.system(size: 30, weight: .light, design: .serif))
+                                .font(.system(size: 30, weight: .medium))
                                 .foregroundStyle(.white)
                                 .fixedSize(horizontal: false, vertical: true)
                             Text(subtitle)
-                                .font(.system(size: 13, design: .monospaced))
+                                .font(.system(size: 13))
                                 .foregroundStyle(ProfileSettingsPalette.muted)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
@@ -82,7 +82,7 @@ struct ProfileSettingsFormScaffold<Content: View>: View {
                                         .tint(.white)
                                 }
                                 Text(primaryTitle)
-                                    .font(.system(size: 15, weight: .semibold, design: .monospaced))
+                                    .font(.system(size: 15, weight: .semibold))
                             }
                             .frame(maxWidth: .infinity)
                             .frame(height: 52)
@@ -124,7 +124,7 @@ struct ProfileSettingsTogglePill: View {
     var body: some View {
         Button(action: onTap) {
             Text(title)
-                .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(isSelected ? Color.white : ProfileSettingsPalette.muted)
                 .frame(maxWidth: .infinity)
                 .frame(height: 42)
@@ -157,10 +157,10 @@ struct ProfileSettingsSelectableRow: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
-                        .font(.system(size: 16, weight: .medium, design: .serif))
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.white)
                     Text(subtitle)
-                        .font(.system(size: 11, design: .monospaced))
+                        .font(.system(size: 11))
                         .foregroundStyle(ProfileSettingsPalette.muted)
                         .lineLimit(2)
                 }
@@ -200,7 +200,7 @@ private struct ProfileSettingsStatusBanner: View {
             Image(systemName: tone == .error ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
                 .foregroundStyle(tone == .error ? Color(hex: "F87171") : Color(hex: "10B981"))
             Text(message)
-                .font(.system(size: 12, design: .monospaced))
+                .font(.system(size: 12))
                 .foregroundStyle(tone == .error ? Color(hex: "FCA5A5") : Color(hex: "6EE7B7"))
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -220,7 +220,7 @@ private struct ProfileSettingsStatusBanner: View {
 private struct ProfileSettingsInputFieldModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 15, design: .serif))
+            .font(.system(size: 15))
             .foregroundStyle(.white)
             .padding(.horizontal, 14)
             .frame(height: 50)
@@ -235,7 +235,7 @@ private struct ProfileSettingsInputFieldModifier: ViewModifier {
 private struct ProfileSettingsTextAreaModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 15, design: .serif))
+            .font(.system(size: 15))
             .foregroundStyle(.white)
             .padding(14)
             .background(ProfileSettingsPalette.background.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
@@ -256,7 +256,7 @@ extension View {
     }
 
     func settingsFieldLabelStyle() -> some View {
-        font(.system(size: 11, weight: .semibold, design: .monospaced))
+        font(.system(size: 11, weight: .semibold))
             .foregroundStyle(ProfileSettingsPalette.muted)
     }
 }

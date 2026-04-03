@@ -57,12 +57,12 @@ struct QuizView: View {
                         VStack(alignment: .leading, spacing: 24) {
                             // Question type badge
                             Text(question.type.uppercased())
-                                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                                .font(.system(size: 10, weight: .semibold))
                                 .foregroundStyle(Color(hex: "6366F1"))
 
                             // Question text
                             Text(question.questionText)
-                                .font(.system(size: 20, weight: .light, design: .serif))
+                                .font(.system(size: 20, weight: .medium))
                                 .foregroundStyle(.white)
                                 .lineSpacing(5)
                                 .fixedSize(horizontal: false, vertical: true)
@@ -115,7 +115,7 @@ struct QuizView: View {
                                         ? "Loading Results..."
                                         : (isLastQuestion ? "See Results →" : "Next Question →")
                                 )
-                                .font(.system(size: 16, design: .monospaced))
+                                .font(.system(size: 16))
 
                                 if learnVM.isSubmitting && isLastQuestion {
                                     ProgressView()
@@ -206,7 +206,7 @@ struct QuizProgressBar: View {
         VStack(spacing: 8) {
             HStack {
                 Text("Question \(current) of \(total)")
-                    .font(.system(size: 12, design: .monospaced))
+                    .font(.system(size: 12))
                     .foregroundStyle(Color(hex: "6B7280"))
                 Spacer()
             }
@@ -275,12 +275,12 @@ struct QuizOptionButton: View {
                         .fill(borderColor.opacity(0.2))
                         .frame(width: 28, height: 28)
                     Text(["A","B","C","D"][safe: index] ?? "")
-                        .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(borderColor)
                 }
 
                 Text(text)
-                    .font(.system(size: 15, design: .serif))
+                    .font(.system(size: 15))
                     .foregroundStyle(textColor)
                     .multilineTextAlignment(.leading)
 
@@ -313,15 +313,15 @@ struct ExplanationBox: View {
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             Text(isCorrect ? "✓" : "✗")
-                .font(.system(size: 16, weight: .bold, design: .monospaced))
+                .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(isCorrect ? Color(hex: "10B981") : Color(hex: "F87171"))
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(isCorrect ? "Correct!" : "Not quite")
-                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(isCorrect ? Color(hex: "10B981") : Color(hex: "F87171"))
                 Text(explanation)
-                    .font(.system(size: 14, design: .serif))
+                    .font(.system(size: 14))
                     .foregroundStyle(Color(hex: "9CA3AF"))
                     .lineSpacing(4)
             }

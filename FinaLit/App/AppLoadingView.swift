@@ -34,10 +34,10 @@ struct AppLoadingView: View {
 
                 VStack(spacing: 6) {
                     Text("FinaLit")
-                        .font(.system(size: 34, weight: .light, design: .serif))
+                        .font(.system(size: 34, weight: .medium))
                         .foregroundStyle(.white)
                     Text("Restoring your workspace")
-                        .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                        .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(Color(hex: "6B7280"))
                 }
 
