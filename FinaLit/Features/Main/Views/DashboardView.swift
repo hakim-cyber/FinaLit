@@ -258,9 +258,12 @@ struct DashboardView: View {
                     .foregroundStyle(Color(hex: "4B5563"))
 
                 if let summary = mainVM.summary {
-                    Text(formatCurrency(summary.currentBalance))
+                    Text(formatCompactCurrency(summary.currentBalance))
                         .font(.system(size: 42, weight: .light, design: .serif))
                         .foregroundStyle(summary.currentBalance >= 0 ? .white : Color(hex: "F87171"))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.35)
+                        .allowsTightening(true)
                 } else {
                     Text("\(AppRegion.currencySymbol) —")
                         .font(.system(size: 42, weight: .light, design: .serif))

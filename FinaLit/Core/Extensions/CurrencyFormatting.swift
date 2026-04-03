@@ -38,6 +38,35 @@ func formatCurrency(_ value: Double) -> String {
     return formatter.string(from: NSNumber(value: value)) ?? "\(AppRegion.currencySymbol)\(formatAmount(value))"
 }
 
+func formatCompactCurrency(_ value: Double) -> String {
+    let absoluteValue = abs(value)
+    let scale: (divisor: Double, suffix: String)
+
+    switch absoluteValue {
+    case 1_000_000_000_000...:
+        scale = (1_000_000_000_000, "T")
+    case 1_000_000_000...:
+        scale = (1_000_000_000, "B")
+    case 1_000_000...:
+        scale = (1_000_000, "M")
+    case 1_000...:
+        scale = (1_000, "K")
+    default:
+        return formatCurrency(value)
+    }
+
+    let abbreviatedValue = value / scale.divisor
+    let formatter = NumberFormatter()
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.numberStyle = .decimal
+    formatter.usesGroupingSeparator = false
+    formatter.maximumFractionDigits = abbreviatedValue.magnitude < 10 ? 2 : 1
+    formatter.minimumFractionDigits = 0
+
+    let number = formatter.string(from: NSNumber(value: abbreviatedValue)) ?? String(format: "%.1f", abbreviatedValue)
+    return "\(number)\(scale.suffix) \(AppRegion.currencySymbol)"
+}
+
 func formatSignedCurrency(_ value: Double) -> String {
     let prefix = value >= 0 ? "+" : "-"
     return "\(prefix)\(formatCurrency(abs(value)))"
