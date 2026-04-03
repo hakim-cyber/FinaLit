@@ -90,20 +90,18 @@ struct DashboardView: View {
                     } label: {
                         ZStack {
                             Circle()
-                                .fill(LinearGradient(
-                                    colors: [Color(hex: "6366F1"), Color(hex: "4F46E5")],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                ))
-                                .frame(width: 56, height: 56)
-                                .shadow(color: Color(hex: "6366F1").opacity(0.4), radius: 12, y: 4)
+                                .fill(Color.accentColor)
+                                .frame(width: 50, height: 50)
+                               
                             Image(systemName: "plus")
                                 .font(.system(size: 20, weight: .semibold))
                                 .foregroundStyle(.white)
                         }
                     }
+                    .glassEffectIfAvailable()
                     .padding(.trailing, 24)
                     .padding(.bottom, 16)
+                    
                 }
             }
         }
@@ -136,7 +134,7 @@ struct DashboardView: View {
                 }
             }
         }
-        .toolbarBackground(.visible, for: .navigationBar)
+      
         .task { await mainVM.loadHome() }
         .sheet(isPresented: $showPayDebtSheet) {
             PayDebtSheet(onAddDebt: {
