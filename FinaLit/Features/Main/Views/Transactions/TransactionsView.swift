@@ -53,53 +53,48 @@ struct TransactionsView: View {
         ZStack {
             AppTheme.background.ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                transactionsSummaryHeader
-                    .padding(.horizontal, AppTheme.Spacing.screen)
-                    .padding(.bottom, 16)
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 20) {
+                    transactionsSummaryHeader
 
-                if filtered.isEmpty {
-                    Spacer()
-                    Text(searchText.isEmpty ? "No transactions" : "No results")
-                        .font(AppTheme.Typography.body)
-                        .foregroundStyle(AppTheme.textSecondary)
-                    Spacer()
-                } else {
-                    ScrollView(showsIndicators: false) {
-                        VStack(alignment: .leading, spacing: 20) {
-                            ForEach(grouped) { group in
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text(group.label)
-                                        .font(AppTheme.Typography.formLabel)
-                                        .foregroundStyle(AppTheme.textSecondary)
+                    if filtered.isEmpty {
+                        Text(searchText.isEmpty ? "No transactions" : "No results")
+                            .font(AppTheme.Typography.body)
+                            .foregroundStyle(AppTheme.textSecondary)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.top, 20)
+                    } else {
+                        ForEach(grouped) { group in
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text(group.label)
+                                    .font(AppTheme.Typography.formLabel)
+                                    .foregroundStyle(AppTheme.textSecondary)
 
-                                    VStack(spacing: 0) {
-                                        ForEach(Array(group.transactions.enumerated()), id: \.offset) { index, transaction in
-                                            TransactionRow(transaction: transaction)
-                                                .onTapGesture {
-                                                    coordinator.push(.transactionDetail(transaction.id ?? ""))
-                                                }
-                                            if index < group.transactions.count - 1 {
-                                                Divider()
-                                                    .overlay(AppTheme.separator)
-                                                    .padding(.leading, 36)
+                                VStack(spacing: 0) {
+                                    ForEach(Array(group.transactions.enumerated()), id: \.offset) { index, transaction in
+                                        TransactionRow(transaction: transaction)
+                                            .onTapGesture {
+                                                coordinator.push(.transactionDetail(transaction.id ?? ""))
                                             }
+                                        if index < group.transactions.count - 1 {
+                                            Divider()
+                                                .overlay(AppTheme.separator)
+                                                .padding(.leading, 36)
                                         }
                                     }
                                 }
                             }
-                            Spacer(minLength: 40)
                         }
-                        .padding(.horizontal, AppTheme.Spacing.screen)
-                        .padding(.top, 4)
                     }
+                    Spacer(minLength: 40)
                 }
+                .padding(.horizontal, AppTheme.Spacing.screen)
+                .padding(.top, 8)
             }
-            .padding(.top, 8)
         }
         .navigationTitle("Transactions")
         .navigationBarTitleDisplayMode(.inline)
-        .searchable(text: $searchText, prompt: "Search transactions")
+        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search transactions")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {

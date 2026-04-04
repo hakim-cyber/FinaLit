@@ -85,10 +85,11 @@ struct GoalContributionSheet: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }
+                        .foregroundStyle(Color.primary)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Add") { submitContribution() }
-                        .buttonStyle(.borderedProminent)
+                        .bold()
                         .disabled(!isValid || mainVM.isSubmitting)
                 }
             }

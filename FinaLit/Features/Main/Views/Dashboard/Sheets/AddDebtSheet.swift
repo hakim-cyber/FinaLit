@@ -102,10 +102,12 @@ struct AddDebtSheet: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }
+                        .foregroundStyle(Color.primary)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Save") { saveDebtAccount() }
-                        .buttonStyle(.borderedProminent)
+                        .foregroundStyle(Color.orange)
+                        .bold()
                         .disabled(!isValid || mainVM.isSubmitting)
                 }
             }
