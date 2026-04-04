@@ -68,6 +68,7 @@ struct AddTransactionView: View {
         .alert("Error", isPresented: isShowingErrorAlert) {
             Button("OK") { mainVM.clearError() }
         } message: { Text(mainVM.errorMessage ?? "") }
+            .presentationDragIndicator(.visible)
     }
 
     private var isShowingErrorAlert: Binding<Bool> {

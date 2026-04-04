@@ -25,7 +25,9 @@ struct CoordinatorStack<CoordinatorPage: Coordinatable>: View {
         var body: some View {
             NavigationStack(path: $coordinator.path) {
                 root
-                    .navigationDestination(for: CoordinatorPage.self) { $0 }
+                    .navigationDestination(for: CoordinatorPage.self) {
+                        $0.toolbar(.hidden, for: .tabBar)
+                    }
                     .sheet(item: $coordinator.sheet) { $0 }
                     .fullScreenCover(item: $coordinator.fullScreenCover) { $0 }
             }
