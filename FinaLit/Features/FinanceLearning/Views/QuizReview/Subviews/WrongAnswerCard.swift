@@ -13,7 +13,7 @@ struct WrongAnswerCard: View {
         VStack(alignment: .leading, spacing: 14) {
             Text(question.questionText)
                 .font(.system(size: 15))
-                .foregroundStyle(.white)
+                .foregroundStyle(AppTheme.textPrimary)
                 .lineSpacing(4)
 
             if let userIndex, userIndex < question.options.count {

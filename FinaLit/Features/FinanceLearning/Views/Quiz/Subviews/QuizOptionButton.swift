@@ -35,7 +35,7 @@ struct QuizOptionButton: View {
     }
 
     private var textColor: Color {
-        guard isRevealed else { return .white }
+        guard isRevealed else { return AppTheme.textPrimary }
         if isCorrect { return AppTheme.success }
         if isSelected { return AppTheme.danger }
         return AppTheme.textSecondary

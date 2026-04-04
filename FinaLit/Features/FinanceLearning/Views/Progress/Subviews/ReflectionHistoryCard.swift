@@ -13,7 +13,7 @@ struct ReflectionHistoryCard: View {
             HStack {
                 Text(reflection.weekTitle)
                     .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(AppTheme.textPrimary)
                 Spacer()
                 Text(reflection.submittedAt.formatted(date: .abbreviated, time: .omitted))
                     .font(.system(size: 11))

@@ -86,7 +86,7 @@ struct LearnHomeView: View {
                     coordinator.push(.progress)
                 } label: {
                     Image(systemName: "flame.fill")
-                        .foregroundStyle(Color.orange)
+                        .foregroundStyle(AppTheme.warning)
                         .font(AppTheme.Typography.toolbarIcon)
                 }
              

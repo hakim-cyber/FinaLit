@@ -52,7 +52,7 @@ struct QuizView: View {
 
                             Text(question.questionText)
                                 .font(.system(size: 20, weight: .medium))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(AppTheme.textPrimary)
                                 .lineSpacing(5)
                                 .fixedSize(horizontal: false, vertical: true)
 

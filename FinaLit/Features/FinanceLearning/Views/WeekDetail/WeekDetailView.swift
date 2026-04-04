@@ -28,7 +28,7 @@ struct WeekDetailView: View {
                                 .foregroundStyle(AppTheme.accent)
                             Text(week.title)
                                 .font(.system(size: 28, weight: .medium))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(AppTheme.textPrimary)
                             Text(week.description)
                                 .font(.system(size: 14))
                                 .foregroundStyle(AppTheme.textSecondary)

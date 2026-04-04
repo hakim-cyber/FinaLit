@@ -45,7 +45,7 @@ struct QuizReviewView: View {
                                 .font(.system(size: 48))
                             Text("Perfect score!")
                                 .font(.system(size: 22))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(AppTheme.textPrimary)
                             Text("You got every question right.")
                                 .font(.system(size: 14))
                                 .foregroundStyle(AppTheme.textSecondary)

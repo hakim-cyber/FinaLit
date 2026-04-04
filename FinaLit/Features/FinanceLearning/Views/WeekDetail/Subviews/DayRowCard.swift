@@ -30,7 +30,7 @@ struct DayRowCard: View {
                 HStack(spacing: 6) {
                     Text(day.isReflection ? "Reflection Day" : "Day \(day.dayNumber)")
                         .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(isLocked ? AppTheme.textTertiary : .white)
+                        .foregroundStyle(isLocked ? AppTheme.textTertiary : AppTheme.textPrimary)
                     if day.isReflection {
                         Text("📝")
                             .font(.caption)
@@ -72,7 +72,7 @@ struct DayRowCard: View {
             RoundedRectangle(cornerRadius: 14)
                 .stroke(borderColor, lineWidth: 1)
         )
-        .opacity(isLocked ? 0.4 : 1)
+        .opacity(isLocked ? 0.6 : 1)
     }
 
     private var iconName: String {

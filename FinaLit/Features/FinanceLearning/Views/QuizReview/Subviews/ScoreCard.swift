@@ -19,7 +19,7 @@ struct ScoreCard: View {
             VStack(spacing: 6) {
                 Text("\(score)/\(total)")
                     .font(.system(size: 56, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(AppTheme.textPrimary)
                 Text("\(percentage)% correct")
                     .font(.system(size: 14))
                     .foregroundStyle(passed ? AppTheme.success : AppTheme.danger)

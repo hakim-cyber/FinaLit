@@ -58,8 +58,8 @@ struct WeekRowCard: View {
                     .foregroundStyle(AppTheme.textTertiary)
             }
         }
-        .appSurface(isComplete ? .tinted(.success) : .primary, padding: 16, cornerRadius: AppTheme.CornerRadius.large)
-        .opacity(isLocked ? 0.5 : 1)
+        .appSurface(.primary, padding: 16, cornerRadius: AppTheme.CornerRadius.large)
+        .opacity(isLocked ? 0.65 : 1)
         .padding(.horizontal, 20)
     }
 }

@@ -39,7 +39,7 @@ struct DailyTipCard: View {
             .font(AppTheme.Typography.caption)
             .foregroundStyle(AppTheme.success)
         }
-        .appSurface(.tinted(.success), padding: 20, cornerRadius: AppTheme.CornerRadius.large)
+        .appSurface(.primary, padding: 20, cornerRadius: AppTheme.CornerRadius.large)
         .padding(.horizontal, 20)
     }
 }

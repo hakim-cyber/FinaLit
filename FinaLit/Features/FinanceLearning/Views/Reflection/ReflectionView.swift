@@ -35,7 +35,7 @@ struct ReflectionView: View {
                             .font(.system(size: 36))
                         Text("Week Reflection")
                             .font(.system(size: 30, weight: .medium))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(AppTheme.textPrimary)
                         Text(weekTitle)
                             .font(.system(size: 14))
                             .foregroundStyle(AppTheme.accent)

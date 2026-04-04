@@ -233,7 +233,7 @@ struct LessonDetailView: View {
 
             Text(lesson.title)
                 .font(.system(size: 30, weight: .medium))
-                .foregroundStyle(.white)
+                .foregroundStyle(AppTheme.textPrimary)
                 .lineSpacing(4)
 
             HStack(spacing: 12) {
@@ -374,7 +374,7 @@ private struct LessonHeadingBlock: View {
     var body: some View {
         Text(text)
             .font(.system(size: 22, weight: .medium))
-            .foregroundStyle(.white)
+            .foregroundStyle(AppTheme.textPrimary)
             .lineSpacing(4)
             .padding(.horizontal, 20)
             .padding(.top, 12)

@@ -39,7 +39,7 @@ struct ContinueBanner: View {
                     .font(.title2)
                     .foregroundStyle(AppTheme.accent)
             }
-            .appSurface(.tinted(.accent), padding: 20, cornerRadius: AppTheme.CornerRadius.large)
+            .appSurface(.primary, padding: 20, cornerRadius: AppTheme.CornerRadius.large)
         }
         .padding(.horizontal, 20)
         .buttonStyle(.plain)

@@ -21,7 +21,7 @@ struct WeekTimelineRow: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text(weekTitle)
                     .font(.system(size: 15))
-                    .foregroundStyle(weekProgress.isCompleted ? .white : AppTheme.textSecondary)
+                    .foregroundStyle(AppTheme.textPrimary)
                 if let date = weekProgress.completedAt {
                     Text(date.formatted(date: .abbreviated, time: .omitted))
                         .font(.system(size: 11))
