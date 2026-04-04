@@ -105,14 +105,14 @@ struct ChatView: View {
             }
         }
         .task {
-            if mainVM.aiContext == nil && !mainVM.isLoadingHome {
+            if mainVM.assistantContext == nil && !mainVM.isLoadingHome {
                 await mainVM.loadHome()
             }
-            viewModel.updateFinancialContext(mainVM.aiContext)
+            viewModel.updateAssistantContext(mainVM.assistantContext)
             viewModel.bootstrapIfNeeded(context: modelContext)
         }
-        .onChange(of: mainVM.aiContext?.formattedPrompt) { _, _ in
-            viewModel.updateFinancialContext(mainVM.aiContext)
+        .onChange(of: mainVM.assistantContext?.changeToken) { _, _ in
+            viewModel.updateAssistantContext(mainVM.assistantContext)
         }
         .alert("Allow AI data sharing?", isPresented: $showConsentPrompt) {
             Button("Not now", role: .cancel) {}
@@ -121,7 +121,7 @@ struct ChatView: View {
                 Task { await sendMessageNow() }
             }
         } message: {
-            Text("To answer questions, FinaLit sends your message and selected financial profile data to Google Gemini through Firebase AI Logic.")
+            Text("To answer questions, FinaLit sends your message and selected finance and money-management data to Google Gemini through Firebase AI Logic.")
         }
     }
 
@@ -164,15 +164,15 @@ struct ChatView: View {
 
     private var emptyState: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Start a financial question")
+            Text("Ask about money decisions")
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(AppTheme.textPrimary)
 
-            Text("Try: \"Can I afford a 900\(AppRegion.currencySymbol) laptop?\"")
+            Text("Try: \"Why am I overspending this month?\"")
                 .font(AppTheme.Typography.caption)
                 .foregroundStyle(ChatPalette.muted)
 
-            Text("Or: \"How should I begin investing safely?\"")
+            Text("Or: \"Which goal should I focus on first?\"")
                 .font(AppTheme.Typography.caption)
                 .foregroundStyle(ChatPalette.muted)
         }
@@ -185,7 +185,7 @@ struct ChatView: View {
 
         return HStack(alignment: .bottom, spacing: 12) {
             TextField(
-                "Ask your question...",
+                "Ask about spending, budgets, debt, or goals...",
                 text: $viewModel.draft,
                 axis: .vertical
             )
@@ -325,7 +325,7 @@ struct ChatView: View {
             return
         }
 
-        guard viewModel.hasAIDataSharingConsent else {
+        if viewModel.requiresAIConsent(for: trimmedDraft) && !viewModel.hasAIDataSharingConsent {
             showConsentPrompt = true
             return
         }
@@ -334,7 +334,7 @@ struct ChatView: View {
     }
 
     private func sendMessageNow() async {
-        viewModel.updateFinancialContext(mainVM.aiContext)
+        viewModel.updateAssistantContext(mainVM.assistantContext)
         await viewModel.sendMessage(context: modelContext)
     }
 

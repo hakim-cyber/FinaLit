@@ -28,7 +28,7 @@ final class ChatViewModel {
     private let aiService: any AIChatService
 
     private var thread: ChatThreadEntity?
-    private var financialContext: AIFinancialContext?
+    private var assistantContext: AIAssistantContext?
     private var consentOwnerUID: String?
 
     init(
@@ -69,8 +69,12 @@ final class ChatViewModel {
         isLoading = false
     }
 
-    func updateFinancialContext(_ context: AIFinancialContext?) {
-        financialContext = context
+    func updateAssistantContext(_ context: AIAssistantContext?) {
+        assistantContext = context
+    }
+
+    func requiresAIConsent(for text: String) -> Bool {
+        contextBuilder.requiresRemoteReply(for: text)
     }
 
     func sendMessage(context: ModelContext) async {
@@ -78,7 +82,9 @@ final class ChatViewModel {
 
         let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, !isSending else { return }
-        guard hasAIDataSharingConsent else {
+        let analysis = contextBuilder.analyzeMessage(text)
+
+        guard !analysis.requiresRemoteReply || hasAIDataSharingConsent else {
             errorMessage = "Allow AI data sharing before sending messages."
             return
         }
@@ -101,6 +107,17 @@ final class ChatViewModel {
             try repository.appendMessage(role: .user, text: text, thread: thread, context: context)
             try refreshMessages(context: context)
 
+            if let localReply = analysis.localReply {
+                try repository.appendMessage(
+                    role: .assistant,
+                    text: localReply,
+                    thread: thread,
+                    context: context
+                )
+                try refreshMessages(context: context)
+                return
+            }
+
             guard let user = session.user else {
                 throw ChatViewModelError.userMissing
             }
@@ -108,19 +125,19 @@ final class ChatViewModel {
             isSending = true
             liveAssistantText = nil
 
-            let intent = contextBuilder.classifyIntent(for: text)
             let snapshot = contextBuilder.buildSnapshot(
                 user: user,
                 message: text,
-                intent: intent,
-                financialContext: financialContext
+                intent: analysis.intent,
+                assistantContext: assistantContext
             )
             let memoryForPrompt = memoryService.memoryForPrompt(thread.conversationMemory)
 
             var finalReply = ""
             for try await partial in aiService.streamReply(
                 userMessage: text,
-                intent: intent,
+                intent: analysis.intent,
+                replyMode: analysis.replyMode,
                 context: snapshot,
                 conversationMemory: memoryForPrompt
             ) {

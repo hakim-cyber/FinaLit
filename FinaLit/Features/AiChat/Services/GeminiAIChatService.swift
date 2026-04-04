@@ -12,6 +12,7 @@ protocol AIChatService {
     func streamReply(
         userMessage: String,
         intent: ChatIntent,
+        replyMode: ChatReplyMode,
         context: AdvisorContextSnapshot,
         conversationMemory: String?
     ) -> AsyncThrowingStream<String, Error>
@@ -19,6 +20,7 @@ protocol AIChatService {
     func generateReply(
         userMessage: String,
         intent: ChatIntent,
+        replyMode: ChatReplyMode,
         context: AdvisorContextSnapshot,
         conversationMemory: String?
     ) async throws -> String
@@ -43,7 +45,6 @@ final class GeminiAIChatService: AIChatService {
     private let backend: Backend
     private let preferredModelName: String
     private let fallbackModelNames: [String]
-    private let generationConfig: GenerationConfig
     private let safetySettings: [SafetySetting]
     private let systemInstruction: ModelContent
 
@@ -58,12 +59,6 @@ final class GeminiAIChatService: AIChatService {
         preferredModelName = modelName
         self.fallbackModelNames = fallbackModelNames
 
-        generationConfig = GenerationConfig(
-            temperature: 0.65,
-            topP: 0.95,
-            responseMIMEType: "text/plain"
-        )
-
         safetySettings = [
             SafetySetting(harmCategory: .harassment, threshold: .blockOnlyHigh),
             SafetySetting(harmCategory: .hateSpeech, threshold: .blockOnlyHigh),
@@ -77,19 +72,21 @@ final class GeminiAIChatService: AIChatService {
     func streamReply(
         userMessage: String,
         intent: ChatIntent,
+        replyMode: ChatReplyMode,
         context: AdvisorContextSnapshot,
         conversationMemory: String?
     ) -> AsyncThrowingStream<String, Error> {
         let prompt = promptBuilder.userPrompt(
             userMessage: userMessage,
             intent: intent,
+            replyMode: replyMode,
             context: context,
             conversationMemory: conversationMemory
         )
 
         let candidateModels = uniqueModels(preferred: preferredModelName, fallbacks: fallbackModelNames)
         let backend = backend
-        let generationConfig = generationConfig
+        let generationConfig = generationConfig(for: replyMode)
         let safetySettings = safetySettings
         let systemInstruction = systemInstruction
 
@@ -157,6 +154,7 @@ final class GeminiAIChatService: AIChatService {
     func generateReply(
         userMessage: String,
         intent: ChatIntent,
+        replyMode: ChatReplyMode,
         context: AdvisorContextSnapshot,
         conversationMemory: String?
     ) async throws -> String {
@@ -165,6 +163,7 @@ final class GeminiAIChatService: AIChatService {
         for try await partial in streamReply(
             userMessage: userMessage,
             intent: intent,
+            replyMode: replyMode,
             context: context,
             conversationMemory: conversationMemory
         ) {
@@ -177,6 +176,32 @@ final class GeminiAIChatService: AIChatService {
         }
 
         return trimmed
+    }
+
+    private func generationConfig(for replyMode: ChatReplyMode) -> GenerationConfig {
+        switch replyMode {
+        case .social:
+            return GenerationConfig(
+                temperature: 0.15,
+                topP: 0.8,
+                maxOutputTokens: 32,
+                responseMIMEType: "text/plain"
+            )
+        case .concise:
+            return GenerationConfig(
+                temperature: 0.25,
+                topP: 0.85,
+                maxOutputTokens: 120,
+                responseMIMEType: "text/plain"
+            )
+        case .deepDive:
+            return GenerationConfig(
+                temperature: 0.35,
+                topP: 0.9,
+                maxOutputTokens: 260,
+                responseMIMEType: "text/plain"
+            )
+        }
     }
 
     private func uniqueModels(preferred: String, fallbacks: [String]) -> [String] {

@@ -11,6 +11,7 @@ struct ChatConversationMemoryService {
     private let maxMemoryLength = 360
     private let maxPromptLength = 220
     private let maxMemoryItems = 2
+    private let contextBuilder = ChatAdvisorContextBuilder()
 
     func memoryForPrompt(_ memory: String?) -> String? {
         guard let memory else { return nil }
@@ -20,6 +21,10 @@ struct ChatConversationMemoryService {
     }
 
     func updatedMemory(existing: String?, userMessage: String, assistantReply: String) -> String {
+        guard shouldStoreTurn(userMessage: userMessage) else {
+            return existing ?? ""
+        }
+
         let currentTopic = truncate(compactWhitespace(userMessage), to: 90)
         let currentAdvice = truncate(firstSentence(from: assistantReply), to: 120)
         var items = parseItems(from: existing)
@@ -47,6 +52,10 @@ struct ChatConversationMemoryService {
 
         let merged = compactWhitespace(items.joined(separator: " || "))
         return truncate(merged, to: maxMemoryLength)
+    }
+
+    private func shouldStoreTurn(userMessage: String) -> Bool {
+        contextBuilder.requiresRemoteReply(for: userMessage)
     }
 
     private func parseItems(from memory: String?) -> [String] {

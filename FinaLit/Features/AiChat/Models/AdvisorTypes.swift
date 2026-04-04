@@ -11,7 +11,42 @@ enum ChatIntent: String {
     case purchaseDecision
     case investmentQuestion
     case budgetAdvice
+    case moneyManagement
     case general
+}
+
+enum ChatReplyMode: String {
+    case social
+    case concise
+    case deepDive
+}
+
+struct ChatMessageAnalysis {
+    let intent: ChatIntent
+    let replyMode: ChatReplyMode
+    let localReply: String?
+
+    var requiresRemoteReply: Bool {
+        localReply == nil
+    }
+}
+
+struct AdvisorBudgetOverageSnapshot {
+    let category: String
+    let spent: Double
+    let limit: Double
+
+    var overAmount: Double {
+        max(spent - limit, 0)
+    }
+}
+
+struct AdvisorGoalSnapshot {
+    let title: String
+    let currentAmount: Double
+    let targetAmount: Double
+    let progressRatio: Double
+    let deadlineText: String?
 }
 
 struct AdvisorContextSnapshot {
@@ -19,6 +54,7 @@ struct AdvisorContextSnapshot {
     let age: Int
     let country: String
     let employmentStatus: String
+    let selectedMonth: String
     let monthlyIncome: Double
     let monthlyExpenses: Double
     let monthlyBalance: Double
@@ -37,6 +73,10 @@ struct AdvisorContextSnapshot {
     let isOverspending: Bool
     let discretionaryRatio: Double
     let topSpendingCategories: [String]
+    let budgetOverages: [AdvisorBudgetOverageSnapshot]
+    let keyInsights: [String]
+    let activeGoals: [AdvisorGoalSnapshot]
+    let debtSummary: String
     let purchaseAmount: Double?
     let purchaseToSavingsRatio: Double?
     let purchaseToIncomeRatio: Double?

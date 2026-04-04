@@ -34,7 +34,7 @@ final class MainViewModel {
     // MARK: - Computed State (rebuilt after every data change)
     private(set) var summary:       FinancialSummary?
     private(set) var insights:      [SmartInsight]   = []
-    private(set) var aiContext:     AIFinancialContext?
+    private(set) var assistantContext: AIAssistantContext?
 
     // MARK: - UI State
     var selectedMonth:        String = currentMonthString()  // "2026-02"
@@ -595,7 +595,7 @@ final class MainViewModel {
     private func recalculate() {
         summary   = buildSummary()
         insights  = buildInsights()
-        aiContext = buildAIContext()
+        assistantContext = buildAssistantContext()
     }
 
     private func buildSummary() -> FinancialSummary {
@@ -811,7 +811,7 @@ final class MainViewModel {
     // Packages all data into a structured prompt for the AI chat
     // ─────────────────────────────────────────────────────────────────────────
 
-    private func buildAIContext() -> AIFinancialContext? {
+    private func buildAssistantContext() -> AIAssistantContext? {
         guard let s       = summary,
               let profile = session.user?.financialProfile
         else { return nil }
@@ -819,8 +819,15 @@ final class MainViewModel {
         let onboardingDebt = profile.hasDebt ? (profile.debtAmount ?? 0) : 0
         let effectiveDebt = debtAccounts.isEmpty ? onboardingDebt : totalDebtBalance
         let hasDebt = effectiveDebt > 0
+        let budgetOverages = buildBudgetOverages(from: s)
+        let activeGoalSummaries = buildActiveGoalSummaries()
+        let keyInsights = insights
+            .prefix(3)
+            .map { "\($0.title): \($0.message)" }
 
-        return AIFinancialContext(
+        return AIAssistantContext(
+            selectedMonth:       selectedMonth,
+            selectedMonthDisplay: selectedMonthDisplay,
             monthlyIncome:      s.monthlyIncome,
             monthlyExpenses:    s.monthlyExpenses,
             monthlyNet:         s.monthlyNet,
@@ -837,8 +844,74 @@ final class MainViewModel {
             hasDebt:            hasDebt,
             debtAmount:         hasDebt ? effectiveDebt : nil,
             riskTolerance:      profile.riskTolerance,
-            knowledgeLevel:     profile.knowledgeLevel
+            knowledgeLevel:     profile.knowledgeLevel,
+            budgetOverages:     budgetOverages,
+            keyInsights:        keyInsights,
+            activeGoals:        activeGoalSummaries,
+            debtSummary:        debtSummary(totalDebt: effectiveDebt, hasDebt: hasDebt)
         )
+    }
+
+    private func buildBudgetOverages(from summary: FinancialSummary) -> [AssistantBudgetOverage] {
+        budgetLimits
+            .compactMap { limit in
+                let spent = summary.amount(for: limit.category)
+                guard spent > limit.limit else { return nil }
+
+                return AssistantBudgetOverage(
+                    category: limit.category,
+                    spent: spent,
+                    limit: limit.limit
+                )
+            }
+            .sorted { $0.overAmount > $1.overAmount }
+    }
+
+    private func buildActiveGoalSummaries() -> [AssistantGoalProgress] {
+        activeGoals
+            .sorted { lhs, rhs in
+                switch (lhs.deadline, rhs.deadline) {
+                case let (left?, right?):
+                    return left < right
+                case (_?, nil):
+                    return true
+                case (nil, _?):
+                    return false
+                default:
+                    return lhs.createdAt < rhs.createdAt
+                }
+            }
+            .prefix(3)
+            .map { goal in
+                AssistantGoalProgress(
+                    title: goal.title,
+                    currentAmount: goal.currentAmount,
+                    targetAmount: goal.targetAmount,
+                    progressRatio: min(goal.progressPercentage / 100, 1),
+                    deadlineText: formattedGoalDeadline(goal.deadline)
+                )
+            }
+    }
+
+    private func debtSummary(totalDebt: Double, hasDebt: Bool) -> String {
+        guard hasDebt else { return "No active debt." }
+
+        let accountCount = activeDebtAccounts.count
+        if accountCount > 0 {
+            let noun = accountCount == 1 ? "account" : "accounts"
+            return "\(accountCount) active debt \(noun), total \(formatCurrency(totalDebt))."
+        }
+
+        return "Debt total: \(formatCurrency(totalDebt))."
+    }
+
+    private func formattedGoalDeadline(_ deadline: Date?) -> String? {
+        guard let deadline else { return nil }
+
+        let formatter = DateFormatter()
+        formatter.locale = AppRegion.locale
+        formatter.dateFormat = "MMM yyyy"
+        return formatter.string(from: deadline)
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -1063,7 +1136,7 @@ final class MainViewModel {
         clearForm()
         summary = nil
         insights = []
-        aiContext = nil
+        assistantContext = nil
         errorMessage = nil
     }
 

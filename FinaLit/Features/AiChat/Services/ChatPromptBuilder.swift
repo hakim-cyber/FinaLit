@@ -10,31 +10,29 @@ import Foundation
 struct ChatPromptBuilder {
     func systemInstruction() -> String {
         """
-        You are FinaLit, a financial literacy assistant.
+        You are FinaLit, a concise finance and money-management assistant.
         You provide educational guidance, not professional financial advice.
 
         Rules:
         - Respond in plain text only. No JSON, no markdown tables.
-        - Use rational, conservative reasoning grounded in the provided user data.
+        - Be short and direct by default.
+        - Answer the user's actual question first.
         - Use only the provided compact memory summary as prior context. Do not invent unseen chat history.
-        - Adapt to the user's intent: purchase decision, investing question, budgeting, or general financial question.
-        - Explain trade-offs and consequences clearly.
+        - Use rational, conservative reasoning grounded in the provided user data.
+        - Use the user's financial numbers only when they materially improve the answer.
+        - For budgeting or money-management questions, focus on the most useful next step.
+        - Explain trade-offs clearly when they matter.
         - Never guarantee returns and never recommend specific stocks or exact allocation percentages.
-        - If data is missing, state assumptions and ask one clarifying question.
-        - Keep answers practical and useful.
-        - Use normal everyday language, like a thoughtful friend.
-        - Adapt answer depth to user intent and complexity.
-        - For simple questions: concise answer.
-        - For planning, comparisons, or explicit "explain in detail": provide a deeper step-by-step answer.
-        - Prefer short sections over long paragraphs.
-        - Use correct grammar and spacing.
-        - Do not use the exact same ending line in every response.
+        - If key data is missing, state one brief assumption and ask at most one clarifying question.
+        - Use everyday language.
+        - Do not pad the answer with generic intros, repetitive disclaimers, or filler endings.
         """
     }
 
     func userPrompt(
         userMessage: String,
         intent: ChatIntent,
+        replyMode: ChatReplyMode,
         context: AdvisorContextSnapshot,
         conversationMemory: String?
     ) -> String {
@@ -71,76 +69,75 @@ struct ChatPromptBuilder {
         }
 
         let topCategoriesLine = context.topSpendingCategories.isEmpty
-            ? "Top spending categories: Not enough transaction data yet"
-            : "Top spending categories: \(context.topSpendingCategories.joined(separator: ", "))"
+            ? "None yet"
+            : context.topSpendingCategories.joined(separator: " | ")
+
+        let budgetOverageLine = formatBudgetOverages(context.budgetOverages)
+        let insightLine = context.keyInsights.isEmpty
+            ? "None"
+            : context.keyInsights.joined(separator: " | ")
+        let goalLine = formatGoals(context.activeGoals)
 
         let compactMemoryBlock: String
         if let conversationMemory, !conversationMemory.isEmpty {
-            compactMemoryBlock = """
-            CONVERSATION MEMORY (compact, local summary only):
-            \(conversationMemory)
-            """
+            compactMemoryBlock = conversationMemory
         } else {
-            compactMemoryBlock = "CONVERSATION MEMORY: none"
+            compactMemoryBlock = "none"
         }
 
-        let styleHint = responseStyleHint(for: userMessage, intent: intent)
-        let detailMode = responseDetailMode(for: userMessage)
-        let targetLength = targetLengthHint(for: detailMode)
+        return """
+        USER QUESTION:
+        \(userMessage)
 
-        let financialSnapshotBlock = """
-        FINANCIAL SNAPSHOT (from transactions):
+        RESPONSE MODE:
+        \(replyMode.rawValue)
+
+        CURRENT TASK:
+        - Intent: \(intent.rawValue)
+        - Mode rule: \(modeInstruction(for: replyMode))
+        - Target length: \(targetLengthHint(for: replyMode))
+
+        CONVERSATION MEMORY:
+        \(compactMemoryBlock)
+
+        FINANCIAL SNAPSHOT:
+        Month: \(context.selectedMonth)
         Income: \(formatMoney(context.monthlyIncome))
         Expenses: \(formatMoney(context.monthlyExpenses))
         Monthly net: \(formatMoney(context.monthlyBalance))
         Savings: \(formatMoney(context.currentSavings))
         Savings rate: \(formatPercent(context.savingsRate))
         Expense ratio: \(formatPercent(context.expenseRatio))
-        Daily avg spending: \(formatMoney(context.dailyAverageSpending))
+        Daily average spending: \(formatMoney(context.dailyAverageSpending))
         Stability: \(context.stabilityLevel)
         Overspending: \(context.isOverspending ? "Yes" : "No")
         Discretionary ratio: \(formatPercent(context.discretionaryRatio))
-        \(topCategoriesLine)
-        """
+        Top spending categories: \(topCategoriesLine)
+        Budget overages: \(budgetOverageLine)
+        Key insights: \(insightLine)
+        Active goals: \(goalLine)
+        Debt summary: \(context.debtSummary)
 
-        return """
-        \(financialSnapshotBlock)
-
-        USER QUESTION:
-        \(userMessage)
-
-        CLASSIFIED INTENT:
-        \(intent.rawValue)
-
-        CONTEXT POLICY:
-        This analysis uses:
-        - current question
-        - compact conversation memory summary (not full history)
-        - user profile data below
-
-        \(compactMemoryBlock)
-
-        USER DATA (compact):
+        USER PROFILE:
         Debt: \(formatMoney(context.debtAmount))
         Risk tolerance: \(context.riskTolerance)
         Knowledge level: \(context.knowledgeLevel)
         Emergency fund months: \(context.emergencyFundMonths)
         Weak spending areas: \(weaknesses)
         Goals: short=\(context.shortTermGoal) | long=\(context.longTermGoal)
+
+        PURCHASE CHECK:
         \(purchaseLine)
         \(purchaseSavingsLine)
         \(purchaseIncomeLine)
         \(affordabilityLine)
 
-        RESPONSE STYLE:
-        - Talk like a helpful friend who understands personal finance.
-        - Do not force the same template every time.
-        - Vary format naturally (short paragraph, or small bullets if clearer).
-        - Mention at least one concrete number from the user data.
-        - Keep response useful and focused.
-        - Style variation for this reply: \(styleHint)
-        - Detail mode for this reply: \(detailMode.rawValue)
-        - Target length: \(targetLength)
+        RESPONSE REQUIREMENTS:
+        - Stay concise unless the mode says deepDive.
+        - If the question is simple, answer in one compact paragraph.
+        - Use bullets only if they make the answer clearer.
+        - Use at most one or two concrete numbers when they help.
+        - Give a practical next step when useful.
         """
     }
 
@@ -152,72 +149,47 @@ struct ChatPromptBuilder {
         String(format: "%.1f%%", value * 100)
     }
 
-    private func responseStyleHint(for userMessage: String, intent: ChatIntent) -> String {
-        let normalized = "\(intent.rawValue)|\(userMessage.lowercased())"
-        let hash = normalized.hashValue.magnitude
+    private func formatBudgetOverages(_ overages: [AdvisorBudgetOverageSnapshot]) -> String {
+        guard !overages.isEmpty else { return "None" }
 
-        switch hash % 3 {
-        case 0:
-            return "Warm and direct: one clear recommendation, then one short reason."
-        case 1:
-            return "Coaching tone: short explanation, then one practical next step."
-        default:
-            return "Conversational: balanced pros/cons, then a gentle suggestion."
-        }
+        return overages
+            .map {
+                "\($0.category) over by \(formatMoney($0.overAmount)) (spent \(formatMoney($0.spent)) on \(formatMoney($0.limit)) budget)"
+            }
+            .joined(separator: " | ")
     }
 
-    private func responseDetailMode(for userMessage: String) -> ResponseDetailMode {
-        let message = userMessage.lowercased()
+    private func formatGoals(_ goals: [AdvisorGoalSnapshot]) -> String {
+        guard !goals.isEmpty else { return "None" }
 
-        let conciseKeywords = [
-            "quick",
-            "short",
-            "brief",
-            "tldr",
-            "one line",
-            "summary only"
-        ]
-
-        if conciseKeywords.contains(where: { message.contains($0) }) {
-            return .concise
-        }
-
-        let deepKeywords = [
-            "explain",
-            "in detail",
-            "detailed",
-            "step by step",
-            "plan",
-            "strategy",
-            "compare",
-            "pros and cons",
-            "roadmap",
-            "full breakdown",
-            "analyze",
-            "analysis"
-        ]
-
-        if deepKeywords.contains(where: { message.contains($0) }) || message.split(separator: " ").count >= 22 {
-            return .deep
-        }
-
-        return .standard
+        return goals
+            .map { goal in
+                let progress = String(format: "%.0f%%", goal.progressRatio * 100)
+                let deadline = goal.deadlineText.map { ", deadline \($0)" } ?? ""
+                return "\(goal.title): \(progress) (\(formatMoney(goal.currentAmount))/\(formatMoney(goal.targetAmount))\(deadline)"
+            }
+            .joined(separator: " | ")
     }
 
-    private func targetLengthHint(for mode: ResponseDetailMode) -> String {
+    private func modeInstruction(for mode: ChatReplyMode) -> String {
         switch mode {
+        case .social:
+            return "Reply with one short sentence, around 3-12 words."
         case .concise:
-            return "60-110 words"
-        case .standard:
-            return "100-180 words"
-        case .deep:
-            return "180-320 words"
+            return "Reply in 1-4 short sentences, around 30-90 words."
+        case .deepDive:
+            return "Start with a direct answer, then give a short step-by-step breakdown. Stay under 220 words."
         }
     }
-}
 
-private enum ResponseDetailMode: String {
-    case concise
-    case standard
-    case deep
+    private func targetLengthHint(for mode: ChatReplyMode) -> String {
+        switch mode {
+        case .social:
+            return "3-12 words"
+        case .concise:
+            return "30-90 words"
+        case .deepDive:
+            return "90-220 words"
+        }
+    }
 }
