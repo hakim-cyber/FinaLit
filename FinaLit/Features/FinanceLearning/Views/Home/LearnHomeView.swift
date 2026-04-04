@@ -28,6 +28,7 @@ struct LearnHomeView: View {
 
                     VStack(alignment: .leading, spacing: 12) {
                         AppSectionHeader(title: "Your curriculum")
+                            .padding(.horizontal,20)
 
                         if let errorMessage = learnVM.errorMessage,
                            learnVM.publishedWeeks.isEmpty,
@@ -85,8 +86,10 @@ struct LearnHomeView: View {
                     coordinator.push(.progress)
                 } label: {
                     Image(systemName: "flame.fill")
+                        .foregroundStyle(Color.orange)
                         .font(AppTheme.Typography.toolbarIcon)
                 }
+             
             }
             if #available(iOS 26.0, *) {
                 ToolbarSpacer(.flexible, placement: .topBarTrailing)

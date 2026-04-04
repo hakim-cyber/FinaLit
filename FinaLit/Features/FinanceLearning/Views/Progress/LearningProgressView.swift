@@ -49,6 +49,7 @@ struct LearningProgressView: View {
 
                     VStack(alignment: .leading, spacing: 12) {
                         AppSectionHeader(title: "Week history")
+                            .padding(.horizontal,20)
 
                         ForEach(learnVM.weekProgressList) { weekProgress in
                             WeekTimelineRow(
