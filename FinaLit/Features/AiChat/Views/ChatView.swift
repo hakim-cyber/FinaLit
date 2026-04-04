@@ -41,6 +41,8 @@ struct ChatView: View {
                                 assistantTypingCard(text: viewModel.liveAssistantText)
                                     .id("typing-indicator")
                             }
+                            Color.clear
+                                .frame(height:50)
                         }
                         .padding(.horizontal, 20)
                         .padding(.vertical, 14)
