@@ -39,25 +39,31 @@ struct RegisterView: View {
             AuthPalette.background.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 24) {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Create account")
-                            .font(.system(size: 34, weight: .medium))
+                VStack(spacing: 28) {
+                    VStack(spacing: 10) {
+                        Text("Create your FinaLit account")
+                            .font(.system(size: 32, weight: .semibold))
                             .foregroundStyle(AppTheme.textPrimary)
-                        Text("Set up your profile to personalize your financial path.")
-                            .font(AppTheme.Typography.caption)
+                        Text("Start budgeting, build goals, and organize your financial life in one place.")
+                            .font(AppTheme.Typography.body)
                             .foregroundStyle(AuthPalette.muted)
+                            .multilineTextAlignment(.center)
                     }
+                    .frame(maxWidth: .infinity)
 
-                    VStack(spacing: 16) {
+                    VStack(spacing: 18) {
                         if let error = viewModel.errorMessage, !error.isEmpty {
                             AuthErrorBanner(message: error)
+                        }
+
+                        if let success = viewModel.successMessage, !success.isEmpty {
+                            AuthSuccessBanner(message: success)
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Name")
                                 .appFieldLabelStyle()
-                            TextField("John", text: $viewModel.name)
+                            TextField("Enter your name", text: $viewModel.name)
                                 .authInputStyle()
 
                             if viewModel.name.isEmpty == false && trimmedName.isEmpty {
@@ -70,7 +76,7 @@ struct RegisterView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Email")
                                 .appFieldLabelStyle()
-                            TextField("name@email.com", text: $viewModel.email)
+                            TextField("Enter your email", text: $viewModel.email)
                                 .textInputAutocapitalization(.never)
                                 .keyboardType(.emailAddress)
                                 .autocorrectionDisabled()
@@ -86,7 +92,7 @@ struct RegisterView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Password")
                                 .appFieldLabelStyle()
-                            SecureField("Minimum 8 characters", text: $viewModel.password)
+                            SecureField("Enter your password", text: $viewModel.password)
                                 .textInputAutocapitalization(.never)
                                 .autocorrectionDisabled()
                                 .authInputStyle()
@@ -101,7 +107,7 @@ struct RegisterView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Confirm password")
                                 .appFieldLabelStyle()
-                            SecureField("Re-enter password", text: $viewModel.confirmPassword)
+                            SecureField("Confirm your password", text: $viewModel.confirmPassword)
                                 .textInputAutocapitalization(.never)
                                 .autocorrectionDisabled()
                                 .authInputStyle()
@@ -122,43 +128,67 @@ struct RegisterView: View {
                                 if viewModel.isLoading {
                                     ProgressView()
                                         .progressViewStyle(.circular)
-                                        .tint(AppTheme.inverseText)
+                                        .tint(AuthPalette.background)
                                 }
-                                Text(viewModel.isLoading ? "Creating..." : "Create Account")
+                                Text(viewModel.isLoading ? "Creating account..." : "Sign up")
                             }
                         }
-                        .buttonStyle(AppFilledButtonStyle(tone: .accent))
+                        .buttonStyle(AuthPrimaryActionButtonStyle())
                         .disabled(!canSubmit)
 
-                        Button("Already have an account? Log In") {
+                        AuthDividerLabel(text: "OR")
+
+                        Button {
+                            viewModel.continueWithApple()
+                        } label: {
+                            AuthSocialButton(
+                                title: "Continue with Apple",
+                                icon: .apple
+                            )
+                        }
+                        .buttonStyle(.plain)
+
+                        Button {
+                            viewModel.continueWithGoogle()
+                        } label: {
+                            AuthSocialButton(
+                                title: "Continue with Google",
+                                icon: .google
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                    VStack(spacing: 14) {
+                        AuthLegalLinksRow()
+
+                        Button("Already have a FinaLit account? Login") {
                             coordinator.pop()
                         }
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(AuthPalette.accent)
                         .frame(maxWidth: .infinity)
-                        .padding(.top, 4)
-
-                        AuthLegalLinksRow()
                     }
-                    .appSurface(.primary, padding: 20, cornerRadius: AppTheme.CornerRadius.large)
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 24)
-                .padding(.bottom, 24)
+                .frame(maxWidth: 420)
+                .padding(.horizontal, 24)
+                .padding(.top, 56)
+                .padding(.bottom, 32)
+                .frame(maxWidth: .infinity)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: viewModel.name) { _, _ in
-            viewModel.clearError()
+            viewModel.clearMessages()
         }
         .onChange(of: viewModel.email) { _, _ in
-            viewModel.clearError()
+            viewModel.clearMessages()
         }
         .onChange(of: viewModel.password) { _, _ in
-            viewModel.clearError()
+            viewModel.clearMessages()
         }
         .onChange(of: viewModel.confirmPassword) { _, _ in
-            viewModel.clearError()
+            viewModel.clearMessages()
         }
     }
 }
@@ -180,9 +210,27 @@ private struct AuthErrorBanner: View {
     }
 }
 
+private struct AuthSuccessBanner: View {
+    let message: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 8) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(AppTheme.success)
+            Text(message)
+                .font(AppTheme.Typography.caption)
+                .foregroundStyle(AppTheme.textPrimary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .appSurface(.tinted(.success), padding: 12, cornerRadius: AppTheme.CornerRadius.medium)
+    }
+}
+
 private enum AuthPalette {
     static let background = AppTheme.background
     static let surface = AppTheme.surfacePrimary
+    static let surfaceSecondary = AppTheme.surfaceSecondary
     static let border = AppTheme.separator
     static let muted = AppTheme.textSecondary
     static let accent = AppTheme.accent
@@ -190,15 +238,108 @@ private enum AuthPalette {
 }
 
 private struct AuthInputFieldModifier: ViewModifier {
+    private let cornerRadius: CGFloat = 24
+
     func body(content: Content) -> some View {
         content
-            .appInputStyle()
+            .font(AppTheme.Typography.body)
+            .foregroundStyle(AppTheme.textPrimary)
+            .padding(.horizontal, 18)
+            .padding(.vertical, 16)
+            .frame(minHeight: 54)
+            .background(AuthPalette.surfaceSecondary, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .stroke(AuthPalette.border, lineWidth: 1)
+            )
     }
 }
 
 private extension View {
     func authInputStyle() -> some View {
         modifier(AuthInputFieldModifier())
+    }
+}
+
+private struct AuthPrimaryActionButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+    private let cornerRadius: CGFloat = 24
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.system(size: 16, weight: .semibold))
+            .foregroundStyle(AuthPalette.background)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 18)
+            .background(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(isEnabled ? Color.primary : AuthPalette.border)
+            )
+            .opacity(configuration.isPressed ? 0.92 : 1)
+    }
+}
+
+private struct AuthDividerLabel: View {
+    let text: String
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Rectangle()
+                .fill(AuthPalette.border)
+                .frame(height: 1)
+            Text(text)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(AuthPalette.muted)
+            Rectangle()
+                .fill(AuthPalette.border)
+                .frame(height: 1)
+        }
+    }
+}
+
+private struct AuthSocialButton: View {
+    private let cornerRadius: CGFloat = 24
+
+    enum Icon {
+        case apple
+        case google
+    }
+
+    let title: String
+    let icon: Icon
+
+    var body: some View {
+        HStack(spacing: 12) {
+            iconView
+                .frame(width: 22, height: 22)
+            Text(title)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(AppTheme.textPrimary)
+            Spacer()
+        }
+        .padding(.horizontal, 18)
+        .padding(.vertical, 16)
+        .frame(maxWidth: .infinity)
+        .background(AuthPalette.surfaceSecondary, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .stroke(AuthPalette.border, lineWidth: 1)
+        )
+    }
+
+    @ViewBuilder
+    private var iconView: some View {
+        switch icon {
+        case .apple:
+            Image(systemName: "apple.logo")
+                .font(.system(size: 18, weight: .medium))
+                .foregroundStyle(AppTheme.textPrimary)
+        case .google:
+            Image(.googleLogo)
+                .resizable()
+                .frame(width: 18,height: 18)
+                .scaledToFit()
+        }
     }
 }
 

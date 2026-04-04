@@ -195,6 +195,17 @@ class AuthViewModel {
         }
     }
 
+    // MARK: - Social Sign-In Placeholders
+    func continueWithApple() {
+        clearMessages()
+        successMessage = "Apple Sign In for FinaLit is coming soon."
+    }
+
+    func continueWithGoogle() {
+        clearMessages()
+        successMessage = "Google Sign In for FinaLit is coming soon."
+    }
+
     // MARK: - Sign Out
     // Called from Profile tab or anywhere in main app
     func signOut() {
