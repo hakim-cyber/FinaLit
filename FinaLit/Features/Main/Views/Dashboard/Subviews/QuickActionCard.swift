@@ -21,13 +21,14 @@ struct QuickActionCard: View {
                         .fill(AppTheme.softFill(for: tone))
                         .frame(width: 36, height: 36)
                     Image(systemName: icon)
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(AppTheme.Typography.rowIcon)
                         .foregroundStyle(AppTheme.tint(for: tone))
                 }
 
                 Text(title)
                     .font(AppTheme.Typography.headline)
                     .foregroundStyle(AppTheme.textPrimary)
+                    .lineLimit(2)
 
                 Text(subtitle)
                     .font(AppTheme.Typography.detail)
@@ -35,8 +36,8 @@ struct QuickActionCard: View {
                     .lineLimit(2)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
+            .frame(maxWidth: .infinity, minHeight: AppTheme.Metrics.actionCardMinHeight, maxHeight: AppTheme.Metrics.actionCardMinHeight, alignment: .topLeading)
             .appSurface(.primary, padding: AppTheme.Spacing.card, cornerRadius: AppTheme.CornerRadius.large)
-            .frame(maxWidth: .infinity, minHeight: 96, alignment: .topLeading)
         }
         .buttonStyle(.plain)
         .disabled(isDisabled)

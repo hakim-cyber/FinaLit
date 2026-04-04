@@ -34,7 +34,7 @@ struct DashboardView: View {
                         goalsPreview
                         recentTransactions
 
-                        Spacer(minLength: 24)
+                        Spacer(minLength: 96)
                     }
                     .padding(.horizontal, AppTheme.Spacing.screen)
                     .padding(.top, 16)
@@ -65,24 +65,19 @@ struct DashboardView: View {
                 .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
-        .safeAreaInset(edge: .bottom) {
-            HStack {
-                Spacer()
-                Button {
-                    coordinator.push(.addTransaction, type: .sheet)
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundStyle(AppTheme.inverseText)
-                        .frame(width: 56, height: 56)
-                        .background(AppTheme.accent, in: Circle())
-                }
-                .shadow(color: AppTheme.accent.opacity(0.18), radius: 10, y: 6)
+        .overlay(alignment: .bottomTrailing) {
+            Button {
+                coordinator.push(.addTransaction, type: .sheet)
+            } label: {
+                Image(systemName: "plus")
+                    .font(AppTheme.Typography.toolbarIcon)
+                    .foregroundStyle(AppTheme.inverseText)
+                    .frame(width: AppTheme.Metrics.floatingActionSize, height: AppTheme.Metrics.floatingActionSize)
+                    .background(AppTheme.accent, in: Circle())
             }
-            .padding(.horizontal, AppTheme.Spacing.screen)
-            .padding(.top, 8)
-            .padding(.bottom, 8)
-            .background(AppTheme.background.opacity(0.94))
+            .shadow(color: AppTheme.accent.opacity(0.18), radius: 10, y: 6)
+            .padding(.trailing, AppTheme.Spacing.screen)
+            .padding(.bottom, 24)
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -94,9 +89,8 @@ struct DashboardView: View {
                     HStack(spacing: 6) {
                         Text(mainVM.selectedMonthDisplay)
                         Image(systemName: "chevron.down")
-                            .font(.caption.weight(.semibold))
+                            .font(AppTheme.Typography.compactRowIcon)
                     }
-                    .foregroundStyle(AppTheme.textPrimary)
                 }
                 .popover(isPresented: $showMonthPicker, arrowEdge: .top) {
                     monthPickerPopover
@@ -109,7 +103,7 @@ struct DashboardView: View {
                     coordinator.push(.settings, type: .fullScreenCover)
                 } label: {
                     Image(systemName: "gearshape")
-                        .foregroundStyle(AppTheme.textPrimary)
+                        .font(AppTheme.Typography.toolbarIcon)
                 }
             }
         }
@@ -228,7 +222,7 @@ struct DashboardView: View {
         if mainVM.activeDebtAccounts.isEmpty {
             return mainVM.debtAccounts.isEmpty ? "Create first debt" : "Add another debt"
         }
-        return "\(formatCurrency(mainVM.totalDebtBalance)) remaining"
+        return "\(formatDisplayCurrency(mainVM.totalDebtBalance)) remaining"
     }
 
     private var balanceHeroCard: some View {
@@ -239,7 +233,7 @@ struct DashboardView: View {
                     .foregroundStyle(AppTheme.textSecondary)
 
                 if let summary = mainVM.summary {
-                    Text(formatPrimaryCurrency(summary.currentBalance))
+                    Text(formatDisplayCurrency(summary.currentBalance))
                         .font(AppTheme.Typography.heroAmount)
                         .foregroundStyle(summary.currentBalance >= 0 ? AppTheme.textPrimary : AppTheme.danger)
                         .monospacedDigit()
@@ -269,13 +263,13 @@ struct DashboardView: View {
         HStack(spacing: 10) {
             StatMiniCard(
                 label: "Income",
-                value: mainVM.summary.map { formatCurrency($0.monthlyIncome) } ?? "—",
+                value: mainVM.summary.map { formatDisplayCurrency($0.monthlyIncome) } ?? "—",
                 icon: "arrow.up.circle.fill",
                 tone: .success
             )
             StatMiniCard(
                 label: "Expenses",
-                value: mainVM.summary.map { formatCurrency($0.monthlyExpenses) } ?? "—",
+                value: mainVM.summary.map { formatDisplayCurrency($0.monthlyExpenses) } ?? "—",
                 icon: "arrow.down.circle.fill",
                 tone: .danger
             )
@@ -348,7 +342,9 @@ struct DashboardView: View {
                                 InsightChip(insight: insight)
                             }
                         }
+                        .padding(.horizontal, AppTheme.Spacing.screen)
                     }
+                    .padding(.horizontal, -AppTheme.Spacing.screen)
                 }
             }
         }

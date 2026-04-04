@@ -84,10 +84,7 @@ struct ChatView: View {
                 Button("Clear") {
                     viewModel.clearChat(context: modelContext)
                 }
-                .foregroundStyle(Color.primary)
-             
                 .disabled(viewModel.messages.isEmpty || viewModel.isSending)
-               
             }
             if #available(iOS 26.0, *) {
                 ToolbarSpacer(.flexible, placement: .topBarTrailing)
@@ -97,12 +94,10 @@ struct ChatView: View {
                     coordinator.push(.settings, type: .fullScreenCover)
                 } label: {
                     Image(systemName: "gearshape")
-                       
+                        .font(AppTheme.Typography.toolbarIcon)
                 }
-                .foregroundStyle(Color.primary)
             }
         }
-       
         .task {
             if mainVM.aiContext == nil && !mainVM.isLoadingHome {
                 await mainVM.loadHome()

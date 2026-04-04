@@ -143,7 +143,6 @@ struct ProfileSettingsHomeView: View {
                     dismiss()
                 }
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(ProfileSettingsPalette.accent)
             }
         }
         .alert("Sign out?", isPresented: $showSignOutConfirmation) {

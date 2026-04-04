@@ -65,7 +65,7 @@ struct AddGoalView: View {
                                     .font(AppTheme.Typography.bodySemibold)
                                     .foregroundStyle(AppTheme.textPrimary)
                                     .lineLimit(1)
-                                Text("\(formatCurrency(template.targetAmount)) - \(template.hint)")
+                                Text("\(formatDisplayCurrency(template.targetAmount)) - \(template.hint)")
                                     .font(AppTheme.Typography.detail)
                                     .foregroundStyle(AppTheme.textSecondary)
                             }

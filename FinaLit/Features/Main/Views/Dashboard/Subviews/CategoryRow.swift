@@ -26,7 +26,7 @@ struct CategoryRow: View {
             HStack {
                 HStack(spacing: 8) {
                     Image(systemName: category.icon)
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(AppTheme.Typography.compactRowIcon)
                         .foregroundStyle(AppTheme.tint(for: category.tone))
                         .frame(width: 20)
                     Text(category.rawValue)
@@ -35,11 +35,11 @@ struct CategoryRow: View {
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 1) {
-                    Text(formatCurrency(amount))
+                    Text(formatDisplayCurrency(amount))
                         .font(AppTheme.Typography.bodySemibold)
                         .foregroundStyle(isOverBudget ? AppTheme.danger : AppTheme.textPrimary)
                     if let limit {
-                        Text("of \(formatCurrency(limit))")
+                        Text("of \(formatDisplayCurrency(limit))")
                             .font(AppTheme.Typography.detail)
                             .foregroundStyle(AppTheme.textSecondary)
                     } else {

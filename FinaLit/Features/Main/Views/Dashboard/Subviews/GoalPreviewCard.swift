@@ -25,7 +25,7 @@ struct GoalPreviewCard: View {
         guard monthsUntilDeadline >= 0 else { return "Deadline passed" }
 
         let neededPerMonth = remainingAmount / Double(max(monthsUntilDeadline, 1))
-        return "Need \(formatCurrency(neededPerMonth))/month"
+        return "Need \(formatDisplayCurrency(neededPerMonth))/month"
     }
 
     private var monthlyPaceColor: Color {
@@ -47,10 +47,10 @@ struct GoalPreviewCard: View {
                 )
             }
             HStack {
-                Text(formatCurrency(goal.currentAmount))
+                Text(formatDisplayCurrency(goal.currentAmount))
                     .font(AppTheme.Typography.bodySemibold)
                     .foregroundStyle(AppTheme.textPrimary)
-                Text("of \(formatCurrency(goal.targetAmount))")
+                Text("of \(formatDisplayCurrency(goal.targetAmount))")
                     .font(AppTheme.Typography.caption)
                     .foregroundStyle(AppTheme.textSecondary)
             }

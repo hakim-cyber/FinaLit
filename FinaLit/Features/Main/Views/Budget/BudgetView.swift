@@ -18,7 +18,7 @@ struct BudgetView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     HStack(spacing: 6) {
                         Image(systemName: "calendar")
-                            .font(.system(size: 11, weight: .semibold))
+                            .font(AppTheme.Typography.badgeIcon)
                         Text(mainVM.selectedMonthDisplay)
                             .font(AppTheme.Typography.badge)
                     }
@@ -46,8 +46,8 @@ struct BudgetView: View {
                         .foregroundStyle(AppTheme.accent)
                     }
 
-                    VStack(spacing: 10) {
-                        ForEach(TransactionCategory.expenseCategories) { category in
+                    VStack(spacing: 0) {
+                        ForEach(Array(TransactionCategory.expenseCategories.enumerated()), id: \.element.rawValue) { index, category in
                             BudgetCategoryCard(
                                 category: category,
                                 spent: mainVM.summary?.amount(for: category) ?? 0,
@@ -58,8 +58,14 @@ struct BudgetView: View {
                                     set: { editingLimits[category] = $0 }
                                 )
                             )
+                            if index < TransactionCategory.expenseCategories.count - 1 {
+                                Divider()
+                                    .overlay(AppTheme.separator)
+                                    .padding(.leading, 36)
+                            }
                         }
                     }
+                    .appSurface(.primary, padding: 0, cornerRadius: AppTheme.CornerRadius.large)
 
                     if let summary = mainVM.summary {
                         TotalBudgetCard(

@@ -27,7 +27,7 @@ struct GoalCard: View {
 
         let monthWindow = max(monthsUntilDeadline, 1)
         let neededPerMonth = remainingAmount / Double(monthWindow)
-        return "Need \(formatCurrency(neededPerMonth))/month"
+        return "Need \(formatDisplayCurrency(neededPerMonth))/month"
     }
 
     private var monthlyPaceColor: Color {
@@ -52,7 +52,7 @@ struct GoalCard: View {
                 if isCompleted {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(AppTheme.success)
-                        .font(.system(size: 20))
+                        .font(AppTheme.Typography.rowIcon)
                 } else {
                     AppToneBadge(
                         title: "\(String(format: "%.0f", goal.progressPercentage))%",
@@ -64,7 +64,7 @@ struct GoalCard: View {
 
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(formatCurrency(goal.currentAmount))
+                    Text(formatDisplayCurrency(goal.currentAmount))
                         .font(.system(size: 22, weight: .semibold, design: .rounded))
                         .foregroundStyle(AppTheme.textPrimary)
                         .monospacedDigit()
@@ -74,7 +74,7 @@ struct GoalCard: View {
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text(formatCurrency(goal.targetAmount))
+                    Text(formatDisplayCurrency(goal.targetAmount))
                         .font(AppTheme.Typography.body)
                         .foregroundStyle(AppTheme.textSecondary)
                     Text("target")
@@ -86,7 +86,7 @@ struct GoalCard: View {
             if let monthlyPaceText {
                 HStack(spacing: 6) {
                     Image(systemName: "speedometer")
-                        .font(.system(size: 10))
+                        .font(AppTheme.Typography.badgeIcon)
                     Text(monthlyPaceText)
                         .font(AppTheme.Typography.detail.weight(.semibold))
                 }

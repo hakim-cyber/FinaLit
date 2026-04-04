@@ -85,7 +85,7 @@ struct LearnHomeView: View {
                     coordinator.push(.progress)
                 } label: {
                     Image(systemName: "flame.fill")
-                        .foregroundStyle(AppTheme.warning)
+                        .font(AppTheme.Typography.toolbarIcon)
                 }
             }
             if #available(iOS 26.0, *) {
@@ -96,8 +96,8 @@ struct LearnHomeView: View {
                     coordinator.push(.settings, type: .fullScreenCover)
                 } label: {
                     Image(systemName: "gearshape")
+                        .font(AppTheme.Typography.toolbarIcon)
                 }
-                .foregroundStyle(AppTheme.textPrimary)
             }
         }
         .task {

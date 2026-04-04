@@ -20,7 +20,7 @@ struct InsightStatCard: View {
                 Spacer()
                 Image(systemName: icon)
                     .foregroundStyle(AppTheme.tint(for: tone))
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(AppTheme.Typography.rowIcon)
             }
 
             Text(value)

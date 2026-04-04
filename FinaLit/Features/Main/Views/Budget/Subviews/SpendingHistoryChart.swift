@@ -38,9 +38,9 @@ struct SpendingHistoryChart: View {
             .frame(height: 80)
 
             HStack {
-                Text(formatCurrency(0))
+                Text(formatDisplayCurrency(0))
                 Spacer()
-                Text(formatCurrency(maxExpense))
+                Text(formatDisplayCurrency(maxExpense))
             }
             .font(AppTheme.Typography.detail)
             .foregroundStyle(AppTheme.textSecondary)

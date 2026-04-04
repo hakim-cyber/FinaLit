@@ -50,7 +50,7 @@ func formatPrimaryCurrency(_ value: Double) -> String {
     return formatter.string(from: NSNumber(value: value)) ?? "\(AppRegion.currencySymbol)\(String(format: "%.2f", value))"
 }
 
-func formatCompactCurrency(_ value: Double) -> String {
+func formatDisplayCurrency(_ value: Double) -> String {
     let absoluteValue = abs(value)
     let scale: (divisor: Double, suffix: String)
 
@@ -72,11 +72,15 @@ func formatCompactCurrency(_ value: Double) -> String {
     formatter.locale = Locale(identifier: "en_US_POSIX")
     formatter.numberStyle = .decimal
     formatter.usesGroupingSeparator = false
-    formatter.maximumFractionDigits = abbreviatedValue.magnitude < 10 ? 2 : 1
+    formatter.maximumFractionDigits = abbreviatedValue.magnitude < 10 ? 1 : 0
     formatter.minimumFractionDigits = 0
 
     let number = formatter.string(from: NSNumber(value: abbreviatedValue)) ?? String(format: "%.1f", abbreviatedValue)
     return "\(number)\(scale.suffix) \(AppRegion.currencySymbol)"
+}
+
+func formatCompactCurrency(_ value: Double) -> String {
+    formatDisplayCurrency(value)
 }
 
 func formatSignedCurrency(_ value: Double) -> String {
@@ -87,6 +91,16 @@ func formatSignedCurrency(_ value: Double) -> String {
 func formatSignedCurrency(amount: Double, isIncome: Bool) -> String {
     let prefix = isIncome ? "+" : "-"
     return "\(prefix)\(formatCurrency(abs(amount)))"
+}
+
+func formatSignedDisplayCurrency(_ value: Double) -> String {
+    let prefix = value >= 0 ? "+" : "-"
+    return "\(prefix)\(formatDisplayCurrency(abs(value)))"
+}
+
+func formatSignedDisplayCurrency(amount: Double, isIncome: Bool) -> String {
+    let prefix = isIncome ? "+" : "-"
+    return "\(prefix)\(formatDisplayCurrency(abs(amount)))"
 }
 
 /// Parses user-entered money/decimal text across common locale formats.

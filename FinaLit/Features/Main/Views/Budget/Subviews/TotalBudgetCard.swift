@@ -22,7 +22,7 @@ struct TotalBudgetCard: View {
                     .foregroundStyle(AppTheme.textSecondary)
                 Spacer()
                 if totalLimit > 0 {
-                    Text("\(formatCurrency(spent)) / \(formatCurrency(totalLimit))")
+                    Text("\(formatDisplayCurrency(spent)) / \(formatDisplayCurrency(totalLimit))")
                         .font(AppTheme.Typography.caption)
                         .foregroundStyle(spent > totalLimit ? AppTheme.danger : AppTheme.textPrimary)
                 }

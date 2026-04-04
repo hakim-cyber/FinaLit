@@ -24,13 +24,13 @@ struct InsightsView: View {
                             ) {
                                 InsightStatCard(
                                     label: "Daily Average",
-                                    value: formatCurrency(summary.dailyAverage),
+                                    value: formatDisplayCurrency(summary.dailyAverage),
                                     icon: "calendar",
                                     tone: .accent
                                 )
                                 InsightStatCard(
                                     label: "Net Balance",
-                                    value: formatSignedCurrency(summary.monthlyNet),
+                                    value: formatSignedDisplayCurrency(summary.monthlyNet),
                                     icon: "equal.circle.fill",
                                     tone: summary.monthlyNet >= 0 ? .success : .danger
                                 )
@@ -66,9 +66,12 @@ struct InsightsView: View {
                             .frame(maxWidth: .infinity)
                             .appSurface(.primary, padding: 32, cornerRadius: AppTheme.CornerRadius.large)
                         } else {
-                            ForEach(mainVM.insights) { insight in
-                                InsightCard(insight: insight)
+                            VStack(spacing: 10) {
+                                ForEach(mainVM.insights) { insight in
+                                    InsightCard(insight: insight)
+                                }
                             }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
 

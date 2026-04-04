@@ -61,6 +61,16 @@ enum AppTheme {
         static let detail = Font.system(size: 12)
         static let badge = Font.system(size: 11, weight: .semibold)
         static let formLabel = Font.system(size: 11, weight: .semibold)
+        static let toolbarIcon = Font.system(size: 17, weight: .medium)
+        static let rowIcon = Font.system(size: 15, weight: .medium)
+        static let badgeIcon = Font.system(size: 11, weight: .medium)
+        static let compactRowIcon = Font.system(size: 13, weight: .medium)
+    }
+
+    enum Metrics {
+        static let statCardMinHeight: CGFloat = 88
+        static let actionCardMinHeight: CGFloat = 120
+        static let floatingActionSize: CGFloat = 56
     }
 
     static func tint(for tone: AppTone) -> Color {
@@ -102,42 +112,9 @@ enum AppTheme {
 
     static func configureAppearance() {
         let background = UIColor(named: "AppBackground") ?? .systemBackground
-        let surface = UIColor(named: "AppSurfacePrimary") ?? .secondarySystemBackground
-        let separator = UIColor(named: "AppSeparator") ?? .separator
-        let primary = UIColor(named: "AppTextPrimary") ?? .label
-        let secondary = UIColor(named: "AppTextSecondary") ?? .secondaryLabel
         let accent = UIColor(named: "AppAccent") ?? .systemTeal
-
-        let navAppearance = UINavigationBarAppearance()
-        navAppearance.configureWithOpaqueBackground()
-        navAppearance.backgroundColor = surface
-        navAppearance.shadowColor = separator
-        navAppearance.titleTextAttributes = [.foregroundColor: primary]
-        navAppearance.largeTitleTextAttributes = [.foregroundColor: primary]
-
-        UINavigationBar.appearance().standardAppearance = navAppearance
-        UINavigationBar.appearance().scrollEdgeAppearance = navAppearance
-        UINavigationBar.appearance().compactAppearance = navAppearance
         UINavigationBar.appearance().tintColor = accent
-
-        let itemAppearance = UITabBarItemAppearance()
-        itemAppearance.normal.iconColor = secondary
-        itemAppearance.normal.titleTextAttributes = [.foregroundColor: secondary]
-        itemAppearance.selected.iconColor = accent
-        itemAppearance.selected.titleTextAttributes = [.foregroundColor: accent]
-
-        let tabAppearance = UITabBarAppearance()
-        tabAppearance.configureWithOpaqueBackground()
-        tabAppearance.backgroundColor = surface
-        tabAppearance.shadowColor = separator
-        tabAppearance.stackedLayoutAppearance = itemAppearance
-        tabAppearance.inlineLayoutAppearance = itemAppearance
-        tabAppearance.compactInlineLayoutAppearance = itemAppearance
-
-        UITabBar.appearance().standardAppearance = tabAppearance
-        UITabBar.appearance().scrollEdgeAppearance = tabAppearance
         UITabBar.appearance().tintColor = accent
-        UITabBar.appearance().unselectedItemTintColor = secondary
 
         UITableView.appearance().backgroundColor = background
         UICollectionView.appearance().backgroundColor = background
@@ -181,7 +158,7 @@ struct AppToneBadge: View {
     var body: some View {
         HStack(spacing: 6) {
             Image(systemName: systemImage)
-                .font(.system(size: 11, weight: .semibold))
+                .font(AppTheme.Typography.badgeIcon)
             Text(title)
                 .font(AppTheme.Typography.badge)
         }

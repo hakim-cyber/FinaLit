@@ -47,25 +47,20 @@ struct GoalsView: View {
                 .padding(.top, 16)
             }
         }
-        .safeAreaInset(edge: .bottom) {
-            HStack {
-                Spacer()
-                Button {
-                    coordinator.push(.addGoal)
-                } label: {
-                    HStack(spacing: 8) {
-                        Image(systemName: "plus")
-                            .font(.system(size: 14, weight: .semibold))
-                        Text("New Goal")
-                    }
-                    .padding(.horizontal, 18)
+        .overlay(alignment: .bottomTrailing) {
+            Button {
+                coordinator.push(.addGoal)
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "plus")
+                        .font(AppTheme.Typography.compactRowIcon)
+                    Text("New Goal")
                 }
-                .buttonStyle(AppFilledButtonStyle(tone: .accent, compact: true, fillsWidth: false))
+                .padding(.horizontal, 18)
             }
-            .padding(.horizontal, AppTheme.Spacing.screen)
-            .padding(.top, 8)
-            .padding(.bottom, 8)
-            .background(AppTheme.background.opacity(0.94))
+            .buttonStyle(AppFilledButtonStyle(tone: .accent, compact: true, fillsWidth: false))
+            .padding(.trailing, AppTheme.Spacing.screen)
+            .padding(.bottom, 24)
         }
         .navigationTitle("Goals")
         .navigationBarTitleDisplayMode(.inline)

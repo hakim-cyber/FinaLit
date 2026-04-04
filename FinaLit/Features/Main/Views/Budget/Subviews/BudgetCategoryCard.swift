@@ -25,20 +25,16 @@ struct BudgetCategoryCard: View {
     var body: some View {
         VStack(spacing: 12) {
             HStack(spacing: 12) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(AppTheme.softFill(for: category.tone))
-                        .frame(width: 38, height: 38)
-                    Image(systemName: category.icon)
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(AppTheme.tint(for: category.tone))
-                }
+                Image(systemName: category.icon)
+                    .font(AppTheme.Typography.rowIcon)
+                    .foregroundStyle(AppTheme.tint(for: category.tone))
+                    .frame(width: 20)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(category.rawValue)
                         .font(AppTheme.Typography.bodySemibold)
                         .foregroundStyle(AppTheme.textPrimary)
-                    Text("Spent: \(formatCurrency(spent))")
+                    Text("Spent: \(formatDisplayCurrency(spent))")
                         .font(AppTheme.Typography.detail)
                         .foregroundStyle(AppTheme.textSecondary)
                 }
@@ -59,7 +55,7 @@ struct BudgetCategoryCard: View {
                     }
                 } else if let limit {
                     VStack(alignment: .trailing, spacing: 2) {
-                        Text(formatCurrency(limit))
+                        Text(formatDisplayCurrency(limit))
                             .font(AppTheme.Typography.bodySemibold)
                             .foregroundStyle(isOver ? AppTheme.danger : AppTheme.textPrimary)
                         Text("limit")
@@ -77,6 +73,7 @@ struct BudgetCategoryCard: View {
                 AppThinProgressBar(progress: usage, tone: isOver ? .danger : category.tone)
             }
         }
-        .appSurface(isOver ? .tinted(.danger) : .primary, padding: 14, cornerRadius: AppTheme.CornerRadius.large)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 14)
     }
 }

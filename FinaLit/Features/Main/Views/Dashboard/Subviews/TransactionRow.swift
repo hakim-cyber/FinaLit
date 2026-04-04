@@ -10,14 +10,10 @@ struct TransactionRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(AppTheme.softFill(for: transaction.category.tone))
-                    .frame(width: 38, height: 38)
-                Image(systemName: transaction.category.icon)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(AppTheme.tint(for: transaction.category.tone))
-            }
+            Image(systemName: transaction.category.icon)
+                .font(AppTheme.Typography.rowIcon)
+                .foregroundStyle(AppTheme.tint(for: transaction.category.tone))
+                .frame(width: 20)
             VStack(alignment: .leading, spacing: 2) {
                 Text(transaction.note.isEmpty ? transaction.category.rawValue : transaction.note)
                     .font(AppTheme.Typography.bodySemibold)
@@ -33,6 +29,7 @@ struct TransactionRow: View {
                 .monospacedDigit()
                 .foregroundStyle(transaction.isIncome ? AppTheme.success : AppTheme.textPrimary)
         }
-        .padding(12)
+        .padding(.vertical, 14)
+        .padding(.horizontal, 4)
     }
 }

@@ -11,7 +11,7 @@ struct InsightChip: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: insight.icon)
-                .font(.system(size: 13, weight: .semibold))
+                .font(AppTheme.Typography.compactRowIcon)
                 .foregroundStyle(AppTheme.tint(for: insight.tone))
             VStack(alignment: .leading, spacing: 2) {
                 Text(insight.title)
@@ -24,7 +24,7 @@ struct InsightChip: View {
                     .lineLimit(2)
             }
         }
-        .appSurface(.tinted(insight.tone), padding: 12, cornerRadius: AppTheme.CornerRadius.medium)
-        .frame(width: 220, alignment: .leading)
+        .appSurface(.secondary, padding: 12, cornerRadius: AppTheme.CornerRadius.medium)
+        .frame(width: 228, alignment: .leading)
     }
 }

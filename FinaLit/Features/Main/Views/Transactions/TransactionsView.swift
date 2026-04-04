@@ -64,7 +64,7 @@ struct TransactionsView: View {
                 HStack(spacing: 10) {
                     Image(systemName: "magnifyingglass")
                         .foregroundStyle(AppTheme.textSecondary)
-                        .font(.system(size: 14))
+                        .font(AppTheme.Typography.rowIcon)
                     TextField("Search transactions...", text: $searchText)
                         .font(AppTheme.Typography.body)
                         .foregroundStyle(AppTheme.textPrimary)
@@ -98,11 +98,10 @@ struct TransactionsView: View {
                                             if index < group.transactions.count - 1 {
                                                 Divider()
                                                     .overlay(AppTheme.separator)
-                                                    .padding(.leading, 62)
+                                                    .padding(.leading, 36)
                                             }
                                         }
                                     }
-                                    .appSurface(.primary, padding: 0, cornerRadius: AppTheme.CornerRadius.large)
                                 }
                             }
                             Spacer(minLength: 40)
@@ -122,7 +121,7 @@ struct TransactionsView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 6) {
                 Image(systemName: "calendar")
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(AppTheme.Typography.badgeIcon)
                 Text(mainVM.selectedMonthDisplay)
                     .font(AppTheme.Typography.badge)
             }
@@ -134,7 +133,7 @@ struct TransactionsView: View {
 
             HStack(spacing: 0) {
                 VStack(spacing: 2) {
-                    Text(formatCurrency(mainVM.currentMonthIncome.reduce(0) { $0 + $1.amount }))
+                    Text(formatDisplayCurrency(mainVM.currentMonthIncome.reduce(0) { $0 + $1.amount }))
                         .font(.system(size: 17, weight: .semibold, design: .rounded))
                         .foregroundStyle(AppTheme.success)
                         .monospacedDigit()
@@ -147,7 +146,7 @@ struct TransactionsView: View {
                 Divider().frame(height: 28).background(AppTheme.separator)
 
                 VStack(spacing: 2) {
-                    Text(formatCurrency(mainVM.currentMonthExpenses.reduce(0) { $0 + $1.amount }))
+                    Text(formatDisplayCurrency(mainVM.currentMonthExpenses.reduce(0) { $0 + $1.amount }))
                         .font(.system(size: 17, weight: .semibold, design: .rounded))
                         .foregroundStyle(AppTheme.danger)
                         .monospacedDigit()

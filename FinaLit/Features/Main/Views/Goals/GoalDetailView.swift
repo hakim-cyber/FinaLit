@@ -71,7 +71,7 @@ struct GoalDetailView: View {
                                     .font(AppTheme.Typography.caption)
                                     .foregroundStyle(AppTheme.textSecondary)
                                 Spacer()
-                                Text(formatCurrency(remaining))
+                                Text(formatDisplayCurrency(remaining))
                                     .font(.system(size: 17, weight: .semibold, design: .rounded))
                                     .foregroundStyle(AppTheme.accent)
                                     .monospacedDigit()

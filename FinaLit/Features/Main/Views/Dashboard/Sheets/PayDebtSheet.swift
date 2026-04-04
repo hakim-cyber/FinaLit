@@ -124,7 +124,7 @@ struct PayDebtSheet: View {
                         Spacer()
 
                         Image(systemName: "chevron.up.chevron.down")
-                            .font(.system(size: 12, weight: .semibold))
+                            .font(AppTheme.Typography.badgeIcon)
                             .foregroundStyle(mainVM.activeDebtAccounts.isEmpty ? AppTheme.textTertiary : AppTheme.textSecondary)
                     }
                     .appSurface(.primary, padding: 14, cornerRadius: AppTheme.CornerRadius.medium)
@@ -141,7 +141,7 @@ struct PayDebtSheet: View {
                     openAddDebt()
                 } label: {
                     Image(systemName: "plus")
-                        .font(.system(size: 18, weight: .semibold))
+                        .font(AppTheme.Typography.rowIcon)
                         .foregroundStyle(AppTheme.tint(for: .orange))
                         .frame(width: 48, height: 48)
                         .background(AppTheme.softFill(for: .orange))
@@ -182,7 +182,7 @@ struct PayDebtSheet: View {
 
                             if account.id == selectedAccount?.id {
                                 Image(systemName: "checkmark")
-                                    .font(.system(size: 13, weight: .semibold))
+                                    .font(AppTheme.Typography.compactRowIcon)
                                     .foregroundStyle(AppTheme.tint(for: .orange))
                             }
                         }
