@@ -132,6 +132,23 @@ struct LoginView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .alert(
+            "Check your email",
+            isPresented: Binding(
+                get: { viewModel.postRegistrationVerificationAlert != nil },
+                set: { isPresented in
+                    if !isPresented {
+                        viewModel.dismissPostRegistrationVerificationAlert()
+                    }
+                }
+            )
+        ) {
+            Button("OK", role: .cancel) {
+                viewModel.dismissPostRegistrationVerificationAlert()
+            }
+        } message: {
+            Text(viewModel.postRegistrationVerificationAlert ?? "")
+        }
         .onChange(of: viewModel.email) { _, _ in
             viewModel.clearMessages()
         }

@@ -33,6 +33,8 @@ class AuthViewModel {
     var isLoading: Bool    = false
     var errorMessage: String?
     var successMessage: String?
+    var postRegistrationVerificationAlert: String?
+    var shouldReturnToLoginAfterRegister: Bool = false
     private(set) var lastAuthError: AuthError?
     private var currentAppleNonce: String?
 
@@ -93,39 +95,26 @@ class AuthViewModel {
         }
 
         isLoading    = true
-        errorMessage = nil
+        clearMessages()
         defer { isLoading = false }
 
-        var createdUID: String?
-
         do {
-            // 1. Create Firebase Auth account → get UID
-            let uid = try await authService.register(email: trimmedEmail, password: password)
-            createdUID = uid
+            _ = try await authService.register(email: trimmedEmail, password: password)
 
-            // 2. Build minimal User — profiles filled during onboarding
-            let user = User(
-                id: uid,
-                email: trimmedEmail,
-                name: trimmedName,
-                createdAt: .now,
-                profile: nil,
-                financialProfile: nil,
-                behaviorProfile: nil
-            )
+            do {
+                try await authService.sendCurrentUserEmailVerification()
+                postRegistrationVerificationAlert = "Your FinaLit account was created and we sent a verification email. Verify your address, then log in."
+                shouldReturnToLoginAfterRegister = true
+            } catch {
+                errorMessage = "Your account was created, but we couldn't send the verification email. Try logging in to resend it."
+            }
 
-            // 3. Persist to Firestore
-            try dbService.createUser(user)
-
-            // 4. Set session → RootView reacts → shows onboarding
-            session.setUser(user)
+            try? authService.signOut()
+            session.signOut()
+            password = ""
+            confirmPassword = ""
 
         } catch {
-            if let createdUID, authService.currentUID == createdUID {
-                // Roll back auth user if Firestore bootstrap fails.
-                try? await authService.deleteCurrentUser()
-                try? authService.signOut()
-            }
             handleError(error)
         }
     }
@@ -137,21 +126,29 @@ class AuthViewModel {
             return
         }
 
-        isLoading    = true
-        errorMessage = nil
+        isLoading = true
+        clearMessages()
         defer { isLoading = false }
 
         do {
-            // 1. Firebase Auth → get UID
             let uid = try await authService.login(email: trimmedEmail, password: password)
+            try await authService.reloadCurrentUser()
 
-            // 2. Fetch full User from Firestore
-            //    This includes any saved profiles → hasCompletedOnboarding computed correctly
+            if authService.currentUserRequiresEmailVerification && !authService.isCurrentUserEmailVerified {
+                let resentVerification = (try? await authService.sendCurrentUserEmailVerification()) != nil
+                try? authService.signOut()
+                session.signOut()
+                lastAuthError = .emailNotVerified
+                errorMessage = resentVerification
+                    ? AuthError.emailNotVerified.errorDescription
+                    : "Verify your email first, then log in again."
+                return
+            }
+
             let user: User
             do {
                 user = try await dbService.fetchUser(uid: uid)
             } catch DBError.userNotFound {
-                // Recover missing user doc to avoid broken sessions after partial failures.
                 let fallbackName = trimmedName.isEmpty
                     ? (trimmedEmail.split(separator: "@").first.map(String.init) ?? "User")
                     : trimmedName
@@ -165,9 +162,6 @@ class AuthViewModel {
                 user = recoveredUser
             }
 
-            // 3. Set session → RootView reacts
-            //    If onboarding was done before  → goes to RootTabView
-            //    If onboarding was not done yet → goes to OnboardingPages
             session.setUser(user)
 
         } catch {
@@ -345,6 +339,14 @@ class AuthViewModel {
         errorMessage = nil
         successMessage = nil
         lastAuthError = nil
+    }
+
+    func consumeRegisterRedirect() {
+        shouldReturnToLoginAfterRegister = false
+    }
+
+    func dismissPostRegistrationVerificationAlert() {
+        postRegistrationVerificationAlert = nil
     }
 
     private func clearForm() {

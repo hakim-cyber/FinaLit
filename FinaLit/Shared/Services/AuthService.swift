@@ -56,6 +56,14 @@ final class AuthService {
         currentUser != nil
     }
 
+    var isCurrentUserEmailVerified: Bool {
+        currentUser?.isEmailVerified ?? false
+    }
+
+    var currentUserRequiresEmailVerification: Bool {
+        currentUser?.providerData.contains(where: { $0.providerID == "password" }) ?? false
+    }
+
     // MARK: - Register
 
     /// Creates a new Firebase Auth account.
@@ -103,6 +111,33 @@ final class AuthService {
     func sendPasswordReset(email: String) async throws {
         do {
             try await Auth.auth().sendPasswordReset(withEmail: email)
+        } catch let error as NSError {
+            throw AuthError.map(error)
+        }
+    }
+
+    @MainActor
+    func sendCurrentUserEmailVerification() async throws {
+        guard let user = Auth.auth().currentUser else {
+            throw AuthError.noAuthenticatedUser
+        }
+
+        do {
+            try await user.sendEmailVerification()
+        } catch let error as NSError {
+            throw AuthError.map(error)
+        }
+    }
+
+    @MainActor
+    func reloadCurrentUser() async throws {
+        guard let user = Auth.auth().currentUser else {
+            throw AuthError.noAuthenticatedUser
+        }
+
+        do {
+            try await user.reload()
+            currentUser = Auth.auth().currentUser
         } catch let error as NSError {
             throw AuthError.map(error)
         }
@@ -327,6 +362,7 @@ enum AuthError: LocalizedError, Equatable {
     case userNotFound
     case emailAlreadyInUse
     case weakPassword
+    case emailNotVerified
     case networkError
     case tooManyRequests
     case requiresRecentLogin
@@ -363,6 +399,7 @@ enum AuthError: LocalizedError, Equatable {
         case .userNotFound:      return "No account found with this email."
         case .emailAlreadyInUse: return "An account with this email already exists."
         case .weakPassword:      return "Password must be at least 8 characters."
+        case .emailNotVerified:  return "Verify your email first. We sent a new verification link."
         case .networkError:      return "Network error. Please check your connection."
         case .tooManyRequests:   return "Too many attempts. Try again in a moment."
         case .requiresRecentLogin:

@@ -83,6 +83,18 @@ struct FinaLitApp: App {
 
         guard let uid = authService.currentUID else { return }
 
+        do {
+            try await authService.reloadCurrentUser()
+        } catch {
+            try? authService.signOut()
+            return
+        }
+
+        if authService.currentUserRequiresEmailVerification && !authService.isCurrentUserEmailVerified {
+            try? authService.signOut()
+            return
+        }
+
         // Firebase says user is logged in — fetch their data
         if let user = try? await dbService.fetchUser(uid: uid) {
             session.setUser(user)

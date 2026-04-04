@@ -182,6 +182,11 @@ struct RegisterView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: viewModel.shouldReturnToLoginAfterRegister) { _, shouldReturn in
+            guard shouldReturn else { return }
+            viewModel.consumeRegisterRedirect()
+            coordinator.pop()
+        }
         .onChange(of: viewModel.name) { _, _ in
             viewModel.clearMessages()
         }
