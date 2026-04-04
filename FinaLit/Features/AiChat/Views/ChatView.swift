@@ -196,7 +196,7 @@ struct ChatView: View {
             .onSubmit {
                 requestSend()
             }
-            .frame(minHeight: 30)
+            .frame(minHeight: 36)
 
             if hasDraft {
                 Button {
@@ -205,7 +205,7 @@ struct ChatView: View {
                     Image(systemName: "arrow.up")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(AppTheme.inverseText)
-                        .frame(width: 30, height: 30)
+                        .frame(width: 36, height: 36)
                         .background(ChatPalette.accent, in: Circle())
                 }
                 .disabled(viewModel.isSending)
