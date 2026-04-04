@@ -14,6 +14,7 @@ struct ChatView: View {
     @Environment(Coordinator<ChatPages>.self) private var coordinator
     @Environment(\.modelContext) private var modelContext
     @State private var showConsentPrompt = false
+    @FocusState private var isComposerFocused: Bool
 
     var body: some View {
         @Bindable var viewModel = viewModel
@@ -44,6 +45,7 @@ struct ChatView: View {
                         .padding(.horizontal, 20)
                         .padding(.vertical, 14)
                     }
+                    .scrollDismissesKeyboard(.interactively)
                     .onChange(of: viewModel.messages.count) { _, _ in
                         scrollToBottom(with: proxy)
                     }
@@ -64,11 +66,7 @@ struct ChatView: View {
                         .padding(.bottom, 6)
                 }
 
-                composer
-                    .padding(.horizontal, 20)
-                    .padding(.top, 8)
-                    .padding(.bottom, 14)
-                    .background(ChatPalette.background)
+
             }
 
             if viewModel.isLoading {
@@ -78,6 +76,12 @@ struct ChatView: View {
                     .appSurface(.primary, padding: 20, cornerRadius: AppTheme.CornerRadius.medium)
             }
         }
+        .overlay(alignment: .bottom, content: {
+            composer
+                .padding(.horizontal, 25)
+                .padding(.top, 8)
+                .padding(.bottom, 14)
+        })
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -175,8 +179,9 @@ struct ChatView: View {
 
     private var composer: some View {
         @Bindable var viewModel = viewModel
+        let hasDraft = !trimmedDraft.isEmpty
 
-        return HStack(alignment: .bottom, spacing: 10) {
+        return HStack(alignment: .bottom, spacing: 12) {
             TextField(
                 "Ask your question...",
                 text: $viewModel.draft,
@@ -185,32 +190,47 @@ struct ChatView: View {
             .lineLimit(1...4)
             .font(AppTheme.Typography.body)
             .foregroundStyle(AppTheme.textPrimary)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
-            .background(ChatPalette.surface)
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(ChatPalette.border, lineWidth: 1)
-            )
+            .focused($isComposerFocused)
             .disabled(viewModel.isSending)
             .submitLabel(.send)
             .onSubmit {
                 requestSend()
             }
+            .frame(minHeight: 30)
 
-            Button {
-                requestSend()
-            } label: {
-                Image(systemName: "arrow.up")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(AppTheme.inverseText)
-                    .frame(width: 44, height: 44)
-                    .background(ChatPalette.accent)
-                    .clipShape(Circle())
+            if hasDraft {
+                Button {
+                    requestSend()
+                } label: {
+                    Image(systemName: "arrow.up")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(AppTheme.inverseText)
+                        .frame(width: 30, height: 30)
+                        .background(ChatPalette.accent, in: Circle())
+                }
+                .disabled(viewModel.isSending)
+                .transition(.scale(scale: 0.85).combined(with: .opacity))
             }
-            .disabled(viewModel.isSending)
         }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(Color.init(uiColor: .systemBackground), in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .glassEffectIfAvailable()
+        .overlay(
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .stroke(ChatPalette.border.opacity(0.8), lineWidth: 1)
+        )
+        .contentShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 18)
+                .onEnded { value in
+                    if value.translation.height > 24 {
+                        isComposerFocused = false
+                        KeyboardUX.dismiss()
+                    }
+                }
+        )
+        .animation(.easeOut(duration: 0.18), value: hasDraft)
     }
 
     private func messageCard(_ message: ChatMessageEntity) -> some View {
@@ -298,11 +318,7 @@ struct ChatView: View {
     }
 
     private func requestSend() {
-        let isDraftEmpty = viewModel.draft
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .isEmpty
-
-        if isDraftEmpty {
+        if trimmedDraft.isEmpty {
             KeyboardUX.dismiss()
             return
         }
@@ -318,6 +334,10 @@ struct ChatView: View {
     private func sendMessageNow() async {
         viewModel.updateFinancialContext(mainVM.aiContext)
         await viewModel.sendMessage(context: modelContext)
+    }
+
+    private var trimmedDraft: String {
+        viewModel.draft.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
