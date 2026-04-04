@@ -11,6 +11,7 @@ import Firebase
 #if canImport(GoogleSignIn)
 import GoogleSignIn
 #endif
+
 @main
 struct FinaLitApp: App {
 

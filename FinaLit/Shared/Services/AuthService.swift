@@ -139,10 +139,7 @@ final class AuthService {
                 preferredName: result.user.profile?.name
             )
         } catch let error as NSError {
-            if error.domain == kGIDSignInErrorDomain,
-               error.code == GIDSignInErrorCode.canceled.rawValue {
-                throw AuthError.cancelled
-            }
+            
             if let authError = error as? AuthError {
                 throw authError
             }
