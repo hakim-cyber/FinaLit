@@ -7,6 +7,7 @@ import SwiftUI
 
 struct TransactionRow: View {
     let transaction: Transaction
+    var horizontalPadding: CGFloat = 4
 
     var body: some View {
         HStack(spacing: 12) {
@@ -30,6 +31,6 @@ struct TransactionRow: View {
                 .foregroundStyle(transaction.isIncome ? AppTheme.success : AppTheme.textPrimary)
         }
         .padding(.vertical, 14)
-        .padding(.horizontal, 4)
+        .padding(.horizontal, horizontalPadding)
     }
 }

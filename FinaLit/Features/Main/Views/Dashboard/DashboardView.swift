@@ -418,14 +418,15 @@ struct DashboardView: View {
             } else {
                 VStack(spacing: 0) {
                     ForEach(Array(mainVM.currentMonthTransactions.prefix(5).enumerated()), id: \.offset) { index, transaction in
-                        TransactionRow(transaction: transaction)
+                        TransactionRow(transaction: transaction, horizontalPadding: 12)
                             .onTapGesture {
                                 coordinator.push(.transactionDetail(transaction.id ?? ""))
                             }
                         if index < min(mainVM.currentMonthTransactions.count, 5) - 1 {
                             Divider()
                                 .overlay(AppTheme.separator)
-                                .padding(.leading, 62)
+                                .padding(.leading, 44)
+                                .padding(.trailing, 12)
                         }
                     }
                 }

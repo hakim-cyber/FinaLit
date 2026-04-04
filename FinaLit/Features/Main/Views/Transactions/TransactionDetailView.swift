@@ -37,6 +37,7 @@ struct TransactionDetailView: View {
                                 .font(.system(size: 34, weight: .semibold, design: .rounded))
                                 .foregroundStyle(transaction.isIncome ? AppTheme.success : AppTheme.textPrimary)
                                 .monospacedDigit()
+                                .padding(.horizontal, AppTheme.Spacing.screen)
 
                             Text(transaction.type == .income ? "Income" : "Expense")
                                 .font(AppTheme.Typography.caption)

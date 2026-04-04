@@ -58,22 +58,6 @@ struct TransactionsView: View {
                     .padding(.horizontal, AppTheme.Spacing.screen)
                     .padding(.bottom, 16)
 
-                filterBar
-                    .padding(.bottom, 12)
-
-                HStack(spacing: 10) {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundStyle(AppTheme.textSecondary)
-                        .font(AppTheme.Typography.rowIcon)
-                    TextField("Search transactions...", text: $searchText)
-                        .font(AppTheme.Typography.body)
-                        .foregroundStyle(AppTheme.textPrimary)
-                        .tint(AppTheme.accent)
-                }
-                .appSurface(.primary, padding: 12, cornerRadius: AppTheme.CornerRadius.medium)
-                .padding(.horizontal, AppTheme.Spacing.screen)
-                .padding(.bottom, 16)
-
                 if filtered.isEmpty {
                     Spacer()
                     Text(searchText.isEmpty ? "No transactions" : "No results")
@@ -115,6 +99,33 @@ struct TransactionsView: View {
         }
         .navigationTitle("Transactions")
         .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $searchText, prompt: "Search transactions")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Button {
+                        filterType = nil
+                    } label: {
+                        filterMenuLabel(title: "All", isSelected: filterType == nil)
+                    }
+
+                    Button {
+                        filterType = .expense
+                    } label: {
+                        filterMenuLabel(title: "Expense", isSelected: filterType == .expense)
+                    }
+
+                    Button {
+                        filterType = .income
+                    } label: {
+                        filterMenuLabel(title: "Income", isSelected: filterType == .income)
+                    }
+                } label: {
+                    Image(systemName: filterType == nil ? "line.3.horizontal.decrease.circle" : "line.3.horizontal.decrease.circle.fill")
+                        .font(AppTheme.Typography.toolbarIcon)
+                }
+            }
+        }
     }
 
     private var transactionsSummaryHeader: some View {
@@ -172,14 +183,14 @@ struct TransactionsView: View {
         .appSurface(.primary, padding: 16, cornerRadius: AppTheme.CornerRadius.large)
     }
 
-    private var filterBar: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                FilterPill(label: "All", isActive: filterType == nil) { filterType = nil }
-                FilterPill(label: "Expense", isActive: filterType == .expense) { filterType = .expense }
-                FilterPill(label: "Income", isActive: filterType == .income) { filterType = .income }
+    private func filterMenuLabel(title: String, isSelected: Bool) -> some View {
+        HStack {
+            Text(title)
+            if isSelected {
+                Spacer(minLength: 8)
+                Image(systemName: "checkmark")
+                    .font(AppTheme.Typography.compactRowIcon)
             }
-            .padding(.horizontal, AppTheme.Spacing.screen)
         }
     }
 }
