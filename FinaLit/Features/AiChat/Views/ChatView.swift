@@ -78,7 +78,7 @@ struct ChatView: View {
         }
         .overlay(alignment: .bottom, content: {
             composer
-                .padding(.horizontal, 25)
+                .padding(.horizontal, 22)
                 .padding(.top, 8)
                 .padding(.bottom, 14)
         })
@@ -214,8 +214,8 @@ struct ChatView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color.init(uiColor: .systemBackground), in: RoundedRectangle(cornerRadius: 28, style: .continuous))
-        .glassEffectIfAvailable()
+        .glassEffectIfAvailable(backgroundEnabled: true)
+        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 28, style: .continuous)
                 .stroke(ChatPalette.border.opacity(0.8), lineWidth: 1)
