@@ -48,7 +48,7 @@ struct OnboardingSavingsEmergencyView: View {
                         Stepper(value: $viewModel.emergencyFundMonths, in: 0...24) {
                             Text("\(viewModel.emergencyFundMonths) months")
                                 .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(AppTheme.textPrimary)
                         }
                     }
                     .padding(14)

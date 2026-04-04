@@ -21,7 +21,7 @@ struct MoneySlider: View {
                 Spacer()
                 Text(currency(snapped(value)))
                     .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(AppTheme.textPrimary)
             }
 
             Slider(value: $value, in: range, step: step)
