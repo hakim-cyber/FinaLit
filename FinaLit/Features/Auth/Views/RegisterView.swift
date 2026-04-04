@@ -1,4 +1,5 @@
 import SwiftUI
+import AuthenticationServices
 
 struct RegisterView: View {
     @Environment(AuthViewModel.self) private var viewModel
@@ -138,18 +139,20 @@ struct RegisterView: View {
 
                         AuthDividerLabel(text: "OR")
 
-                        Button {
-                            viewModel.continueWithApple()
-                        } label: {
-                            AuthSocialButton(
-                                title: "Continue with Apple",
-                                icon: .apple
-                            )
-                        }
-                        .buttonStyle(.plain)
+                        AuthAppleSignInButton(
+                            onRequest: viewModel.prepareAppleSignInRequest,
+                            onCompletion: { result in
+                                Task {
+                                    await viewModel.continueWithApple(result: result)
+                                }
+                            }
+                        )
+                        .disabled(viewModel.isLoading)
 
                         Button {
-                            viewModel.continueWithGoogle()
+                            Task {
+                                await viewModel.continueWithGoogle()
+                            }
                         } label: {
                             AuthSocialButton(
                                 title: "Continue with Google",
@@ -157,6 +160,7 @@ struct RegisterView: View {
                             )
                         }
                         .buttonStyle(.plain)
+                        .disabled(viewModel.isLoading)
                     }
 
                     VStack(spacing: 14) {
@@ -301,7 +305,6 @@ private struct AuthSocialButton: View {
     private let cornerRadius: CGFloat = 24
 
     enum Icon {
-        case apple
         case google
     }
 
@@ -330,10 +333,6 @@ private struct AuthSocialButton: View {
     @ViewBuilder
     private var iconView: some View {
         switch icon {
-        case .apple:
-            Image(systemName: "apple.logo")
-                .font(.system(size: 18, weight: .medium))
-                .foregroundStyle(AppTheme.textPrimary)
         case .google:
             Image(.googleLogo)
                 .resizable()

@@ -14,6 +14,10 @@
 // Injected as @State in the auth CoordinatorStack root, shared via .environment()
 
 import SwiftUI
+import AuthenticationServices
+#if canImport(UIKit)
+import UIKit
+#endif
 
 @Observable
 class AuthViewModel {
@@ -30,6 +34,7 @@ class AuthViewModel {
     var errorMessage: String?
     var successMessage: String?
     private(set) var lastAuthError: AuthError?
+    private var currentAppleNonce: String?
 
     // MARK: - Validation
     private var trimmedName: String {
@@ -196,14 +201,81 @@ class AuthViewModel {
     }
 
     // MARK: - Social Sign-In Placeholders
-    func continueWithApple() {
+    func prepareAppleSignInRequest(_ request: ASAuthorizationAppleIDRequest) {
         clearMessages()
-        successMessage = "Apple Sign In for FinaLit is coming soon."
+        let nonce = authService.randomNonceString()
+        currentAppleNonce = nonce
+        request.requestedScopes = [.fullName, .email]
+        request.nonce = authService.sha256(nonce)
     }
 
-    func continueWithGoogle() {
+    func continueWithApple(result: Result<ASAuthorization, Error>) async {
+        guard !isLoading else { return }
+
         clearMessages()
-        successMessage = "Google Sign In for FinaLit is coming soon."
+        isLoading = true
+        defer {
+            isLoading = false
+            currentAppleNonce = nil
+        }
+
+        do {
+            let authorization: ASAuthorization
+            switch result {
+            case .success(let authorizationRes):
+                authorization = authorizationRes
+            case .failure(let error):
+                throw mapAppleError(error)
+            }
+
+            guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+                throw AuthError.invalidAppleCredential
+            }
+
+            guard let idTokenData = credential.identityToken,
+                  let idTokenString = String(data: idTokenData, encoding: .utf8) else {
+                throw AuthError.missingIdentityToken
+            }
+
+            guard let currentAppleNonce, !currentAppleNonce.isEmpty else {
+                throw AuthError.invalidAppleCredential
+            }
+
+            let identity = try await authService.signInWithApple(
+                idTokenString: idTokenString,
+                rawNonce: currentAppleNonce,
+                fullName: credential.fullName
+            )
+
+            try await completeSocialLogin(identity: identity)
+        } catch {
+            handleError(error)
+        }
+    }
+
+    func continueWithGoogle() async {
+        guard !isLoading else { return }
+
+        clearMessages()
+
+#if canImport(UIKit)
+        guard let presentingViewController = SocialAuthPresenter.current() else {
+            handleError(AuthError.unableToPresentSocialSignIn)
+            return
+        }
+
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            let identity = try await authService.signInWithGoogle(presenting: presentingViewController)
+            try await completeSocialLogin(identity: identity)
+        } catch {
+            handleError(error)
+        }
+#else
+        handleError(AuthError.providerUnavailable("Google Sign-In is only available on iOS."))
+#endif
     }
 
     // MARK: - Sign Out
@@ -293,8 +365,46 @@ class AuthViewModel {
         clearForm()
     }
 
+    private func completeSocialLogin(identity: AuthenticatedIdentity) async throws {
+        do {
+            let user = try await dbService.fetchUser(uid: identity.uid)
+            session.setUser(user)
+        } catch DBError.userNotFound {
+            let user = User(
+                id: identity.uid,
+                email: identity.email,
+                name: identity.name,
+                createdAt: .now,
+                profile: nil,
+                financialProfile: nil,
+                behaviorProfile: nil
+            )
+
+            do {
+                try dbService.createUser(user)
+                session.setUser(user)
+            } catch {
+                try? authService.signOut()
+                throw error
+            }
+        }
+    }
+
+    private func mapAppleError(_ error: Error) -> Error {
+        if let appleError = error as? ASAuthorizationError{
+         
+            return appleError
+        }
+
+        return error
+    }
+
     private func handleError(_ error: Error) {
         if let authError = error as? AuthError {
+            if authError == .cancelled {
+                clearMessages()
+                return
+            }
             lastAuthError = authError
             errorMessage = authError.errorDescription
             return

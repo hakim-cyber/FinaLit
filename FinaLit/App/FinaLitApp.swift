@@ -8,6 +8,9 @@
 import SwiftUI
 import SwiftData
 import Firebase
+#if canImport(GoogleSignIn)
+import GoogleSignIn
+#endif
 @main
 struct FinaLitApp: App {
 
@@ -64,6 +67,11 @@ struct FinaLitApp: App {
                 .environment(\.locale, AppRegion.locale)
                 .task {
                     await restoreSession()
+                }
+                .onOpenURL { url in
+#if canImport(GoogleSignIn)
+                    _ = GIDSignIn.sharedInstance.handle(url)
+#endif
                 }
         }
         .modelContainer(for: [ChatThreadEntity.self, ChatMessageEntity.self])

@@ -15,6 +15,21 @@
 import Foundation
 import Observation
 import FirebaseAuth
+import FirebaseCore
+import CryptoKit
+import Security
+#if canImport(UIKit)
+import UIKit
+#endif
+#if canImport(GoogleSignIn)
+@preconcurrency import GoogleSignIn
+#endif
+
+struct AuthenticatedIdentity {
+    let uid: String
+    let email: String
+    let name: String
+}
 
 @Observable
 final class AuthService {
@@ -74,6 +89,9 @@ final class AuthService {
     func signOut() throws {
         do {
             try Auth.auth().signOut()
+#if canImport(GoogleSignIn)
+            GIDSignIn.sharedInstance.signOut()
+#endif
         } catch let error as NSError {
             throw AuthError.map(error)
         }
@@ -88,6 +106,119 @@ final class AuthService {
         } catch let error as NSError {
             throw AuthError.map(error)
         }
+    }
+
+    // MARK: - Social Sign-In
+
+#if canImport(UIKit)
+    @MainActor
+    func signInWithGoogle(presenting presentingViewController: UIViewController) async throws -> AuthenticatedIdentity {
+#if canImport(GoogleSignIn)
+        guard let clientID = FirebaseApp.app()?.options.clientID, !clientID.isEmpty else {
+            throw AuthError.missingGoogleClientID
+        }
+
+        GIDSignIn.sharedInstance.configuration = GIDConfiguration(clientID: clientID)
+
+        do {
+            let result = try await GIDSignIn.sharedInstance.signIn(withPresenting: presentingViewController)
+
+            guard let idToken = result.user.idToken?.tokenString else {
+                throw AuthError.missingIdentityToken
+            }
+
+            let credential = GoogleAuthProvider.credential(
+                withIDToken: idToken,
+                accessToken: result.user.accessToken.tokenString
+            )
+
+            let authResult = try await Auth.auth().signIn(with: credential)
+            return try authenticatedIdentity(
+                from: authResult.user,
+                preferredEmail: result.user.profile?.email,
+                preferredName: result.user.profile?.name
+            )
+        } catch let error as NSError {
+            if error.domain == kGIDSignInErrorDomain,
+               error.code == GIDSignInErrorCode.canceled.rawValue {
+                throw AuthError.cancelled
+            }
+            if let authError = error as? AuthError {
+                throw authError
+            }
+            throw AuthError.unknown(error.localizedDescription)
+        }
+#else
+        throw AuthError.providerUnavailable("Google Sign-In SDK is not installed.")
+#endif
+    }
+#endif
+
+    @MainActor
+    func signInWithApple(
+        idTokenString: String,
+        rawNonce: String,
+        fullName: PersonNameComponents?
+    ) async throws -> AuthenticatedIdentity {
+        let credential = OAuthProvider.appleCredential(
+            withIDToken: idTokenString,
+            rawNonce: rawNonce,
+            fullName: fullName
+        )
+
+        do {
+            let result = try await Auth.auth().signIn(with: credential)
+            let formatter = PersonNameComponentsFormatter()
+            let formattedName = fullName.flatMap { components in
+                let rendered = formatter.string(from: components).trimmingCharacters(in: .whitespacesAndNewlines)
+                return rendered.isEmpty ? nil : rendered
+            }
+
+            return try authenticatedIdentity(
+                from: result.user,
+                preferredEmail: result.user.email,
+                preferredName: formattedName ?? result.user.displayName
+            )
+        } catch let error as NSError {
+            throw AuthError.map(error)
+        }
+    }
+
+    func randomNonceString(length: Int = 32) -> String {
+        precondition(length > 0)
+
+        let charset: [Character] =
+        Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        var result = ""
+        var remainingLength = length
+
+        while remainingLength > 0 {
+            var randoms = [UInt8](repeating: 0, count: 16)
+            let status = SecRandomCopyBytes(kSecRandomDefault, randoms.count, &randoms)
+
+            if status != errSecSuccess {
+                return UUID().uuidString.replacingOccurrences(of: "-", with: "")
+            }
+
+            randoms.forEach { random in
+                if remainingLength == 0 {
+                    return
+                }
+
+                if Int(random) < charset.count {
+                    result.append(charset[Int(random)])
+                    remainingLength -= 1
+                }
+            }
+        }
+
+        return result
+    }
+
+    func sha256(_ input: String) -> String {
+        let inputData = Data(input.utf8)
+        let hashedData = SHA256.hash(data: inputData)
+        return hashedData.map { String(format: "%02x", $0) }.joined()
     }
 
     // MARK: - Sensitive Operation Guard
@@ -156,6 +287,36 @@ final class AuthService {
             Auth.auth().removeStateDidChangeListener(authListener)
         }
     }
+
+    private func authenticatedIdentity(
+        from user: FirebaseAuth.User,
+        preferredEmail: String? = nil,
+        preferredName: String? = nil
+    ) throws -> AuthenticatedIdentity {
+        let resolvedEmail = (preferredEmail ?? user.email)?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard let resolvedEmail, !resolvedEmail.isEmpty else {
+            throw AuthError.missingProviderEmail
+        }
+
+        let cleanedPreferredName = preferredName?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let resolvedName: String
+        if let cleanedPreferredName, !cleanedPreferredName.isEmpty {
+            resolvedName = cleanedPreferredName
+        } else if let displayName = user.displayName?.trimmingCharacters(in: .whitespacesAndNewlines),
+                  !displayName.isEmpty {
+            resolvedName = displayName
+        } else if let localPart = resolvedEmail.split(separator: "@").first,
+                  !localPart.isEmpty {
+            resolvedName = String(localPart)
+        } else {
+            resolvedName = "User"
+        }
+
+        return AuthenticatedIdentity(uid: user.uid, email: resolvedEmail, name: resolvedName)
+    }
 }
 
 // MARK: - AuthError
@@ -173,6 +334,13 @@ enum AuthError: LocalizedError, Equatable {
     case tooManyRequests
     case requiresRecentLogin
     case noAuthenticatedUser
+    case missingGoogleClientID
+    case missingIdentityToken
+    case missingProviderEmail
+    case invalidAppleCredential
+    case unableToPresentSocialSignIn
+    case providerUnavailable(String)
+    case cancelled
     case unknown(String)
 
     static func map(_ error: NSError) -> AuthError {
@@ -204,6 +372,20 @@ enum AuthError: LocalizedError, Equatable {
             return "Please confirm your password before deleting your account."
         case .noAuthenticatedUser:
             return "No active account session was found."
+        case .missingGoogleClientID:
+            return "Google Sign-In is not configured. Download a fresh GoogleService-Info.plist and add its URL scheme."
+        case .missingIdentityToken:
+            return "The identity provider did not return a valid sign-in token."
+        case .missingProviderEmail:
+            return "The sign-in provider did not return an email address."
+        case .invalidAppleCredential:
+            return "Apple Sign-In returned an invalid credential."
+        case .unableToPresentSocialSignIn:
+            return "Unable to open the sign-in sheet right now. Please try again."
+        case .providerUnavailable(let message):
+            return message
+        case .cancelled:
+            return nil
         case .unknown(let msg):  return msg
         }
     }
