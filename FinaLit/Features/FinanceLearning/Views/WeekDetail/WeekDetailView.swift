@@ -17,7 +17,7 @@ struct WeekDetailView: View {
 
     var body: some View {
         ZStack {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+            AppTheme.background.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 24) {
@@ -25,13 +25,13 @@ struct WeekDetailView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("WEEK \(week.weekNumber)")
                                 .font(.system(size: 11, weight: .semibold))
-                                .foregroundStyle(Color(hex: "6366F1"))
+                                .foregroundStyle(AppTheme.accent)
                             Text(week.title)
                                 .font(.system(size: 28, weight: .medium))
                                 .foregroundStyle(.white)
                             Text(week.description)
                                 .font(.system(size: 14))
-                                .foregroundStyle(Color(hex: "6B7280"))
+                                .foregroundStyle(AppTheme.textSecondary)
                         }
                         .padding(.horizontal, 20)
                         .padding(.top, 8)
@@ -48,7 +48,7 @@ struct WeekDetailView: View {
                         } else if learnVM.days(for: weekID).isEmpty {
                             Text("Days coming soon...")
                                 .font(.system(size: 14))
-                                .foregroundStyle(Color(hex: "4B5563"))
+                                .foregroundStyle(AppTheme.textSecondary)
                                 .padding(40)
                                 .frame(maxWidth: .infinity)
                         } else {

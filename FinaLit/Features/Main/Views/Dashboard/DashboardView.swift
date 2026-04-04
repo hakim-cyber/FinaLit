@@ -19,13 +19,13 @@ struct DashboardView: View {
 
     var body: some View {
         ZStack {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+            AppTheme.background.ignoresSafeArea()
 
             if mainVM.isLoadingHome {
                 MainLoadingView()
             } else {
                 ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 24) {
+                    VStack(alignment: .leading, spacing: AppTheme.Spacing.section) {
                         balanceHeroCard
                         statsRow
                         quickActions
@@ -34,8 +34,9 @@ struct DashboardView: View {
                         goalsPreview
                         recentTransactions
 
-                        Spacer(minLength: 100)
+                        Spacer(minLength: 24)
                     }
+                    .padding(.horizontal, AppTheme.Spacing.screen)
                     .padding(.top, 16)
                 }
                 .refreshable {
@@ -47,52 +48,41 @@ struct DashboardView: View {
                 VStack {
                     HStack(spacing: 8) {
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundStyle(Color(hex: "10B981"))
+                            .foregroundStyle(AppTheme.success)
                             .font(.system(size: 14))
                         Text(closeMonthSuccessMessage)
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundStyle(.white)
+                            .font(AppTheme.Typography.caption.weight(.semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
                             .multilineTextAlignment(.leading)
                     }
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 12)
+                    .appSurface(.tinted(.success), padding: 14, cornerRadius: AppTheme.CornerRadius.medium)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color(hex: "111118"))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color(hex: "10B981").opacity(0.35), lineWidth: 1)
-                    )
-                    .padding(.horizontal, 20)
+                    .padding(.horizontal, AppTheme.Spacing.screen)
                     .padding(.top, 8)
 
                     Spacer()
                 }
                 .transition(.move(edge: .top).combined(with: .opacity))
             }
-
-            VStack {
+        }
+        .safeAreaInset(edge: .bottom) {
+            HStack {
                 Spacer()
-                HStack {
-                    Spacer()
-                    Button {
-                        coordinator.push(.addTransaction, type: .sheet)
-                    } label: {
-                        ZStack {
-                            Circle()
-                                .fill(Color.accentColor)
-                                .frame(width: 50, height: 50)
-
-                            Image(systemName: "plus")
-                                .font(.system(size: 20, weight: .semibold))
-                                .foregroundStyle(.white)
-                        }
-                    }
-                    .glassEffectIfAvailable()
-                    .padding(.trailing, 24)
-                    .padding(.bottom, 16)
+                Button {
+                    coordinator.push(.addTransaction, type: .sheet)
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(AppTheme.inverseText)
+                        .frame(width: 56, height: 56)
+                        .background(AppTheme.accent, in: Circle())
                 }
+                .shadow(color: AppTheme.accent.opacity(0.18), radius: 10, y: 6)
             }
+            .padding(.horizontal, AppTheme.Spacing.screen)
+            .padding(.top, 8)
+            .padding(.bottom, 8)
+            .background(AppTheme.background.opacity(0.94))
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -106,7 +96,7 @@ struct DashboardView: View {
                         Image(systemName: "chevron.down")
                             .font(.caption.weight(.semibold))
                     }
-                    .foregroundStyle(Color.primary)
+                    .foregroundStyle(AppTheme.textPrimary)
                 }
                 .popover(isPresented: $showMonthPicker, arrowEdge: .top) {
                     monthPickerPopover
@@ -119,7 +109,7 @@ struct DashboardView: View {
                     coordinator.push(.settings, type: .fullScreenCover)
                 } label: {
                     Image(systemName: "gearshape")
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(AppTheme.textPrimary)
                 }
             }
         }
@@ -244,49 +234,35 @@ struct DashboardView: View {
     private var balanceHeroCard: some View {
         VStack(alignment: .leading, spacing: 20) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("CURRENT BALANCE")
-                    .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(Color(hex: "4B5563"))
+                Text("Current balance")
+                    .font(AppTheme.Typography.heroLabel)
+                    .foregroundStyle(AppTheme.textSecondary)
 
                 if let summary = mainVM.summary {
-                    Text(formatCompactCurrency(summary.currentBalance))
-                        .font(.system(size: 42, weight: .medium))
-                        .foregroundStyle(summary.currentBalance >= 0 ? .white : Color(hex: "F87171"))
+                    Text(formatPrimaryCurrency(summary.currentBalance))
+                        .font(AppTheme.Typography.heroAmount)
+                        .foregroundStyle(summary.currentBalance >= 0 ? AppTheme.textPrimary : AppTheme.danger)
+                        .monospacedDigit()
                         .lineLimit(1)
-                        .minimumScaleFactor(0.35)
+                        .minimumScaleFactor(0.62)
                         .allowsTightening(true)
                 } else {
                     Text("\(AppRegion.currencySymbol) —")
-                        .font(.system(size: 42, weight: .medium))
-                        .foregroundStyle(Color(hex: "374151"))
+                        .font(AppTheme.Typography.heroAmount)
+                        .foregroundStyle(AppTheme.textSecondary)
                 }
             }
 
             if let summary = mainVM.summary {
-                HStack(spacing: 6) {
-                    Image(systemName: summary.financialStability.icon)
-                        .font(.system(size: 11))
-                    Text(summary.financialStability.rawValue)
-                        .font(.system(size: 11))
-                }
-                .foregroundStyle(Color(hex: summary.financialStability.color))
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(Color(hex: summary.financialStability.color).opacity(0.12))
-                .clipShape(Capsule())
+                AppToneBadge(
+                    title: summary.financialStability.rawValue,
+                    systemImage: summary.financialStability.icon,
+                    tone: summary.financialStability.tone
+                )
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(22)
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(hex: "111118"))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color(hex: "1F2937"), lineWidth: 1)
-                )
-        )
-        .padding(.horizontal, 20)
+        .appSurface(.elevated, padding: 22, cornerRadius: AppTheme.CornerRadius.hero)
     }
 
     private var statsRow: some View {
@@ -295,37 +271,33 @@ struct DashboardView: View {
                 label: "Income",
                 value: mainVM.summary.map { formatCurrency($0.monthlyIncome) } ?? "—",
                 icon: "arrow.up.circle.fill",
-                color: "10B981"
+                tone: .success
             )
             StatMiniCard(
                 label: "Expenses",
                 value: mainVM.summary.map { formatCurrency($0.monthlyExpenses) } ?? "—",
                 icon: "arrow.down.circle.fill",
-                color: "F87171"
+                tone: .danger
             )
             StatMiniCard(
                 label: "Savings",
                 value: mainVM.summary.map { "\(formatAmount($0.savingsRate))%" } ?? "—",
                 icon: "chart.line.uptrend.xyaxis",
-                color: mainVM.summary.map { $0.savingsRate >= 20 ? "10B981" : "FACC15" } ?? "6B7280"
+                tone: mainVM.summary.map { $0.savingsRate >= 20 ? .success : .warning } ?? .slate
             )
         }
-        .padding(.horizontal, 20)
     }
 
     private var quickActions: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("ACTIONS")
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(Color(hex: "4B5563"))
-                .padding(.horizontal, 20)
+            AppSectionHeader(title: "Actions")
 
             HStack(spacing: 10) {
                 QuickActionCard(
                     title: mainVM.activeDebtAccounts.isEmpty ? "Add Debt" : "Pay Debt",
                     subtitle: debtQuickActionSubtitle,
                     icon: "creditcard.fill",
-                    colorHex: "F97316",
+                    tone: .orange,
                     isDisabled: mainVM.isSubmitting
                 ) {
                     if mainVM.activeDebtAccounts.isEmpty {
@@ -339,7 +311,7 @@ struct DashboardView: View {
                     title: "Add to Goal",
                     subtitle: mainVM.activeGoals.isEmpty ? "Create first goal" : "Contribute now",
                     icon: "target",
-                    colorHex: "10B981",
+                    tone: .accent,
                     isDisabled: mainVM.isSubmitting
                 ) {
                     if mainVM.activeGoals.isEmpty {
@@ -353,13 +325,12 @@ struct DashboardView: View {
                     title: "Close Month",
                     subtitle: mainVM.selectedMonthDisplay,
                     icon: "calendar.badge.checkmark",
-                    colorHex: "6366F1",
+                    tone: .blue,
                     isDisabled: mainVM.isSubmitting
                 ) {
                     showCloseMonthDialog = true
                 }
             }
-            .padding(.horizontal, 20)
         }
     }
 
@@ -367,18 +338,9 @@ struct DashboardView: View {
         Group {
             if !mainVM.insights.isEmpty {
                 VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        Text("INSIGHTS")
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(Color(hex: "4B5563"))
-                        Spacer()
-                        Button("See all →") {
-                            coordinator.push(.insights)
-                        }
-                        .font(.system(size: 11))
-                        .foregroundStyle(Color(hex: "6366F1"))
+                    AppSectionHeader(title: "Insights", actionTitle: "See all") {
+                        coordinator.push(.insights)
                     }
-                    .padding(.horizontal, 20)
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 10) {
@@ -386,7 +348,6 @@ struct DashboardView: View {
                                 InsightChip(insight: insight)
                             }
                         }
-                        .padding(.horizontal, 20)
                     }
                 }
             }
@@ -397,38 +358,32 @@ struct DashboardView: View {
         Group {
             if let summary = mainVM.summary, !summary.byCategory.isEmpty {
                 VStack(alignment: .leading, spacing: 14) {
-                    HStack {
-                        Text("THIS MONTH")
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(Color(hex: "4B5563"))
-                        Spacer()
-                        Button("Budget →") {
-                            coordinator.push(.budget)
-                        }
-                        .font(.system(size: 11))
-                        .foregroundStyle(Color(hex: "6366F1"))
+                    AppSectionHeader(title: "This month", actionTitle: "Budget") {
+                        coordinator.push(.budget)
                     }
-                    .padding(.horizontal, 20)
 
-                    VStack(spacing: 8) {
-                        ForEach(summary.topCategories, id: \.0) { category, amount in
+                    VStack(spacing: 0) {
+                        ForEach(Array(summary.topCategories.enumerated()), id: \.element.0) { index, entry in
                             CategoryRow(
-                                category: category,
-                                amount: amount,
+                                category: entry.0,
+                                amount: entry.1,
                                 total: summary.monthlyExpenses,
-                                limit: mainVM.budgetLimit(for: category)
+                                limit: mainVM.budgetLimit(for: entry.0)
                             )
+                            if index < summary.topCategories.count - 1 {
+                                Divider()
+                                    .overlay(AppTheme.separator)
+                            }
                         }
                     }
-                    .padding(.horizontal, 20)
+                    .appSurface(.primary, padding: 14, cornerRadius: AppTheme.CornerRadius.large)
 
                     if summary.byCategory.count > 3 {
-                        Button("View all categories →") {
+                        Button("View all categories") {
                             coordinator.push(.budget)
                         }
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color(hex: "4B5563"))
-                        .padding(.horizontal, 20)
+                        .font(AppTheme.Typography.caption)
+                        .foregroundStyle(AppTheme.textSecondary)
                     }
                 }
             }
@@ -437,28 +392,17 @@ struct DashboardView: View {
 
     private var goalsPreview: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("GOALS")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(Color(hex: "4B5563"))
-                Spacer()
-                Button(mainVM.activeGoals.isEmpty ? "New goal →" : "See all →") {
-                    coordinator.push(mainVM.activeGoals.isEmpty ? .addGoal : .goals)
-                }
-                .font(.system(size: 11))
-                .foregroundStyle(Color(hex: "6366F1"))
+            AppSectionHeader(title: "Goals", actionTitle: mainVM.activeGoals.isEmpty ? "New goal" : "See all") {
+                coordinator.push(mainVM.activeGoals.isEmpty ? .addGoal : .goals)
             }
-            .padding(.horizontal, 20)
 
             if mainVM.activeGoals.isEmpty {
                 EmptyGoalsPreviewCard {
                     coordinator.push(.addGoal)
                 }
-                .padding(.horizontal, 20)
             } else {
                 ForEach(mainVM.activeGoals.prefix(2)) { goal in
                     GoalPreviewCard(goal: goal)
-                        .padding(.horizontal, 20)
                         .onTapGesture {
                             coordinator.push(.goalDetail(goal.id ?? ""))
                         }
@@ -469,34 +413,27 @@ struct DashboardView: View {
 
     private var recentTransactions: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("RECENT")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(Color(hex: "4B5563"))
-                Spacer()
-                Button("All transactions →") {
-                    coordinator.push(.transactions)
-                }
-                .font(.system(size: 11))
-                .foregroundStyle(Color(hex: "6366F1"))
+            AppSectionHeader(title: "Recent transactions", actionTitle: "All transactions") {
+                coordinator.push(.transactions)
             }
-            .padding(.horizontal, 20)
 
             if mainVM.currentMonthTransactions.isEmpty {
                 EmptyTransactionsCard()
-                    .padding(.horizontal, 20)
             } else {
-                VStack(spacing: 1) {
-                    ForEach(mainVM.currentMonthTransactions.prefix(5)) { transaction in
+                VStack(spacing: 0) {
+                    ForEach(Array(mainVM.currentMonthTransactions.prefix(5).enumerated()), id: \.offset) { index, transaction in
                         TransactionRow(transaction: transaction)
                             .onTapGesture {
                                 coordinator.push(.transactionDetail(transaction.id ?? ""))
                             }
+                        if index < min(mainVM.currentMonthTransactions.count, 5) - 1 {
+                            Divider()
+                                .overlay(AppTheme.separator)
+                                .padding(.leading, 62)
+                        }
                     }
                 }
-                .background(Color(hex: "111118"))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-                .padding(.horizontal, 20)
+                .appSurface(.primary, padding: 0, cornerRadius: AppTheme.CornerRadius.large)
             }
         }
     }

@@ -682,7 +682,7 @@ final class MainViewModel {
                 title:   "You're overspending",
                 message: "Your expenses (\(formatCurrency(s.monthlyExpenses))) exceed your income (\(formatCurrency(s.monthlyIncome))) this month.",
                 icon:    "exclamationmark.triangle.fill",
-                color:   "F87171"
+                tone:    .danger
             ))
         }
 
@@ -692,7 +692,7 @@ final class MainViewModel {
                 title:   "Low emergency fund",
                 message: "Your savings cover less than 1 month of expenses. Aim for at least 3 months.",
                 icon:    "exclamationmark.shield.fill",
-                color:   "F87171"
+                tone:    .danger
             ))
         }
 
@@ -703,7 +703,7 @@ final class MainViewModel {
                 title:   "Low savings rate",
                 message: "You're saving \(formatted(s.savingsRate))% of your income. The recommended minimum is 20%.",
                 icon:    "arrow.down.circle.fill",
-                color:   "FACC15"
+                tone:    .warning
             ))
         }
 
@@ -713,7 +713,7 @@ final class MainViewModel {
                 title:   "High food spending",
                 message: "Food is \(formatted(s.percentage(for: .food)))% of your expenses this month — above the 35% threshold.",
                 icon:    "fork.knife",
-                color:   "FACC15"
+                tone:    .warning
             ))
         }
 
@@ -723,7 +723,7 @@ final class MainViewModel {
                 title:   "High discretionary spending",
                 message: "Entertainment and shopping account for \(formatted(s.discretionaryRatio * 100))% of your income.",
                 icon:    "bag.fill",
-                color:   "FACC15"
+                tone:    .warning
             ))
         }
 
@@ -733,7 +733,7 @@ final class MainViewModel {
                 title:   "Expenses increased",
                 message: "Your spending is up \(formatted(growth))% compared to last month.",
                 icon:    "arrow.up.right.circle.fill",
-                color:   "FB923C"
+                tone:    .orange
             ))
         }
 
@@ -746,7 +746,7 @@ final class MainViewModel {
                     title:   "\(limit.category.rawValue) budget exceeded",
                     message: "You spent \(formatCurrency(spent)) — \(formatCurrency(spent - limit.limit)) over your \(formatCurrency(limit.limit)) budget.",
                     icon:    limit.category.icon,
-                    color:   "FB923C"
+                    tone:    .orange
                 ))
             }
         }
@@ -758,7 +758,7 @@ final class MainViewModel {
                 title:   "Great savings rate",
                 message: "You're saving \(formatted(s.savingsRate))% of your income — above the recommended 20%. Keep it up.",
                 icon:    "star.fill",
-                color:   "10B981"
+                tone:    .success
             ))
         }
 
@@ -768,7 +768,7 @@ final class MainViewModel {
                 title:   "Solid emergency fund",
                 message: "Your savings cover more than 3 months of expenses. You're financially stable.",
                 icon:    "shield.fill",
-                color:   "10B981"
+                tone:    .success
             ))
         }
 
@@ -778,7 +778,7 @@ final class MainViewModel {
                 title:   "Spending decreased",
                 message: "Your expenses dropped \(formatted(abs(growth)))% from last month. Good discipline.",
                 icon:    "arrow.down.right.circle.fill",
-                color:   "10B981"
+                tone:    .success
             ))
         }
 
@@ -789,7 +789,7 @@ final class MainViewModel {
                 title:   "No income logged",
                 message: "Add your income transactions to get accurate savings rate and insights.",
                 icon:    "plus.circle.fill",
-                color:   "6366F1"
+                tone:    .info
             ))
         }
 
@@ -799,7 +799,7 @@ final class MainViewModel {
                 title:   "Start tracking",
                 message: "Add your first transaction to see your financial picture.",
                 icon:    "plus.circle.fill",
-                color:   "6366F1"
+                tone:    .info
             ))
         }
 

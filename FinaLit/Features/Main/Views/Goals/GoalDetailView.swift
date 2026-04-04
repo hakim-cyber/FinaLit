@@ -23,39 +23,32 @@ struct GoalDetailView: View {
 
     var body: some View {
         ZStack {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+            AppTheme.background.ignoresSafeArea()
 
             if let goal {
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 24) {
                         GoalCard(goal: goal)
-                            .padding(.horizontal, 20)
+                            .padding(.horizontal, AppTheme.Spacing.screen)
                             .padding(.top, 8)
 
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("ADD CONTRIBUTION")
-                                .font(.system(size: 10, weight: .semibold))
-                                .foregroundStyle(Color(hex: "4B5563"))
-                                .padding(.horizontal, 20)
+                            Text("Add contribution")
+                                .appFieldLabelStyle()
+                                .padding(.horizontal, AppTheme.Spacing.screen)
 
                             HStack(spacing: 12) {
                                 HStack(spacing: 4) {
                                     Text(AppRegion.currencySymbol)
-                                        .font(.system(size: 16))
-                                        .foregroundStyle(Color(hex: "4B5563"))
+                                        .font(AppTheme.Typography.body)
+                                        .foregroundStyle(AppTheme.textSecondary)
                                     TextField("Contribution", text: $newAmount)
-                                        .font(.system(size: 16))
-                                        .foregroundStyle(.white)
+                                        .font(AppTheme.Typography.body)
+                                        .foregroundStyle(AppTheme.textPrimary)
                                         .keyboardType(.decimalPad)
-                                        .tint(Color(hex: "6366F1"))
+                                        .tint(AppTheme.accent)
                                 }
-                                .padding(14)
-                                .background(Color(hex: "111118"))
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .stroke(Color(hex: "1F2937"), lineWidth: 1)
-                                )
+                                .appSurface(.primary, padding: 14, cornerRadius: AppTheme.CornerRadius.medium)
 
                                 Button("Add") {
                                     if let amount = parsedContributionAmount {
@@ -65,27 +58,23 @@ struct GoalDetailView: View {
                                         }
                                     }
                                 }
-                                .font(.system(size: 14))
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 20)
-                                .padding(.vertical, 14)
-                                .background(Color(hex: "6366F1"))
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                .buttonStyle(AppFilledButtonStyle(tone: .accent, compact: true, fillsWidth: false))
                                 .disabled((parsedContributionAmount ?? 0) <= 0)
                             }
-                            .padding(.horizontal, 20)
+                            .padding(.horizontal, AppTheme.Spacing.screen)
                         }
 
                         let remaining = goal.targetAmount - goal.currentAmount
                         if remaining > 0 {
                             HStack {
                                 Text("Still needed:")
-                                    .font(.system(size: 13))
-                                    .foregroundStyle(Color(hex: "4B5563"))
+                                    .font(AppTheme.Typography.caption)
+                                    .foregroundStyle(AppTheme.textSecondary)
                                 Spacer()
                                 Text(formatCurrency(remaining))
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundStyle(Color(hex: "6366F1"))
+                                    .font(.system(size: 17, weight: .semibold, design: .rounded))
+                                    .foregroundStyle(AppTheme.accent)
+                                    .monospacedDigit()
                             }
                             .padding(.horizontal, 32)
                         }
@@ -97,14 +86,14 @@ struct GoalDetailView: View {
                                 Image(systemName: "trash")
                                 Text("Delete Goal")
                             }
-                            .font(.system(size: 14))
-                            .foregroundStyle(Color(hex: "F87171"))
+                            .font(AppTheme.Typography.bodySemibold)
+                            .foregroundStyle(AppTheme.danger)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 14)
-                            .background(Color(hex: "F87171").opacity(0.08))
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .background(AppTheme.softFill(for: .danger))
+                            .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium))
                         }
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, AppTheme.Spacing.screen)
                         .padding(.bottom, 40)
                     }
                 }

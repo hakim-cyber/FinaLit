@@ -51,11 +51,11 @@ struct TransactionsView: View {
 
     var body: some View {
         ZStack {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+            AppTheme.background.ignoresSafeArea()
 
             VStack(spacing: 0) {
                 transactionsSummaryHeader
-                    .padding(.horizontal, 20)
+                    .padding(.horizontal, AppTheme.Spacing.screen)
                     .padding(.bottom, 16)
 
                 filterBar
@@ -63,50 +63,51 @@ struct TransactionsView: View {
 
                 HStack(spacing: 10) {
                     Image(systemName: "magnifyingglass")
-                        .foregroundStyle(Color(hex: "4B5563"))
+                        .foregroundStyle(AppTheme.textSecondary)
                         .font(.system(size: 14))
                     TextField("Search transactions...", text: $searchText)
-                        .font(.system(size: 14))
-                        .foregroundStyle(.white)
-                        .tint(Color(hex: "6366F1"))
+                        .font(AppTheme.Typography.body)
+                        .foregroundStyle(AppTheme.textPrimary)
+                        .tint(AppTheme.accent)
                 }
-                .padding(12)
-                .background(Color(hex: "111118"))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .padding(.horizontal, 20)
+                .appSurface(.primary, padding: 12, cornerRadius: AppTheme.CornerRadius.medium)
+                .padding(.horizontal, AppTheme.Spacing.screen)
                 .padding(.bottom, 16)
 
                 if filtered.isEmpty {
                     Spacer()
                     Text(searchText.isEmpty ? "No transactions" : "No results")
-                        .font(.system(size: 16))
-                        .foregroundStyle(Color(hex: "374151"))
+                        .font(AppTheme.Typography.body)
+                        .foregroundStyle(AppTheme.textSecondary)
                     Spacer()
                 } else {
                     ScrollView(showsIndicators: false) {
                         VStack(alignment: .leading, spacing: 20) {
                             ForEach(grouped) { group in
                                 VStack(alignment: .leading, spacing: 8) {
-                                    Text(group.label.uppercased())
-                                        .font(.system(size: 10, weight: .semibold))
-                                        .foregroundStyle(Color(hex: "4B5563"))
-                                        .padding(.horizontal, 20)
+                                    Text(group.label)
+                                        .font(AppTheme.Typography.formLabel)
+                                        .foregroundStyle(AppTheme.textSecondary)
 
-                                    VStack(spacing: 1) {
-                                        ForEach(group.transactions) { transaction in
+                                    VStack(spacing: 0) {
+                                        ForEach(Array(group.transactions.enumerated()), id: \.offset) { index, transaction in
                                             TransactionRow(transaction: transaction)
                                                 .onTapGesture {
                                                     coordinator.push(.transactionDetail(transaction.id ?? ""))
                                                 }
+                                            if index < group.transactions.count - 1 {
+                                                Divider()
+                                                    .overlay(AppTheme.separator)
+                                                    .padding(.leading, 62)
+                                            }
                                         }
                                     }
-                                    .background(Color(hex: "111118"))
-                                    .clipShape(RoundedRectangle(cornerRadius: 14))
-                                    .padding(.horizontal, 20)
+                                    .appSurface(.primary, padding: 0, cornerRadius: AppTheme.CornerRadius.large)
                                 }
                             }
                             Spacer(minLength: 40)
                         }
+                        .padding(.horizontal, AppTheme.Spacing.screen)
                         .padding(.top, 4)
                     }
                 }
@@ -121,56 +122,55 @@ struct TransactionsView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 6) {
                 Image(systemName: "calendar")
-                    .font(.system(size: 10))
-                Text(mainVM.selectedMonthDisplay.uppercased())
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(.system(size: 11, weight: .semibold))
+                Text(mainVM.selectedMonthDisplay)
+                    .font(AppTheme.Typography.badge)
             }
-            .foregroundStyle(Color(hex: "6B7280"))
+            .foregroundStyle(AppTheme.textSecondary)
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .background(Color(hex: "0A0A0F"))
+            .background(AppTheme.surfaceSecondary)
             .clipShape(Capsule())
 
             HStack(spacing: 0) {
                 VStack(spacing: 2) {
                     Text(formatCurrency(mainVM.currentMonthIncome.reduce(0) { $0 + $1.amount }))
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(Color(hex: "10B981"))
+                        .font(.system(size: 17, weight: .semibold, design: .rounded))
+                        .foregroundStyle(AppTheme.success)
+                        .monospacedDigit()
                     Text("Income")
-                        .font(.system(size: 10))
-                        .foregroundStyle(Color(hex: "4B5563"))
+                        .font(AppTheme.Typography.detail)
+                        .foregroundStyle(AppTheme.textSecondary)
                 }
                 .frame(maxWidth: .infinity)
 
-                Divider().frame(height: 28).background(Color(hex: "1F2937"))
+                Divider().frame(height: 28).background(AppTheme.separator)
 
                 VStack(spacing: 2) {
                     Text(formatCurrency(mainVM.currentMonthExpenses.reduce(0) { $0 + $1.amount }))
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(Color(hex: "F87171"))
+                        .font(.system(size: 17, weight: .semibold, design: .rounded))
+                        .foregroundStyle(AppTheme.danger)
+                        .monospacedDigit()
                     Text("Expenses")
-                        .font(.system(size: 10))
-                        .foregroundStyle(Color(hex: "4B5563"))
+                        .font(AppTheme.Typography.detail)
+                        .foregroundStyle(AppTheme.textSecondary)
                 }
                 .frame(maxWidth: .infinity)
 
-                Divider().frame(height: 28).background(Color(hex: "1F2937"))
+                Divider().frame(height: 28).background(AppTheme.separator)
 
                 VStack(spacing: 2) {
                     Text("\(mainVM.currentMonthTransactions.count)")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .font(.system(size: 17, weight: .semibold, design: .rounded))
+                        .foregroundStyle(AppTheme.textPrimary)
                     Text("Total")
-                        .font(.system(size: 10))
-                        .foregroundStyle(Color(hex: "4B5563"))
+                        .font(AppTheme.Typography.detail)
+                        .foregroundStyle(AppTheme.textSecondary)
                 }
                 .frame(maxWidth: .infinity)
             }
         }
-        .padding(.vertical, 14)
-        .padding(.horizontal, 12)
-        .background(Color(hex: "111118"))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .appSurface(.primary, padding: 16, cornerRadius: AppTheme.CornerRadius.large)
     }
 
     private var filterBar: some View {
@@ -180,7 +180,7 @@ struct TransactionsView: View {
                 FilterPill(label: "Expense", isActive: filterType == .expense) { filterType = .expense }
                 FilterPill(label: "Income", isActive: filterType == .income) { filterType = .income }
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, AppTheme.Spacing.screen)
         }
     }
 }

@@ -22,12 +22,12 @@ struct OnboardingDebtEntryCard: View {
                     Button(action: onDelete) {
                         Image(systemName: "trash")
                             .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(Color(hex: "F87171"))
+                            .foregroundStyle(AppTheme.danger)
                             .frame(width: 40, height: 40)
-                            .background(Color(hex: "450A0A"), in: RoundedRectangle(cornerRadius: 10))
+                            .background(AppTheme.softFill(for: .danger), in: RoundedRectangle(cornerRadius: 10))
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color(hex: "7F1D1D"), lineWidth: 1)
+                                    .stroke(AppTheme.softBorder(for: .danger), lineWidth: 1)
                             )
                     }
                     .buttonStyle(.plain)
@@ -38,11 +38,6 @@ struct OnboardingDebtEntryCard: View {
                 .keyboardType(.decimalPad)
                 .onboardingInputStyle()
         }
-        .padding(12)
-        .background(OnboardingPalette.surface, in: RoundedRectangle(cornerRadius: 12))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(OnboardingPalette.border, lineWidth: 1)
-        )
+        .appSurface(.primary, padding: 12, cornerRadius: AppTheme.CornerRadius.medium)
     }
 }

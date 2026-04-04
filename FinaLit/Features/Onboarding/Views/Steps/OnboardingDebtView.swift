@@ -65,10 +65,10 @@ struct OnboardingDebtView: View {
                                 Text("Add another debt")
                             }
                             .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(Color(hex: "F87171"))
+                            .foregroundStyle(AppTheme.danger)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
-                            .background(Color(hex: "F87171").opacity(0.12))
+                            .background(AppTheme.softFill(for: .danger))
                             .clipShape(Capsule())
                         }
                         .buttonStyle(.plain)
@@ -79,14 +79,9 @@ struct OnboardingDebtView: View {
                             Spacer()
                             Text(currency(viewModel.totalDebtAmount))
                                 .font(.system(size: 13, weight: .semibold))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(AppTheme.textPrimary)
                         }
-                        .padding(12)
-                        .background(OnboardingPalette.background.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(OnboardingPalette.border, lineWidth: 1)
-                        )
+                        .appSurface(.primary, padding: 12, cornerRadius: AppTheme.CornerRadius.medium)
                     }
                 }
             }

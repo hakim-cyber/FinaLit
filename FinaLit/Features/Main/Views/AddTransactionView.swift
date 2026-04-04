@@ -16,79 +16,52 @@ struct AddTransactionView: View {
     @Environment(Coordinator<MainPages>.self) private var coordinator
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+        ZStack {
+            AppTheme.background.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 24) {
-
-                    // ── Type toggle ────────────────────────────────────────
                     typeToggle
                         .padding(.top, 8)
 
-                    // ── Amount ─────────────────────────────────────────────
                     amountInput
 
-                    // ── Category ───────────────────────────────────────────
                     categoryGrid
 
-                    // ── Note ───────────────────────────────────────────────
                     noteInput
 
-                    // ── Date ───────────────────────────────────────────────
                     dateInput
 
-                    // ── Recurring toggle ───────────────────────────────────
                     recurringToggle
 
-                    Spacer(minLength: 100)
+                    Spacer(minLength: 24)
                 }
-                .padding(.horizontal, 20)
+                .padding(.horizontal, AppTheme.Spacing.screen)
                 .padding(.top, 20)
             }
-
-            // ── Save button ────────────────────────────────────────────────
-            VStack(spacing: 0) {
-                LinearGradient(
-                    colors: [Color(hex: "0A0A0F").opacity(0), Color(hex: "0A0A0F")],
-                    startPoint: .top, endPoint: .bottom
-                )
-                .frame(height: 30)
-
-                Button {
-                    Task {
-                        let saved = await mainVM.addTransaction()
-                        if saved { coordinator.pop(.sheet) }
-                    }
-                } label: {
-                    HStack {
-                        Text("Save Transaction")
-                            .font(.system(size: 16))
-                        if mainVM.isSubmitting {
-                            ProgressView().tint(.white).scaleEffect(0.8)
-                        }
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 18)
-                    .background(
-                        mainVM.isFormValid
-                            ? LinearGradient(
-                                colors: [Color(hex: "6366F1"), Color(hex: "4F46E5")],
-                                startPoint: .leading, endPoint: .trailing
-                              )
-                            : LinearGradient(
-                                colors: [Color(hex: "1F2937"), Color(hex: "1F2937")],
-                                startPoint: .leading, endPoint: .trailing
-                              )
-                    )
-                    .foregroundStyle(mainVM.isFormValid ? .white : Color(hex: "374151"))
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
+        }
+        .safeAreaInset(edge: .bottom) {
+            Button {
+                Task {
+                    let saved = await mainVM.addTransaction()
+                    if saved { coordinator.pop(.sheet) }
                 }
-                .disabled(!mainVM.isFormValid || mainVM.isSubmitting)
-                .padding(.horizontal, 20)
-                .padding(.bottom, 32)
-                .background(Color(hex: "0A0A0F"))
+            } label: {
+                HStack(spacing: 10) {
+                    Text("Save Transaction")
+                    if mainVM.isSubmitting {
+                        ProgressView()
+                            .tint(AppTheme.inverseText)
+                            .scaleEffect(0.8)
+                    }
+                }
             }
+            .buttonStyle(AppFilledButtonStyle(tone: .accent))
+            .disabled(!mainVM.isFormValid || mainVM.isSubmitting)
+            .padding(.horizontal, AppTheme.Spacing.screen)
+            .padding(.top, 8)
+            .padding(.bottom, 8)
+            .background(AppTheme.background.opacity(0.94))
         }
         .onDisappear { mainVM.clearForm() }
         .onAppear { mainVM.prepareTransactionFormForSelectedMonth() }
@@ -118,21 +91,21 @@ struct AddTransactionView: View {
                     }
                 } label: {
                     Text(type == .expense ? "Expense" : "Income")
-                        .font(.system(size: 15))
-                        .foregroundStyle(mainVM.formType == type ? .white : Color(hex: "4B5563"))
+                        .font(AppTheme.Typography.bodySemibold)
+                        .foregroundStyle(mainVM.formType == type ? AppTheme.textPrimary : AppTheme.textSecondary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
                         .background(
                             mainVM.formType == type
-                                ? (type == .expense ? Color(hex: "F87171") : Color(hex: "10B981")).opacity(0.2)
-                                : Color.clear
+                                ? (type == .expense ? AppTheme.softFill(for: .danger) : AppTheme.softFill(for: .success))
+                                : AppTheme.surfacePrimary
                         )
                 }
             }
         }
-        .background(Color(hex: "111118"))
+        .background(AppTheme.surfacePrimary)
         .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(hex: "1F2937"), lineWidth: 1))
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(AppTheme.separator, lineWidth: 1))
     }
 
     // MARK: - Amount Input
@@ -140,32 +113,30 @@ struct AddTransactionView: View {
         @Bindable var mainVM = mainVM
 
         return VStack(alignment: .leading, spacing: 8) {
-            Text("AMOUNT")
-                .font(.system(size: 10, weight: .semibold))
-                .foregroundStyle(Color(hex: "4B5563"))
+            Text("Amount")
+                .appFieldLabelStyle()
 
             HStack(alignment: .center, spacing: 4) {
                 Text(AppRegion.currencySymbol)
-                    .font(.system(size: 36, weight: .medium))
-                    .foregroundStyle(Color(hex: "374151"))
+                    .font(.system(size: 32, weight: .semibold, design: .rounded))
+                    .foregroundStyle(AppTheme.textSecondary)
                 TextField("0", text: $mainVM.formAmount)
-                    .font(.system(size: 36, weight: .medium))
-                    .foregroundStyle(.white)
+                    .font(.system(size: 34, weight: .semibold, design: .rounded))
+                    .foregroundStyle(AppTheme.textPrimary)
                     .keyboardType(.decimalPad)
-                    .tint(Color(hex: "6366F1"))
+                    .tint(AppTheme.accent)
             }
             .padding(.vertical, 12)
 
-            Divider().background(Color(hex: "1F2937"))
+            Divider().background(AppTheme.separator)
         }
     }
 
     // MARK: - Category Grid
     private var categoryGrid: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("CATEGORY")
-                .font(.system(size: 10, weight: .semibold))
-                .foregroundStyle(Color(hex: "4B5563"))
+            Text("Category")
+                .appFieldLabelStyle()
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 4), spacing: 8) {
                 ForEach(mainVM.availableCategories) { category in
@@ -185,16 +156,10 @@ struct AddTransactionView: View {
         @Bindable var mainVM = mainVM
 
         return VStack(alignment: .leading, spacing: 8) {
-            Text("NOTE (OPTIONAL)")
-                .font(.system(size: 10, weight: .semibold))
-                .foregroundStyle(Color(hex: "4B5563"))
+            Text("Note (optional)")
+                .appFieldLabelStyle()
             TextField("What was this for?", text: $mainVM.formNote)
-                .font(.system(size: 15))
-                .foregroundStyle(.white)
-                .padding(14)
-                .background(Color(hex: "111118"))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(hex: "1F2937"), lineWidth: 1))
+                .appInputStyle()
         }
     }
 
@@ -203,13 +168,18 @@ struct AddTransactionView: View {
         @Bindable var mainVM = mainVM
 
         return VStack(alignment: .leading, spacing: 8) {
-            Text("DATE")
-                .font(.system(size: 10, weight: .semibold))
-                .foregroundStyle(Color(hex: "4B5563"))
+            Text("Date")
+                .appFieldLabelStyle()
             DatePicker("", selection: $mainVM.formDate, displayedComponents: .date)
                 .datePickerStyle(.compact)
-                .tint(Color(hex: "6366F1"))
-                .colorScheme(.dark)
+                .tint(AppTheme.accent)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(AppTheme.surfacePrimary, in: RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium, style: .continuous)
+                        .stroke(AppTheme.separator, lineWidth: 1)
+                )
         }
     }
 
@@ -219,16 +189,15 @@ struct AddTransactionView: View {
 
         return HStack {
             VStack(alignment: .leading, spacing: 3) {
-                Text("RECURRING MONTHLY")
-                    .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(Color(hex: "4B5563"))
+                Text("Recurring monthly")
+                    .appFieldLabelStyle()
                 Text("Mark rent, salary, subscriptions")
-                    .font(.system(size: 12))
-                    .foregroundStyle(Color(hex: "374151"))
+                    .font(AppTheme.Typography.caption)
+                    .foregroundStyle(AppTheme.textSecondary)
             }
             Spacer()
             Toggle("", isOn: $mainVM.formIsRecurring)
-                .tint(Color(hex: "6366F1"))
+                .tint(AppTheme.accent)
         }
     }
 }
@@ -244,23 +213,24 @@ struct CategoryChip: View {
             VStack(spacing: 6) {
                 Image(systemName: category.icon)
                     .font(.system(size: 16))
-                    .foregroundStyle(isSelected ? Color(hex: category.color) : Color(hex: "4B5563"))
+                    .foregroundStyle(isSelected ? AppTheme.tint(for: category.tone) : AppTheme.textSecondary)
                 Text(category.rawValue.components(separatedBy: " ").first ?? category.rawValue)
                     .font(.system(size: 9))
-                    .foregroundStyle(isSelected ? Color(hex: category.color) : Color(hex: "4B5563"))
+                    .foregroundStyle(isSelected ? AppTheme.tint(for: category.tone) : AppTheme.textSecondary)
                     .lineLimit(1)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
-            .background(isSelected ? Color(hex: category.color).opacity(0.12) : Color(hex: "111118"))
+            .background(isSelected ? AppTheme.softFill(for: category.tone) : AppTheme.surfacePrimary)
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(
-                        isSelected ? Color(hex: category.color).opacity(0.5) : Color(hex: "1F2937"),
+                        isSelected ? AppTheme.softBorder(for: category.tone) : AppTheme.separator,
                         lineWidth: 1
                     )
             )
         }
+        .buttonStyle(.plain)
     }
 }

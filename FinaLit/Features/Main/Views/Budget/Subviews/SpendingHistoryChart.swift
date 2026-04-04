@@ -21,13 +21,7 @@ struct SpendingHistoryChart: View {
                             VStack(spacing: 0) {
                                 Spacer()
                                 RoundedRectangle(cornerRadius: 4)
-                                    .fill(
-                                        LinearGradient(
-                                            colors: [Color(hex: "6366F1"), Color(hex: "8B5CF6")],
-                                            startPoint: .top,
-                                            endPoint: .bottom
-                                        )
-                                    )
+                                    .fill(AppTheme.chartPrimary)
                                     .frame(
                                         height: maxExpense > 0
                                             ? geometry.size.height * CGFloat(snapshot.totalExpenses / maxExpense)
@@ -36,8 +30,8 @@ struct SpendingHistoryChart: View {
                             }
                         }
                         Text(String(snapshot.month.suffix(2)))
-                            .font(.system(size: 9))
-                            .foregroundStyle(Color(hex: "4B5563"))
+                            .font(AppTheme.Typography.detail)
+                            .foregroundStyle(AppTheme.textSecondary)
                     }
                 }
             }
@@ -48,15 +42,9 @@ struct SpendingHistoryChart: View {
                 Spacer()
                 Text(formatCurrency(maxExpense))
             }
-            .font(.system(size: 9))
-            .foregroundStyle(Color(hex: "374151"))
+            .font(AppTheme.Typography.detail)
+            .foregroundStyle(AppTheme.textSecondary)
         }
-        .padding(16)
-        .background(Color(hex: "111118"))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(Color(hex: "1F2937"), lineWidth: 1)
-        )
+        .appSurface(.primary, padding: 16, cornerRadius: AppTheme.CornerRadius.large)
     }
 }

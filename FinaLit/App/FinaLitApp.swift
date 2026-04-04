@@ -26,6 +26,7 @@ struct FinaLitApp: App {
 
     init() {
         FirebaseApp.configure()
+        AppTheme.configureAppearance()
         let authService = AuthService()
         let dbService = DatabaseService()
         let session = UserSession()
@@ -64,7 +65,6 @@ struct FinaLitApp: App {
                 .task {
                     await restoreSession()
                 }
-                .preferredColorScheme(.dark)
         }
         .modelContainer(for: [ChatThreadEntity.self, ChatMessageEntity.self])
     }

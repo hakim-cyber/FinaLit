@@ -17,7 +17,7 @@ struct LessonDetailView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+            AppTheme.background.ignoresSafeArea()
 
             if learnVM.isLoadingLesson {
                 LearnLoadingView()
@@ -41,7 +41,7 @@ struct LessonDetailView: View {
 
                 VStack(spacing: 0) {
                     LinearGradient(
-                        colors: [Color(hex: "0A0A0F").opacity(0), Color(hex: "0A0A0F")],
+                        colors: [AppTheme.background.opacity(0), AppTheme.background],
                         startPoint: .top,
                         endPoint: .bottom
                     )
@@ -63,7 +63,7 @@ struct LessonDetailView: View {
                         .padding(.vertical, 18)
                         .background(
                             LinearGradient(
-                                colors: [Color(hex: "6366F1"), Color(hex: "4F46E5")],
+                                colors: [AppTheme.accent, AppTheme.accent],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
@@ -73,7 +73,7 @@ struct LessonDetailView: View {
                     }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 32)
-                    .background(Color(hex: "0A0A0F"))
+                    .background(AppTheme.background)
                     .disabled(learnVM.isSubmitting)
                 }
             }
@@ -239,16 +239,16 @@ struct LessonDetailView: View {
             HStack(spacing: 12) {
                 Label(lesson.category, systemImage: "tag")
                     .font(.system(size: 12))
-                    .foregroundStyle(Color(hex: "4B5563"))
+                    .foregroundStyle(AppTheme.textSecondary)
                 Text("·")
-                    .foregroundStyle(Color(hex: "374151"))
+                    .foregroundStyle(AppTheme.textTertiary)
                 Label("Day \(lesson.dayNumber)", systemImage: "calendar")
                     .font(.system(size: 12))
-                    .foregroundStyle(Color(hex: "4B5563"))
+                    .foregroundStyle(AppTheme.textSecondary)
             }
 
             Divider()
-                .background(Color(hex: "1F2937"))
+                .background(AppTheme.separator)
                 .padding(.top, 4)
         }
         .padding(.horizontal, 20)
@@ -258,9 +258,9 @@ struct LessonDetailView: View {
 
     private func difficultyColor(_ level: DifficultyLevel) -> Color {
         switch level {
-        case .beginner:     return Color(hex: "10B981")
-        case .intermediate: return Color(hex: "FACC15")
-        case .advanced:     return Color(hex: "F87171")
+        case .beginner:     return AppTheme.success
+        case .intermediate: return AppTheme.warning
+        case .advanced:     return AppTheme.danger
         }
     }
 
@@ -324,7 +324,7 @@ private struct LessonRenderNodeView: View {
                 number: formattedSectionNumber,
                 title: node.title.isEmpty ? "Today's Action" : node.title,
                 content: node.text,
-                accent: "10B981",
+                accent: .success,
                 style: .action
             )
         case .caseStudy:
@@ -332,7 +332,7 @@ private struct LessonRenderNodeView: View {
                 number: formattedSectionNumber,
                 title: node.title.isEmpty ? "Case Study" : node.title,
                 content: node.text,
-                accent: "FACC15",
+                accent: .warning,
                 style: .caseStudy
             )
         case .callout:
@@ -340,7 +340,7 @@ private struct LessonRenderNodeView: View {
                 number: formattedSectionNumber,
                 title: node.title.isEmpty ? "Callout" : node.title,
                 content: node.text,
-                accent: "06B6D4",
+                accent: .info,
                 style: .callout
             )
         case .quote:
@@ -361,8 +361,8 @@ private struct LessonRenderNodeView: View {
         return String(format: "%02d", sectionNumber)
     }
 
-    private var standardSectionAccent: String {
-        let palette = ["6366F1", "8B5CF6", "06B6D4", "FACC15", "10B981"]
+    private var standardSectionAccent: AppTone {
+        let palette: [AppTone] = [.accent, .blue, .info, .warning, .success]
         let index = max((node.sectionNumber ?? 1) - 1, 0) % palette.count
         return palette[index]
     }
@@ -388,7 +388,7 @@ private struct LessonParagraphBlock: View {
     var body: some View {
         Text(text)
             .font(.system(size: 16))
-            .foregroundStyle(Color(hex: "D1D5DB"))
+            .foregroundStyle(AppTheme.textPrimary)
             .lineSpacing(7)
             .padding(.horizontal, 20)
             .padding(.vertical, 10)
@@ -405,10 +405,10 @@ private struct LessonListBlock: View {
                 HStack(alignment: .top, spacing: 10) {
                     Text(ordered ? "\(index + 1)." : "•")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Color(hex: "6366F1"))
+                        .foregroundStyle(AppTheme.accent)
                     Text(item)
                         .font(.system(size: 16))
-                        .foregroundStyle(Color(hex: "D1D5DB"))
+                        .foregroundStyle(AppTheme.textPrimary)
                         .lineSpacing(6)
                 }
             }
@@ -424,15 +424,15 @@ private struct LessonQuoteBlock: View {
     var body: some View {
         Text(text)
             .font(.system(size: 16))
-            .foregroundStyle(Color(hex: "E5E7EB"))
+            .foregroundStyle(AppTheme.textPrimary)
             .lineSpacing(6)
             .italic()
             .padding(16)
-            .background(Color(hex: "111118"))
+            .background(AppTheme.surfacePrimary)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color(hex: "1F2937"), lineWidth: 1)
+                    .stroke(AppTheme.separator, lineWidth: 1)
             )
             .padding(.horizontal, 20)
             .padding(.vertical, 10)
@@ -450,7 +450,7 @@ private struct LessonSection: View {
     let number: String
     let title: String
     let content: String
-    let accent: String
+    let accent: AppTone
     var style: LessonSectionStyle = .standard
 
     var body: some View {
@@ -458,14 +458,14 @@ private struct LessonSection: View {
             HStack(spacing: 10) {
                 Text(number)
                     .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(Color(hex: accent))
+                    .foregroundStyle(AppTheme.tint(for: accent))
                 Rectangle()
-                    .fill(Color(hex: accent).opacity(0.4))
+                    .fill(AppTheme.tint(for: accent).opacity(0.4))
                     .frame(height: 1)
                     .frame(maxWidth: .infinity)
                 Text(title.uppercased())
                     .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(Color(hex: "4B5563"))
+                    .foregroundStyle(AppTheme.textSecondary)
             }
 
             sectionContent
@@ -474,7 +474,7 @@ private struct LessonSection: View {
         .padding(.vertical, 20)
 
         Divider()
-            .background(Color(hex: "111118"))
+            .background(AppTheme.surfacePrimary)
             .padding(.horizontal, 20)
     }
 
@@ -485,48 +485,48 @@ private struct LessonSection: View {
             HStack(alignment: .top, spacing: 12) {
                 Text("→")
                     .font(.system(size: 16))
-                    .foregroundStyle(Color(hex: accent))
+                    .foregroundStyle(AppTheme.tint(for: accent))
                 Text(content)
                     .font(.system(size: 15))
-                    .foregroundStyle(Color(hex: "D1FAE5"))
+                    .foregroundStyle(AppTheme.textPrimary)
                     .lineSpacing(5)
             }
             .padding(16)
-            .background(Color(hex: "10B981").opacity(0.07))
+            .background(AppTheme.success.opacity(0.07))
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color(hex: "10B981").opacity(0.2), lineWidth: 1)
+                    .stroke(AppTheme.success.opacity(0.2), lineWidth: 1)
             )
         case .caseStudy:
             Text(content)
                 .font(.system(size: 15))
-                .foregroundStyle(Color(hex: "FEF3C7"))
+                .foregroundStyle(AppTheme.textPrimary)
                 .lineSpacing(5)
                 .italic()
                 .padding(16)
-                .background(Color(hex: "FACC15").opacity(0.07))
+                .background(AppTheme.warning.opacity(0.07))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color(hex: "FACC15").opacity(0.2), lineWidth: 1)
+                        .stroke(AppTheme.warning.opacity(0.2), lineWidth: 1)
                 )
         case .callout:
             Text(content)
                 .font(.system(size: 15))
-                .foregroundStyle(Color(hex: "CFFAFE"))
+                .foregroundStyle(AppTheme.textPrimary)
                 .lineSpacing(5)
                 .padding(16)
-                .background(Color(hex: "06B6D4").opacity(0.08))
+                .background(AppTheme.info.opacity(0.08))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color(hex: "06B6D4").opacity(0.2), lineWidth: 1)
+                        .stroke(AppTheme.info.opacity(0.2), lineWidth: 1)
                 )
         case .standard:
             Text(content)
                 .font(.system(size: 16))
-                .foregroundStyle(Color(hex: "D1D5DB"))
+                .foregroundStyle(AppTheme.textPrimary)
                 .lineSpacing(6)
         }
     }

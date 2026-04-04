@@ -13,15 +13,15 @@ struct ReflectionPrompt: View {
         HStack(alignment: .top, spacing: 12) {
             Text(number)
                 .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(Color(hex: "6366F1"))
+                .foregroundStyle(AppTheme.accent)
                 .padding(.top, 2)
             Text(text)
                 .font(.system(size: 14))
-                .foregroundStyle(Color(hex: "9CA3AF"))
+                .foregroundStyle(AppTheme.textSecondary)
                 .lineSpacing(3)
         }
         .padding(14)
-        .background(Color(hex: "111118"))
+        .background(AppTheme.surfacePrimary)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }

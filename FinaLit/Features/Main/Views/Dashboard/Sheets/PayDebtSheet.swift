@@ -47,46 +47,39 @@ struct PayDebtSheet: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(hex: "0A0A0F").ignoresSafeArea()
+                AppTheme.background.ignoresSafeArea()
 
                 VStack(alignment: .leading, spacing: 16) {
                     debtAccountSection
 
                     if mainVM.activeDebtAccounts.isEmpty {
                         Text("Create a debt account first to record a payment.")
-                            .font(.system(size: 13))
-                            .foregroundStyle(Color(hex: "6B7280"))
+                            .font(AppTheme.Typography.caption)
+                            .foregroundStyle(AppTheme.textSecondary)
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("AMOUNT")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(Color(hex: "4B5563"))
+                        Text("Amount")
+                            .appFieldLabelStyle()
                         TextField("0", text: $amount)
-                            .font(.system(size: 28, weight: .medium))
-                            .foregroundStyle(.white)
+                            .font(.system(size: 28, weight: .semibold, design: .rounded))
+                            .foregroundStyle(AppTheme.textPrimary)
                             .keyboardType(.decimalPad)
-                            .tint(Color(hex: "6366F1"))
+                            .tint(AppTheme.accent)
                             .padding(.vertical, 6)
-                        Divider().background(Color(hex: "1F2937"))
+                        Divider().background(AppTheme.separator)
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("NOTE (OPTIONAL)")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(Color(hex: "4B5563"))
+                        Text("Note (optional)")
+                            .appFieldLabelStyle()
                         TextField("Debt payment", text: $note)
-                            .font(.system(size: 14))
-                            .foregroundStyle(.white)
-                            .padding(12)
-                            .background(Color(hex: "111118"))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "1F2937"), lineWidth: 1))
+                            .appInputStyle()
                     }
 
                     Spacer(minLength: 4)
                 }
-                .padding(20)
+                .padding(AppTheme.Spacing.screen)
             }
             .navigationTitle("Pay Debt")
             .navigationBarTitleDisplayMode(.inline)
@@ -110,9 +103,8 @@ struct PayDebtSheet: View {
 
     private var debtAccountSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("ACCOUNT")
-                .font(.system(size: 10, weight: .semibold))
-                .foregroundStyle(Color(hex: "4B5563"))
+            Text("Account")
+                .appFieldLabelStyle()
 
             HStack(spacing: 10) {
                 Button {
@@ -122,28 +114,21 @@ struct PayDebtSheet: View {
                     HStack(spacing: 12) {
                         VStack(alignment: .leading, spacing: 3) {
                             Text(selectedAccount?.name ?? "No debt account selected")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundStyle(.white)
+                                .font(AppTheme.Typography.bodySemibold)
+                                .foregroundStyle(AppTheme.textPrimary)
                             Text(selectedAccount.map { formatCurrency($0.currentBalance) } ?? "Tap + to create a debt account")
-                                .font(.system(size: 12))
-                                .foregroundStyle(Color(hex: "6B7280"))
+                                .font(AppTheme.Typography.caption)
+                                .foregroundStyle(AppTheme.textSecondary)
                         }
 
                         Spacer()
 
                         Image(systemName: "chevron.up.chevron.down")
                             .font(.system(size: 12, weight: .semibold))
-                            .foregroundStyle(mainVM.activeDebtAccounts.isEmpty ? Color(hex: "374151") : Color(hex: "9CA3AF"))
+                            .foregroundStyle(mainVM.activeDebtAccounts.isEmpty ? AppTheme.textTertiary : AppTheme.textSecondary)
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 14)
+                    .appSurface(.primary, padding: 14, cornerRadius: AppTheme.CornerRadius.medium)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color(hex: "111118"))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color(hex: "1F2937"), lineWidth: 1)
-                    )
                 }
                 .buttonStyle(.plain)
                 .disabled(mainVM.activeDebtAccounts.isEmpty)
@@ -157,13 +142,13 @@ struct PayDebtSheet: View {
                 } label: {
                     Image(systemName: "plus")
                         .font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(AppTheme.tint(for: .orange))
                         .frame(width: 48, height: 48)
-                        .background(Color(hex: "F97316").opacity(0.2))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .background(AppTheme.softFill(for: .orange))
+                        .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium))
                         .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color(hex: "F97316").opacity(0.35), lineWidth: 1)
+                            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium)
+                                .stroke(AppTheme.softBorder(for: .orange), lineWidth: 1)
                         )
                 }
                 .buttonStyle(.plain)
@@ -175,8 +160,8 @@ struct PayDebtSheet: View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Select Debt Account")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .font(AppTheme.Typography.bodySemibold)
+                    .foregroundStyle(AppTheme.textPrimary)
 
                 ForEach(mainVM.activeDebtAccounts) { account in
                     Button {
@@ -186,11 +171,11 @@ struct PayDebtSheet: View {
                         HStack(spacing: 12) {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(account.name)
-                                    .font(.system(size: 14, weight: .medium))
-                                    .foregroundStyle(.white)
+                                    .font(AppTheme.Typography.bodySemibold)
+                                    .foregroundStyle(AppTheme.textPrimary)
                                 Text(formatCurrency(account.currentBalance))
-                                    .font(.system(size: 12))
-                                    .foregroundStyle(Color(hex: "6B7280"))
+                                    .font(AppTheme.Typography.caption)
+                                    .foregroundStyle(AppTheme.textSecondary)
                             }
 
                             Spacer()
@@ -198,21 +183,11 @@ struct PayDebtSheet: View {
                             if account.id == selectedAccount?.id {
                                 Image(systemName: "checkmark")
                                     .font(.system(size: 13, weight: .semibold))
-                                    .foregroundStyle(Color(hex: "F97316"))
+                                    .foregroundStyle(AppTheme.tint(for: .orange))
                             }
                         }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 14)
+                        .appSurface(account.id == selectedAccount?.id ? .tinted(.orange) : .primary, padding: 14, cornerRadius: AppTheme.CornerRadius.medium)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color(hex: account.id == selectedAccount?.id ? "171724" : "111118"))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(
-                                    Color(hex: account.id == selectedAccount?.id ? "F97316" : "1F2937").opacity(account.id == selectedAccount?.id ? 0.35 : 1),
-                                    lineWidth: 1
-                                )
-                        )
                     }
                     .buttonStyle(.plain)
                 }
@@ -220,6 +195,6 @@ struct PayDebtSheet: View {
             .padding(16)
         }
         .frame(width: 320)
-        .background(Color(hex: "0A0A0F"))
+        .background(AppTheme.background)
     }
 }

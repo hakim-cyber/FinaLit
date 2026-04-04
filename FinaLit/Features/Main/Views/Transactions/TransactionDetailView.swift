@@ -18,7 +18,7 @@ struct TransactionDetailView: View {
 
     var body: some View {
         ZStack {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+            AppTheme.background.ignoresSafeArea()
 
             if let transaction {
                 ScrollView(showsIndicators: false) {
@@ -26,20 +26,21 @@ struct TransactionDetailView: View {
                         VStack(spacing: 12) {
                             ZStack {
                                 Circle()
-                                    .fill(Color(hex: transaction.category.color).opacity(0.12))
+                                    .fill(AppTheme.softFill(for: transaction.category.tone))
                                     .frame(width: 64, height: 64)
                                 Image(systemName: transaction.category.icon)
                                     .font(.system(size: 24))
-                                    .foregroundStyle(Color(hex: transaction.category.color))
+                                    .foregroundStyle(AppTheme.tint(for: transaction.category.tone))
                             }
 
                             Text(formatSignedCurrency(amount: transaction.amount, isIncome: transaction.isIncome))
-                                .font(.system(size: 40, weight: .medium))
-                                .foregroundStyle(transaction.isIncome ? Color(hex: "10B981") : .white)
+                                .font(.system(size: 34, weight: .semibold, design: .rounded))
+                                .foregroundStyle(transaction.isIncome ? AppTheme.success : AppTheme.textPrimary)
+                                .monospacedDigit()
 
                             Text(transaction.type == .income ? "Income" : "Expense")
-                                .font(.system(size: 12))
-                                .foregroundStyle(Color(hex: "4B5563"))
+                                .font(AppTheme.Typography.caption)
+                                .foregroundStyle(AppTheme.textSecondary)
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.top, 20)
@@ -52,9 +53,8 @@ struct TransactionDetailView: View {
                             }
                             DetailRow(label: "Recurring", value: transaction.isRecurring ? "Yes" : "No")
                         }
-                        .background(Color(hex: "111118"))
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
-                        .padding(.horizontal, 20)
+                        .appSurface(.primary, padding: 0, cornerRadius: AppTheme.CornerRadius.large)
+                        .padding(.horizontal, AppTheme.Spacing.screen)
 
                         Button {
                             showDeleteAlert = true
@@ -63,20 +63,20 @@ struct TransactionDetailView: View {
                                 Image(systemName: "trash")
                                 Text("Delete Transaction")
                             }
-                            .font(.system(size: 15))
-                            .foregroundStyle(Color(hex: "F87171"))
+                            .font(AppTheme.Typography.bodySemibold)
+                            .foregroundStyle(AppTheme.danger)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
-                            .background(Color(hex: "F87171").opacity(0.08))
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .background(AppTheme.softFill(for: .danger))
+                            .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium))
                         }
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, AppTheme.Spacing.screen)
                     }
                 }
             } else {
                 Text("Transaction not found")
-                    .font(.system(size: 16))
-                    .foregroundStyle(Color(hex: "4B5563"))
+                    .font(AppTheme.Typography.body)
+                    .foregroundStyle(AppTheme.textSecondary)
             }
         }
         .navigationTitle("Transaction")

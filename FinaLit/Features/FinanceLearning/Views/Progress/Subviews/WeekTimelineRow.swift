@@ -13,7 +13,7 @@ struct WeekTimelineRow: View {
         HStack(spacing: 14) {
             ZStack {
                 Circle()
-                    .fill(weekProgress.isCompleted ? Color(hex: "10B981") : Color(hex: "1F2937"))
+                    .fill(weekProgress.isCompleted ? AppTheme.success : AppTheme.separator)
                     .frame(width: 10, height: 10)
             }
             .frame(width: 24)
@@ -21,19 +21,19 @@ struct WeekTimelineRow: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text(weekTitle)
                     .font(.system(size: 15))
-                    .foregroundStyle(weekProgress.isCompleted ? .white : Color(hex: "4B5563"))
+                    .foregroundStyle(weekProgress.isCompleted ? .white : AppTheme.textSecondary)
                 if let date = weekProgress.completedAt {
                     Text(date.formatted(date: .abbreviated, time: .omitted))
                         .font(.system(size: 11))
-                        .foregroundStyle(Color(hex: "6B7280"))
+                        .foregroundStyle(AppTheme.textSecondary)
                 } else if weekProgress.isUnlocked {
                     Text("In progress")
                         .font(.system(size: 11))
-                        .foregroundStyle(Color(hex: "6366F1"))
+                        .foregroundStyle(AppTheme.accent)
                 } else {
                     Text("Locked")
                         .font(.system(size: 11))
-                        .foregroundStyle(Color(hex: "374151"))
+                        .foregroundStyle(AppTheme.textTertiary)
                 }
             }
 
@@ -41,11 +41,11 @@ struct WeekTimelineRow: View {
 
             if weekProgress.isCompleted {
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(Color(hex: "10B981"))
+                    .foregroundStyle(AppTheme.success)
                     .font(.system(size: 16))
             } else if weekProgress.isUnlocked {
                 Image(systemName: "circle.dotted")
-                    .foregroundStyle(Color(hex: "6366F1"))
+                    .foregroundStyle(AppTheme.accent)
                     .font(.system(size: 16))
             }
         }

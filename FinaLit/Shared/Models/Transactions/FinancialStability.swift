@@ -10,11 +10,11 @@ enum FinancialStability: String {
     case moderate = "Moderate"
     case risky = "Risky"
 
-    var color: String {
+    var tone: AppTone {
         switch self {
-        case .stable: return "10B981"
-        case .moderate: return "FACC15"
-        case .risky: return "F87171"
+        case .stable: return .success
+        case .moderate: return .warning
+        case .risky: return .danger
         }
     }
 

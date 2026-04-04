@@ -51,9 +51,8 @@ struct AddGoalView: View {
 
     private var templatesSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("TEMPLATES")
-                .font(.system(size: 10, weight: .semibold))
-                .foregroundStyle(Color(hex: "4B5563"))
+            Text("Templates")
+                .appFieldLabelStyle()
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
@@ -63,26 +62,27 @@ struct AddGoalView: View {
                         } label: {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(template.title)
-                                    .font(.system(size: 12, weight: .semibold))
-                                    .foregroundStyle(.white)
+                                    .font(AppTheme.Typography.bodySemibold)
+                                    .foregroundStyle(AppTheme.textPrimary)
                                     .lineLimit(1)
                                 Text("\(formatCurrency(template.targetAmount)) - \(template.hint)")
-                                    .font(.system(size: 10))
-                                    .foregroundStyle(Color(hex: "6B7280"))
+                                    .font(AppTheme.Typography.detail)
+                                    .foregroundStyle(AppTheme.textSecondary)
                             }
                             .frame(width: 165, alignment: .leading)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 10)
-                            .background(Color(hex: "111118"))
+                            .background(AppTheme.surfacePrimary)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12)
                                     .stroke(
-                                        selectedTemplateID == template.id ? Color(hex: "6366F1") : Color(hex: "1F2937"),
+                                        selectedTemplateID == template.id ? AppTheme.accent : AppTheme.separator,
                                         lineWidth: 1
                                     )
                             )
                         }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(.vertical, 1)
@@ -94,50 +94,40 @@ struct AddGoalView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(Color(hex: "10B981"))
+                    .foregroundStyle(AppTheme.success)
                 Text("Goal created")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .font(AppTheme.Typography.bodySemibold)
+                    .foregroundStyle(AppTheme.textPrimary)
             }
 
             Text("\"\(createdGoalTitle)\" is now active.")
-                .font(.system(size: 12))
-                .foregroundStyle(Color(hex: "9CA3AF"))
+                .font(AppTheme.Typography.caption)
+                .foregroundStyle(AppTheme.textSecondary)
 
             HStack(spacing: 10) {
                 Button {
                     openCreatedGoal()
                 } label: {
                     Text("View Goal")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(.white)
                         .padding(.horizontal, 14)
-                        .padding(.vertical, 10)
-                        .background(Color(hex: "6366F1"))
-                        .clipShape(Capsule())
                 }
+                .buttonStyle(AppFilledButtonStyle(tone: .accent, compact: true, fillsWidth: false))
 
                 Button {
                     coordinator.pop()
                 } label: {
                     Text("Done")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(Color(hex: "9CA3AF"))
                         .padding(.horizontal, 14)
                         .padding(.vertical, 10)
-                        .background(Color(hex: "1F2937"))
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .background(AppTheme.surfaceSecondary)
                         .clipShape(Capsule())
                 }
+                .buttonStyle(.plain)
             }
         }
-        .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(hex: "111118"))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(Color(hex: "1F2937"), lineWidth: 1)
-        )
+        .appSurface(.primary, padding: 14, cornerRadius: AppTheme.CornerRadius.large)
     }
 
     private func applyTemplate(_ template: GoalTemplatePreset) {
@@ -177,120 +167,91 @@ struct AddGoalView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+        ZStack {
+            AppTheme.background.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 24) {
                     templatesSection
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("GOAL NAME")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(Color(hex: "4B5563"))
+                        Text("Goal name")
+                            .appFieldLabelStyle()
                         TextField("e.g. Emergency Fund", text: $title)
-                            .font(.system(size: 18))
-                            .foregroundStyle(.white)
-                            .padding(16)
-                            .background(Color(hex: "111118"))
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color(hex: "1F2937"), lineWidth: 1)
-                            )
+                            .appInputStyle()
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("TARGET AMOUNT")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(Color(hex: "4B5563"))
+                        Text("Target amount")
+                            .appFieldLabelStyle()
                         HStack(spacing: 4) {
                             Text(AppRegion.currencySymbol)
-                                .font(.system(size: 32, weight: .medium))
-                                .foregroundStyle(Color(hex: "374151"))
+                                .font(.system(size: 30, weight: .semibold, design: .rounded))
+                                .foregroundStyle(AppTheme.textSecondary)
                             TextField("5,000", text: $targetAmount)
-                                .font(.system(size: 32, weight: .medium))
-                                .foregroundStyle(.white)
+                                .font(.system(size: 32, weight: .semibold, design: .rounded))
+                                .foregroundStyle(AppTheme.textPrimary)
                                 .keyboardType(.decimalPad)
-                                .tint(Color(hex: "6366F1"))
+                                .tint(AppTheme.accent)
                         }
-                        Divider().background(Color(hex: "1F2937"))
+                        Divider().background(AppTheme.separator)
                     }
 
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
-                            Text("SET DEADLINE")
-                                .font(.system(size: 10, weight: .semibold))
-                                .foregroundStyle(Color(hex: "4B5563"))
+                            Text("Set deadline")
+                                .appFieldLabelStyle()
                             Spacer()
                             Toggle("", isOn: $hasDeadline)
-                                .tint(Color(hex: "6366F1"))
+                                .tint(AppTheme.accent)
                         }
                         if hasDeadline {
                             DatePicker("", selection: $deadline, in: Date()..., displayedComponents: .date)
                                 .datePickerStyle(.compact)
-                                .tint(Color(hex: "6366F1"))
-                                .colorScheme(.dark)
+                                .tint(AppTheme.accent)
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 10)
+                                .background(AppTheme.surfacePrimary, in: RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium, style: .continuous))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium, style: .continuous)
+                                        .stroke(AppTheme.separator, lineWidth: 1)
+                                )
                                 .transition(.opacity.combined(with: .move(edge: .top)))
                         }
                     }
 
-                    Spacer(minLength: 160)
+                    Spacer(minLength: 80)
                 }
-                .padding(.horizontal, 20)
+                .padding(.horizontal, AppTheme.Spacing.screen)
                 .padding(.top, 20)
             }
 
             if showCreatedGoalToast {
                 goalCreatedToast
-                    .padding(.horizontal, 20)
+                    .padding(.horizontal, AppTheme.Spacing.screen)
                     .padding(.bottom, 120)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             }
-
-            VStack(spacing: 0) {
-                LinearGradient(
-                    colors: [Color(hex: "0A0A0F").opacity(0), Color(hex: "0A0A0F")],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .frame(height: 30)
-
-                Button {
-                    createGoal()
-                } label: {
-                    HStack {
-                        Text("Create Goal")
-                            .font(.system(size: 16))
-                        if mainVM.isSubmitting {
-                            ProgressView()
-                                .tint(.white)
-                                .scaleEffect(0.8)
-                        }
+        }
+        .safeAreaInset(edge: .bottom) {
+            Button {
+                createGoal()
+            } label: {
+                HStack(spacing: 10) {
+                    Text("Create Goal")
+                    if mainVM.isSubmitting {
+                        ProgressView()
+                            .tint(AppTheme.inverseText)
+                            .scaleEffect(0.8)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 18)
-                    .background(
-                        isValid
-                            ? LinearGradient(
-                                colors: [Color(hex: "6366F1"), Color(hex: "4F46E5")],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                            : LinearGradient(
-                                colors: [Color(hex: "1F2937"), Color(hex: "1F2937")],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                    )
-                    .foregroundStyle(isValid ? .white : Color(hex: "374151"))
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
-                .disabled(isCreateDisabled)
-                .padding(.horizontal, 20)
-                .padding(.bottom, 32)
-                .background(Color(hex: "0A0A0F"))
             }
+            .buttonStyle(AppFilledButtonStyle(tone: .accent))
+            .disabled(isCreateDisabled)
+            .padding(.horizontal, AppTheme.Spacing.screen)
+            .padding(.top, 8)
+            .padding(.bottom, 8)
+            .background(AppTheme.background.opacity(0.94))
         }
         .navigationTitle("New Goal")
         .navigationBarTitleDisplayMode(.inline)

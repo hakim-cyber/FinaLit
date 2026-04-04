@@ -22,8 +22,8 @@ struct AuthLegalLinksRow: View {
                 }
             }
             .font(.system(size: 11, weight: .semibold))
-            .foregroundStyle(Color(hex: "6B7280"))
-            .tint(Color(hex: "6B7280"))
+            .foregroundStyle(AppTheme.textSecondary)
+            .tint(AppTheme.textSecondary)
             .frame(maxWidth: .infinity)
             .padding(.top, 2)
         }

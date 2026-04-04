@@ -14,21 +14,21 @@ struct DailyTipCard: View {
             HStack {
                 Text("TODAY'S INSIGHT")
                     .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(Color(hex: "10B981"))
+                    .foregroundStyle(AppTheme.success)
                 Spacer()
                 Text(tip.category.uppercased())
                     .font(.system(size: 10))
-                    .foregroundStyle(Color(hex: "4B5563"))
+                    .foregroundStyle(AppTheme.textSecondary)
             }
 
             Text(tip.title)
                 .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(.white)
+                .foregroundStyle(AppTheme.textPrimary)
 
             if expanded {
                 Text(tip.body)
-                    .font(.system(size: 14))
-                    .foregroundStyle(Color(hex: "9CA3AF"))
+                    .font(AppTheme.Typography.body)
+                    .foregroundStyle(AppTheme.textSecondary)
                     .lineSpacing(4)
                     .transition(.opacity.combined(with: .move(edge: .top)))
             }
@@ -36,18 +36,10 @@ struct DailyTipCard: View {
             Button(expanded ? "Show less ↑" : "Read more ↓") {
                 withAnimation(.easeInOut(duration: 0.2)) { expanded.toggle() }
             }
-            .font(.system(size: 12))
-            .foregroundStyle(Color(hex: "10B981"))
+            .font(AppTheme.Typography.caption)
+            .foregroundStyle(AppTheme.success)
         }
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(hex: "0D1F17"))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color(hex: "10B981").opacity(0.3), lineWidth: 1)
-                )
-        )
+        .appSurface(.tinted(.success), padding: 20, cornerRadius: AppTheme.CornerRadius.large)
         .padding(.horizontal, 20)
     }
 }

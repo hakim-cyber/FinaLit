@@ -18,35 +18,35 @@ struct WeekRowCard: View {
                 Circle()
                     .fill(
                         isComplete
-                            ? Color(hex: "10B981")
+                            ? AppTheme.success
                             : isLocked
-                                ? Color(hex: "1F2937")
-                                : Color(hex: "6366F1").opacity(0.2)
+                                ? AppTheme.surfaceSecondary
+                                : AppTheme.softFill(for: .accent)
                     )
                     .frame(width: 44, height: 44)
 
                 if isComplete {
                     Image(systemName: "checkmark")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(AppTheme.inverseText)
                 } else if isLocked {
                     Image(systemName: "lock.fill")
                         .font(.system(size: 12))
-                        .foregroundStyle(Color(hex: "374151"))
+                        .foregroundStyle(AppTheme.textTertiary)
                 } else {
                     Text("\(week.weekNumber)")
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(Color(hex: "6366F1"))
+                        .foregroundStyle(AppTheme.accent)
                 }
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(week.title)
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(isLocked ? Color(hex: "374151") : .white)
+                    .foregroundStyle(isLocked ? AppTheme.textTertiary : AppTheme.textPrimary)
                 Text(week.description)
-                    .font(.system(size: 12))
-                    .foregroundStyle(Color(hex: "4B5563"))
+                    .font(AppTheme.Typography.caption)
+                    .foregroundStyle(AppTheme.textSecondary)
                     .lineLimit(1)
             }
 
@@ -55,19 +55,10 @@ struct WeekRowCard: View {
             if !isLocked {
                 Image(systemName: "chevron.right")
                     .font(.system(size: 12))
-                    .foregroundStyle(Color(hex: "374151"))
+                    .foregroundStyle(AppTheme.textTertiary)
             }
         }
-        .padding(16)
-        .background(Color(hex: "111118"))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(
-                    isComplete ? Color(hex: "10B981").opacity(0.3) : Color(hex: "1F2937"),
-                    lineWidth: 1
-                )
-        )
+        .appSurface(isComplete ? .tinted(.success) : .primary, padding: 16, cornerRadius: AppTheme.CornerRadius.large)
         .opacity(isLocked ? 0.5 : 1)
         .padding(.horizontal, 20)
     }

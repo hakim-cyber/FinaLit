@@ -11,7 +11,7 @@ struct LearnHomeView: View {
 
     var body: some View {
         ZStack {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+            AppTheme.background.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 28) {
@@ -27,10 +27,7 @@ struct LearnHomeView: View {
                         .onTapGesture { coordinator.push(.progress) }
 
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("YOUR CURRICULUM")
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(Color(hex: "4B5563"))
-                            .padding(.horizontal, 20)
+                        AppSectionHeader(title: "Your curriculum")
 
                         if let errorMessage = learnVM.errorMessage,
                            learnVM.publishedWeeks.isEmpty,
@@ -46,14 +43,14 @@ struct LearnHomeView: View {
                                     .font(.system(size: 48))
                                 Text("No lessons yet")
                                     .font(.system(size: 20))
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(AppTheme.textPrimary)
                                 Text("Check back soon — content is being added.")
-                                    .font(.system(size: 13))
-                                    .foregroundStyle(Color(hex: "4B5563"))
+                                    .font(AppTheme.Typography.caption)
+                                    .foregroundStyle(AppTheme.textSecondary)
                                     .multilineTextAlignment(.center)
                             }
                             .frame(maxWidth: .infinity)
-                            .padding(40)
+                            .appSurface(.primary, padding: 40, cornerRadius: AppTheme.CornerRadius.large)
                         } else {
                             ForEach(learnVM.publishedWeeks) { week in
                                 WeekRowCard(
@@ -88,7 +85,7 @@ struct LearnHomeView: View {
                     coordinator.push(.progress)
                 } label: {
                     Image(systemName: "flame.fill")
-                        .foregroundStyle(Color.orange)
+                        .foregroundStyle(AppTheme.warning)
                 }
             }
             if #available(iOS 26.0, *) {
@@ -100,7 +97,7 @@ struct LearnHomeView: View {
                 } label: {
                     Image(systemName: "gearshape")
                 }
-                .foregroundStyle(Color.primary)
+                .foregroundStyle(AppTheme.textPrimary)
             }
         }
         .task {

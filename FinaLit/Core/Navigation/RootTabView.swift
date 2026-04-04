@@ -52,7 +52,7 @@ struct RootTabView: View {
                     .tag(AppTab.admin)
             }
         }
-        .tint(.blue)
+        .tint(AppTheme.accent)
     }
 }
 

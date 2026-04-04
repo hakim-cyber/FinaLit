@@ -43,9 +43,9 @@ struct RegisterView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Create account")
                             .font(.system(size: 34, weight: .medium))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(AppTheme.textPrimary)
                         Text("Set up your profile to personalize your financial path.")
-                            .font(.system(size: 13))
+                            .font(AppTheme.Typography.caption)
                             .foregroundStyle(AuthPalette.muted)
                     }
 
@@ -55,23 +55,21 @@ struct RegisterView: View {
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("NAME")
-                                .font(.system(size: 10, weight: .semibold))
-                                .foregroundStyle(AuthPalette.muted)
+                            Text("Name")
+                                .appFieldLabelStyle()
                             TextField("John", text: $viewModel.name)
                                 .authInputStyle()
 
                             if viewModel.name.isEmpty == false && trimmedName.isEmpty {
                                 Text("Name cannot be only spaces.")
-                                    .font(.system(size: 11))
-                                    .foregroundStyle(Color(hex: "F87171"))
+                                    .font(AppTheme.Typography.detail)
+                                    .foregroundStyle(AppTheme.danger)
                             }
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("EMAIL")
-                                .font(.system(size: 10, weight: .semibold))
-                                .foregroundStyle(AuthPalette.muted)
+                            Text("Email")
+                                .appFieldLabelStyle()
                             TextField("name@email.com", text: $viewModel.email)
                                 .textInputAutocapitalization(.never)
                                 .keyboardType(.emailAddress)
@@ -80,15 +78,14 @@ struct RegisterView: View {
 
                             if !trimmedEmail.isEmpty && !isEmailValid {
                                 Text("Please enter a valid email address.")
-                                    .font(.system(size: 11))
-                                    .foregroundStyle(Color(hex: "F87171"))
+                                    .font(AppTheme.Typography.detail)
+                                    .foregroundStyle(AppTheme.danger)
                             }
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("PASSWORD")
-                                .font(.system(size: 10, weight: .semibold))
-                                .foregroundStyle(AuthPalette.muted)
+                            Text("Password")
+                                .appFieldLabelStyle()
                             SecureField("Minimum 8 characters", text: $viewModel.password)
                                 .textInputAutocapitalization(.never)
                                 .autocorrectionDisabled()
@@ -96,15 +93,14 @@ struct RegisterView: View {
 
                             if !viewModel.password.isEmpty && !isPasswordValid {
                                 Text("Password must be at least 8 characters.")
-                                    .font(.system(size: 11))
-                                    .foregroundStyle(Color(hex: "F87171"))
+                                    .font(AppTheme.Typography.detail)
+                                    .foregroundStyle(AppTheme.danger)
                             }
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("CONFIRM PASSWORD")
-                                .font(.system(size: 10, weight: .semibold))
-                                .foregroundStyle(AuthPalette.muted)
+                            Text("Confirm password")
+                                .appFieldLabelStyle()
                             SecureField("Re-enter password", text: $viewModel.confirmPassword)
                                 .textInputAutocapitalization(.never)
                                 .autocorrectionDisabled()
@@ -112,8 +108,8 @@ struct RegisterView: View {
 
                             if !viewModel.confirmPassword.isEmpty && !doPasswordsMatch {
                                 Text("Passwords do not match.")
-                                    .font(.system(size: 11))
-                                    .foregroundStyle(Color(hex: "F87171"))
+                                    .font(AppTheme.Typography.detail)
+                                    .foregroundStyle(AppTheme.danger)
                             }
                         }
 
@@ -126,25 +122,12 @@ struct RegisterView: View {
                                 if viewModel.isLoading {
                                     ProgressView()
                                         .progressViewStyle(.circular)
-                                        .tint(.white)
+                                        .tint(AppTheme.inverseText)
                                 }
                                 Text(viewModel.isLoading ? "Creating..." : "Create Account")
-                                    .font(.system(size: 15, weight: .semibold))
                             }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
-                            .foregroundStyle(canSubmit ? .white : AuthPalette.disabledText)
-                            .background(
-                                LinearGradient(
-                                    colors: canSubmit
-                                        ? [Color(hex: "6366F1"), Color(hex: "4F46E5")]
-                                        : [AuthPalette.border, AuthPalette.border],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                            .clipShape(RoundedRectangle(cornerRadius: 14))
                         }
+                        .buttonStyle(AppFilledButtonStyle(tone: .accent))
                         .disabled(!canSubmit)
 
                         Button("Already have an account? Log In") {
@@ -157,12 +140,7 @@ struct RegisterView: View {
 
                         AuthLegalLinksRow()
                     }
-                    .padding(20)
-                    .background(AuthPalette.surface, in: RoundedRectangle(cornerRadius: 16))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(AuthPalette.border, lineWidth: 1)
-                    )
+                    .appSurface(.primary, padding: 20, cornerRadius: AppTheme.CornerRadius.large)
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 24)
@@ -191,43 +169,30 @@ private struct AuthErrorBanner: View {
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(Color(hex: "F87171"))
+                .foregroundStyle(AppTheme.danger)
             Text(message)
-                .font(.system(size: 12))
-                .foregroundStyle(Color(hex: "FCA5A5"))
+                .font(AppTheme.Typography.caption)
+                .foregroundStyle(AppTheme.textPrimary)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(hex: "450A0A").opacity(0.45), in: RoundedRectangle(cornerRadius: 10))
-        .overlay(
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(Color(hex: "7F1D1D"), lineWidth: 1)
-        )
+        .appSurface(.tinted(.danger), padding: 12, cornerRadius: AppTheme.CornerRadius.medium)
     }
 }
 
 private enum AuthPalette {
-    static let background = Color(hex: "0A0A0F")
-    static let surface = Color(hex: "111118")
-    static let border = Color(hex: "1F2937")
-    static let muted = Color(hex: "6B7280")
-    static let accent = Color(hex: "6366F1")
-    static let disabledText = Color(hex: "4B5563")
+    static let background = AppTheme.background
+    static let surface = AppTheme.surfacePrimary
+    static let border = AppTheme.separator
+    static let muted = AppTheme.textSecondary
+    static let accent = AppTheme.accent
+    static let disabledText = AppTheme.textTertiary
 }
 
 private struct AuthInputFieldModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 15))
-            .foregroundStyle(.white)
-            .padding(.horizontal, 14)
-            .frame(height: 50)
-            .background(AuthPalette.background.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(AuthPalette.border, lineWidth: 1)
-            )
+            .appInputStyle()
     }
 }
 

@@ -26,7 +26,7 @@ struct ReflectionView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+            AppTheme.background.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 24) {
@@ -38,7 +38,7 @@ struct ReflectionView: View {
                             .foregroundStyle(.white)
                         Text(weekTitle)
                             .font(.system(size: 14))
-                            .foregroundStyle(Color(hex: "6366F1"))
+                            .foregroundStyle(AppTheme.accent)
                     }
 
                     VStack(spacing: 10) {
@@ -50,32 +50,32 @@ struct ReflectionView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("YOUR REFLECTION")
                             .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(Color(hex: "4B5563"))
+                            .foregroundStyle(AppTheme.textSecondary)
 
                         ZStack(alignment: .topLeading) {
                             if content.isEmpty {
                                 Text("Write your thoughts here... (min \(minLength) characters)")
                                     .font(.system(size: 15))
-                                    .foregroundStyle(Color(hex: "374151"))
+                                    .foregroundStyle(AppTheme.textTertiary)
                                     .padding(.top, 14)
                                     .padding(.leading, 16)
                                     .allowsHitTesting(false)
                             }
                             TextEditor(text: $content)
                                 .font(.system(size: 15))
-                                .foregroundStyle(Color(hex: "D1D5DB"))
+                                .foregroundStyle(AppTheme.textPrimary)
                                 .scrollContentBackground(.hidden)
                                 .background(Color.clear)
                                 .padding(12)
                                 .frame(minHeight: 180)
                                 .focused($isFocused)
                         }
-                        .background(Color(hex: "111118"))
+                        .background(AppTheme.surfacePrimary)
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                         .overlay(
                             RoundedRectangle(cornerRadius: 14)
                                 .stroke(
-                                    isFocused ? Color(hex: "6366F1").opacity(0.5) : Color(hex: "1F2937"),
+                                    isFocused ? AppTheme.accent.opacity(0.5) : AppTheme.separator,
                                     lineWidth: 1.5
                                 )
                         )
@@ -84,16 +84,16 @@ struct ReflectionView: View {
                             if !canSubmit && charCount > 0 {
                                 Text("\(minLength - charCount) more characters needed")
                                     .font(.system(size: 11))
-                                    .foregroundStyle(Color(hex: "F87171"))
+                                    .foregroundStyle(AppTheme.danger)
                             } else if canSubmit {
                                 Text("✓ Ready to submit")
                                     .font(.system(size: 11))
-                                    .foregroundStyle(Color(hex: "10B981"))
+                                    .foregroundStyle(AppTheme.success)
                             }
                             Spacer()
                             Text("\(charCount)")
                                 .font(.system(size: 11))
-                                .foregroundStyle(canSubmit ? Color(hex: "10B981") : Color(hex: "4B5563"))
+                                .foregroundStyle(canSubmit ? AppTheme.success : AppTheme.textSecondary)
                         }
                     }
 
@@ -105,7 +105,7 @@ struct ReflectionView: View {
 
             VStack(spacing: 0) {
                 LinearGradient(
-                    colors: [Color(hex: "0A0A0F").opacity(0), Color(hex: "0A0A0F")],
+                    colors: [AppTheme.background.opacity(0), AppTheme.background],
                     startPoint: .top,
                     endPoint: .bottom
                 )
@@ -138,22 +138,22 @@ struct ReflectionView: View {
                     .background(
                         canSubmit
                             ? LinearGradient(
-                                colors: [Color(hex: "10B981"), Color(hex: "059669")],
+                                colors: [AppTheme.success, AppTheme.success],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
                             : LinearGradient(
-                                colors: [Color(hex: "1F2937"), Color(hex: "1F2937")],
+                                colors: [AppTheme.separator, AppTheme.separator],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
                     )
-                    .foregroundStyle(canSubmit ? .white : Color(hex: "374151"))
+                    .foregroundStyle(canSubmit ? .white : AppTheme.textTertiary)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
                 .padding(.horizontal, 20)
                 .padding(.bottom, 32)
-                .background(Color(hex: "0A0A0F"))
+                .background(AppTheme.background)
                 .disabled(!canSubmit || learnVM.isSubmitting)
             }
         }

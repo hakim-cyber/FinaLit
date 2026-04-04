@@ -46,40 +46,39 @@ struct GoalContributionSheet: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(hex: "0A0A0F").ignoresSafeArea()
+                AppTheme.background.ignoresSafeArea()
 
                 VStack(alignment: .leading, spacing: 16) {
                     goalSection
 
                     if mainVM.activeGoals.isEmpty {
                         Text("Create a goal first to add a contribution.")
-                            .font(.system(size: 13))
-                            .foregroundStyle(Color(hex: "6B7280"))
+                            .font(AppTheme.Typography.caption)
+                            .foregroundStyle(AppTheme.textSecondary)
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("CONTRIBUTION")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(Color(hex: "4B5563"))
+                        Text("Contribution")
+                            .appFieldLabelStyle()
                         TextField("0", text: $amount)
-                            .font(.system(size: 28, weight: .medium))
-                            .foregroundStyle(.white)
+                            .font(.system(size: 28, weight: .semibold, design: .rounded))
+                            .foregroundStyle(AppTheme.textPrimary)
                             .keyboardType(.decimalPad)
-                            .tint(Color(hex: "6366F1"))
+                            .tint(AppTheme.accent)
                             .padding(.vertical, 6)
-                        Divider().background(Color(hex: "1F2937"))
+                        Divider().background(AppTheme.separator)
                     }
 
                     if let goal = selectedGoal {
                         let remaining = max(goal.targetAmount - goal.currentAmount, 0)
                         Text("Remaining: \(formatCurrency(remaining))")
-                            .font(.system(size: 11))
-                            .foregroundStyle(Color(hex: "6B7280"))
+                            .font(AppTheme.Typography.detail)
+                            .foregroundStyle(AppTheme.textSecondary)
                     }
 
                     Spacer(minLength: 4)
                 }
-                .padding(20)
+                .padding(AppTheme.Spacing.screen)
             }
             .navigationTitle("Add to Goal")
             .navigationBarTitleDisplayMode(.inline)
@@ -103,9 +102,8 @@ struct GoalContributionSheet: View {
 
     private var goalSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("GOAL")
-                .font(.system(size: 10, weight: .semibold))
-                .foregroundStyle(Color(hex: "4B5563"))
+            Text("Goal")
+                .appFieldLabelStyle()
 
             HStack(spacing: 10) {
                 Button {
@@ -115,28 +113,21 @@ struct GoalContributionSheet: View {
                     HStack(spacing: 12) {
                         VStack(alignment: .leading, spacing: 3) {
                             Text(selectedGoal?.title ?? "No goal selected")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundStyle(.white)
+                                .font(AppTheme.Typography.bodySemibold)
+                                .foregroundStyle(AppTheme.textPrimary)
                             Text(goalSubtitle)
-                                .font(.system(size: 12))
-                                .foregroundStyle(Color(hex: "6B7280"))
+                                .font(AppTheme.Typography.caption)
+                                .foregroundStyle(AppTheme.textSecondary)
                         }
 
                         Spacer()
 
                         Image(systemName: "chevron.up.chevron.down")
                             .font(.system(size: 12, weight: .semibold))
-                            .foregroundStyle(mainVM.activeGoals.isEmpty ? Color(hex: "374151") : Color(hex: "9CA3AF"))
+                            .foregroundStyle(mainVM.activeGoals.isEmpty ? AppTheme.textTertiary : AppTheme.textSecondary)
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 14)
+                    .appSurface(.primary, padding: 14, cornerRadius: AppTheme.CornerRadius.medium)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color(hex: "111118"))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color(hex: "1F2937"), lineWidth: 1)
-                    )
                 }
                 .buttonStyle(.plain)
                 .disabled(mainVM.activeGoals.isEmpty)
@@ -150,13 +141,13 @@ struct GoalContributionSheet: View {
                 } label: {
                     Image(systemName: "plus")
                         .font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(AppTheme.tint(for: .accent))
                         .frame(width: 48, height: 48)
-                        .background(Color(hex: "6366F1").opacity(0.2))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .background(AppTheme.softFill(for: .accent))
+                        .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium))
                         .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color(hex: "6366F1").opacity(0.35), lineWidth: 1)
+                            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium)
+                                .stroke(AppTheme.softBorder(for: .accent), lineWidth: 1)
                         )
                 }
                 .buttonStyle(.plain)
@@ -173,8 +164,8 @@ struct GoalContributionSheet: View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Select Goal")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .font(AppTheme.Typography.bodySemibold)
+                    .foregroundStyle(AppTheme.textPrimary)
 
                 ForEach(mainVM.activeGoals) { goal in
                     Button {
@@ -184,11 +175,11 @@ struct GoalContributionSheet: View {
                         HStack(spacing: 12) {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(goal.title)
-                                    .font(.system(size: 14, weight: .medium))
-                                    .foregroundStyle(.white)
+                                    .font(AppTheme.Typography.bodySemibold)
+                                    .foregroundStyle(AppTheme.textPrimary)
                                 Text("\(Int(goal.progressPercentage.rounded()))% funded • \(formatCurrency(max(goal.targetAmount - goal.currentAmount, 0))) left")
-                                    .font(.system(size: 12))
-                                    .foregroundStyle(Color(hex: "6B7280"))
+                                    .font(AppTheme.Typography.caption)
+                                    .foregroundStyle(AppTheme.textSecondary)
                             }
 
                             Spacer()
@@ -196,21 +187,11 @@ struct GoalContributionSheet: View {
                             if goal.id == selectedGoal?.id {
                                 Image(systemName: "checkmark")
                                     .font(.system(size: 13, weight: .semibold))
-                                    .foregroundStyle(Color(hex: "6366F1"))
+                                    .foregroundStyle(AppTheme.accent)
                             }
                         }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 14)
+                        .appSurface(goal.id == selectedGoal?.id ? .tinted(.accent) : .primary, padding: 14, cornerRadius: AppTheme.CornerRadius.medium)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color(hex: goal.id == selectedGoal?.id ? "171724" : "111118"))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(
-                                    Color(hex: goal.id == selectedGoal?.id ? "6366F1" : "1F2937").opacity(goal.id == selectedGoal?.id ? 0.35 : 1),
-                                    lineWidth: 1
-                                )
-                        )
                     }
                     .buttonStyle(.plain)
                 }
@@ -218,6 +199,6 @@ struct GoalContributionSheet: View {
             .padding(16)
         }
         .frame(width: 320)
-        .background(Color(hex: "0A0A0F"))
+        .background(AppTheme.background)
     }
 }

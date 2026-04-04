@@ -18,7 +18,7 @@ struct KnowledgeLevelCard: View {
                 HStack {
                     Text(title)
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(AppTheme.textPrimary)
                     Spacer()
                     if isSelected {
                         Image(systemName: "checkmark.circle.fill")
@@ -27,7 +27,7 @@ struct KnowledgeLevelCard: View {
                 }
 
                 Text(description)
-                    .font(.system(size: 11))
+                    .font(AppTheme.Typography.detail)
                     .foregroundStyle(OnboardingPalette.muted)
 
                 GeometryReader { geometry in
@@ -41,12 +41,7 @@ struct KnowledgeLevelCard: View {
                 }
                 .frame(height: 8)
             }
-            .padding(14)
-            .background(OnboardingPalette.surface, in: RoundedRectangle(cornerRadius: 12))
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? OnboardingPalette.accent : OnboardingPalette.border, lineWidth: 1)
-            )
+            .appSurface(isSelected ? .tinted(.accent) : .primary, padding: 14, cornerRadius: AppTheme.CornerRadius.medium)
         }
         .buttonStyle(.plain)
     }

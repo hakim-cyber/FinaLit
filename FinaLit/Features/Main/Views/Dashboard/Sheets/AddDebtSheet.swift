@@ -50,67 +50,52 @@ struct AddDebtSheet: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(hex: "0A0A0F").ignoresSafeArea()
+                AppTheme.background.ignoresSafeArea()
 
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("ACCOUNT NAME")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(Color(hex: "4B5563"))
+                        Text("Account name")
+                            .appFieldLabelStyle()
                         TextField("e.g. Credit Card", text: $accountName)
-                            .font(.system(size: 16))
-                            .foregroundStyle(.white)
-                            .padding(12)
-                            .background(Color(hex: "111118"))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "1F2937"), lineWidth: 1))
+                            .appInputStyle()
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("CURRENT BALANCE")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(Color(hex: "4B5563"))
+                        Text("Current balance")
+                            .appFieldLabelStyle()
                         TextField("0", text: $balance)
-                            .font(.system(size: 24, weight: .medium))
-                            .foregroundStyle(.white)
+                            .font(.system(size: 24, weight: .semibold, design: .rounded))
+                            .foregroundStyle(AppTheme.textPrimary)
                             .keyboardType(.decimalPad)
-                            .tint(Color(hex: "6366F1"))
+                            .tint(AppTheme.accent)
                             .padding(.vertical, 6)
-                        Divider().background(Color(hex: "1F2937"))
+                        Divider().background(AppTheme.separator)
                     }
 
                     HStack(spacing: 10) {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("APR % (OPTIONAL)")
-                                .font(.system(size: 10, weight: .semibold))
-                                .foregroundStyle(Color(hex: "4B5563"))
+                            Text("APR % (optional)")
+                                .appFieldLabelStyle()
                             TextField("e.g. 19.9", text: $annualInterestRate)
-                                .font(.system(size: 14))
-                                .foregroundStyle(.white)
+                                .font(AppTheme.Typography.body)
+                                .foregroundStyle(AppTheme.textPrimary)
                                 .keyboardType(.decimalPad)
-                                .padding(12)
-                                .background(Color(hex: "111118"))
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "1F2937"), lineWidth: 1))
+                                .appInputStyle()
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("MIN PAYMENT (OPTIONAL)")
-                                .font(.system(size: 10, weight: .semibold))
-                                .foregroundStyle(Color(hex: "4B5563"))
+                            Text("Min payment (optional)")
+                                .appFieldLabelStyle()
                             TextField("e.g. 50", text: $minimumPayment)
-                                .font(.system(size: 14))
-                                .foregroundStyle(.white)
+                                .font(AppTheme.Typography.body)
+                                .foregroundStyle(AppTheme.textPrimary)
                                 .keyboardType(.decimalPad)
-                                .padding(12)
-                                .background(Color(hex: "111118"))
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "1F2937"), lineWidth: 1))
+                                .appInputStyle()
                         }
                     }
                     Spacer(minLength: 4)
                 }
-                .padding(20)
+                .padding(AppTheme.Spacing.screen)
             }
             .navigationTitle("Add Debt Account")
             .navigationBarTitleDisplayMode(.inline)

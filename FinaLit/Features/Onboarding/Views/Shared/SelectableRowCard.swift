@@ -23,10 +23,10 @@ struct SelectableRowCard: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(AppTheme.textPrimary)
                     if !subtitle.isEmpty {
                         Text(subtitle)
-                            .font(.system(size: 11))
+                            .font(AppTheme.Typography.detail)
                             .minimumScaleFactor(0.6)
                             .foregroundStyle(OnboardingPalette.muted)
                     }
@@ -39,15 +39,7 @@ struct SelectableRowCard: View {
                         .foregroundStyle(accent)
                 }
             }
-            .padding(14)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(isSelected ? accent.opacity(0.1) : OnboardingPalette.surface)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? accent : OnboardingPalette.border, lineWidth: 1)
-            )
+            .appSurface(isSelected ? .tinted(.accent) : .primary, padding: 14, cornerRadius: AppTheme.CornerRadius.medium)
         }
         .buttonStyle(.plain)
     }

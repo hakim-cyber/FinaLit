@@ -26,10 +26,10 @@ struct ProfileSettingsFormScaffold<Content: View>: View {
                         VStack(alignment: .leading, spacing: 6) {
                             Text(title)
                                 .font(.system(size: 30, weight: .medium))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(AppTheme.textPrimary)
                                 .fixedSize(horizontal: false, vertical: true)
                             Text(subtitle)
-                                .font(.system(size: 13))
+                                .font(AppTheme.Typography.caption)
                                 .foregroundStyle(ProfileSettingsPalette.muted)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
@@ -49,33 +49,15 @@ struct ProfileSettingsFormScaffold<Content: View>: View {
                                 if isLoading {
                                     ProgressView()
                                         .progressViewStyle(.circular)
-                                        .tint(.white)
+                                        .tint(AppTheme.inverseText)
                                 }
                                 Text(primaryTitle)
-                                    .font(.system(size: 15, weight: .semibold))
                             }
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 52)
-                            .foregroundStyle((isPrimaryEnabled && !isLoading) ? .white : ProfileSettingsPalette.disabledText)
-                            .background(
-                                LinearGradient(
-                                    colors: (isPrimaryEnabled && !isLoading)
-                                        ? [Color(hex: "6366F1"), Color(hex: "4F46E5")]
-                                        : [ProfileSettingsPalette.border, ProfileSettingsPalette.border],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                            .clipShape(RoundedRectangle(cornerRadius: 14))
                         }
+                        .buttonStyle(AppFilledButtonStyle(tone: .accent))
                         .disabled(!isPrimaryEnabled || isLoading)
                     }
-                    .padding(22)
-                    .background(ProfileSettingsPalette.surface, in: RoundedRectangle(cornerRadius: 24))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 24)
-                            .stroke(ProfileSettingsPalette.border, lineWidth: 1)
-                    )
+                    .appSurface(.primary, padding: 22, cornerRadius: 24)
                     .frame(maxWidth: 680)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 24)

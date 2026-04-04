@@ -8,9 +8,9 @@ import SwiftUI
 struct MainLoadingView: View {
     var body: some View {
         ZStack {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+            AppTheme.background.ignoresSafeArea()
             ProgressView()
-                .tint(Color(hex: "6366F1"))
+                .tint(AppTheme.accent)
                 .scaleEffect(1.3)
         }
     }

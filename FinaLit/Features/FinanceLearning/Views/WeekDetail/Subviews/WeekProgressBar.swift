@@ -25,19 +25,19 @@ struct WeekProgressBar: View {
             HStack {
                 Text("\(completedCount) of \(totalNonReflection) days complete")
                     .font(.system(size: 12))
-                    .foregroundStyle(Color(hex: "6B7280"))
+                    .foregroundStyle(AppTheme.textSecondary)
                 Spacer()
             }
 
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(Color(hex: "1F2937"))
+                        .fill(AppTheme.separator)
                         .frame(height: 4)
                     RoundedRectangle(cornerRadius: 2)
                         .fill(
                             LinearGradient(
-                                colors: [Color(hex: "6366F1"), Color(hex: "10B981")],
+                                colors: [AppTheme.accent, AppTheme.success],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )

@@ -57,7 +57,7 @@ struct ChatView: View {
 
                 if let error = viewModel.errorMessage, !error.isEmpty {
                     Text(error)
-                        .font(.system(size: 11))
+                        .font(AppTheme.Typography.detail)
                         .foregroundStyle(ChatPalette.error)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 20)
@@ -73,14 +73,9 @@ struct ChatView: View {
 
             if viewModel.isLoading {
                 ProgressView()
-                    .tint(.white)
+                    .tint(AppTheme.inverseText)
                     .scaleEffect(1.2)
-                    .padding(20)
-                    .background(ChatPalette.surface, in: RoundedRectangle(cornerRadius: 12))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(ChatPalette.border, lineWidth: 1)
-                    )
+                    .appSurface(.primary, padding: 20, cornerRadius: AppTheme.CornerRadius.medium)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -133,21 +128,21 @@ struct ChatView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .top, spacing: 8) {
                 Text("NOTICE")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(AppTheme.Typography.badge)
                     .foregroundStyle(ChatPalette.warning)
 
                 Text("Educational guidance only. Not professional financial advice.")
-                    .font(.system(size: 11))
+                    .font(AppTheme.Typography.detail)
                     .foregroundStyle(ChatPalette.warningText)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
 
             Divider()
-                .overlay(ChatPalette.warningBorder.opacity(0.7))
+                .overlay(AppTheme.softBorder(for: .warning))
 
             HStack(spacing: 10) {
                 Text(viewModel.hasAIDataSharingConsent ? "AI data sharing: Enabled" : "AI data sharing: Off")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(AppTheme.Typography.badge)
                     .foregroundStyle(ChatPalette.warningText)
 
                 Spacer()
@@ -159,40 +154,28 @@ struct ChatView: View {
                         showConsentPrompt = true
                     }
                 }
-                .font(.system(size: 10, weight: .semibold))
+                .font(AppTheme.Typography.badge)
                 .foregroundStyle(ChatPalette.warning)
             }
         }
-        .padding(12)
-        .background(ChatPalette.warningBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(ChatPalette.warningBorder, lineWidth: 1)
-        )
+        .appSurface(.tinted(.warning), padding: 12, cornerRadius: AppTheme.CornerRadius.medium)
     }
 
     private var emptyState: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Start a financial question")
                 .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(.white)
+                .foregroundStyle(AppTheme.textPrimary)
 
             Text("Try: \"Can I afford a 900\(AppRegion.currencySymbol) laptop?\"")
-                .font(.system(size: 12))
+                .font(AppTheme.Typography.caption)
                 .foregroundStyle(ChatPalette.muted)
 
             Text("Or: \"How should I begin investing safely?\"")
-                .font(.system(size: 12))
+                .font(AppTheme.Typography.caption)
                 .foregroundStyle(ChatPalette.muted)
         }
-        .padding(16)
-        .background(ChatPalette.surface)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(ChatPalette.border, lineWidth: 1)
-        )
+        .appSurface(.primary, padding: 16, cornerRadius: AppTheme.CornerRadius.large)
     }
 
     private var composer: some View {
@@ -205,8 +188,8 @@ struct ChatView: View {
                 axis: .vertical
             )
             .lineLimit(1...4)
-            .font(.system(size: 14))
-            .foregroundStyle(.white)
+            .font(AppTheme.Typography.body)
+            .foregroundStyle(AppTheme.textPrimary)
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
             .background(ChatPalette.surface)
@@ -226,15 +209,9 @@ struct ChatView: View {
             } label: {
                 Image(systemName: "arrow.up")
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(AppTheme.inverseText)
                     .frame(width: 44, height: 44)
-                    .background(
-                        LinearGradient(
-                            colors: [ChatPalette.accent, ChatPalette.accentDark],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
+                    .background(ChatPalette.accent)
                     .clipShape(Circle())
             }
             .disabled(viewModel.isSending)
@@ -249,12 +226,12 @@ struct ChatView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 Text(isUser ? "YOU" : "ADVISOR")
-                    .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(isUser ? Color.white.opacity(0.85) : ChatPalette.accent)
+                    .font(AppTheme.Typography.badge)
+                    .foregroundStyle(isUser ? AppTheme.inverseText.opacity(0.9) : ChatPalette.accent)
 
                 Text(message.text)
-                    .font(.system(size: 15))
-                    .foregroundStyle(isUser ? .white : ChatPalette.messageText)
+                    .font(AppTheme.Typography.body)
+                    .foregroundStyle(isUser ? AppTheme.inverseText : ChatPalette.messageText)
                     .lineSpacing(4)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -278,7 +255,7 @@ struct ChatView: View {
       return  HStack {
             VStack(alignment: .leading, spacing: 8) {
                 Text("ADVISOR")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(AppTheme.Typography.badge)
                     .foregroundStyle(ChatPalette.accent)
 
                 Text(hasText ? (displayText ?? "") : "Thinking...")
@@ -301,13 +278,7 @@ struct ChatView: View {
 
     private func messageBackground(isUser: Bool) -> some ShapeStyle {
         if isUser {
-            return AnyShapeStyle(
-                LinearGradient(
-                    colors: [ChatPalette.accent, ChatPalette.accentDark],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
+            return AnyShapeStyle(ChatPalette.accent)
         }
 
         return AnyShapeStyle(ChatPalette.surface)
@@ -356,19 +327,16 @@ struct ChatView: View {
 }
 
 private enum ChatPalette {
-    static let background = Color(hex: "0A0A0F")
-    static let surface = Color(hex: "111118")
-    static let border = Color(hex: "1F2937")
-    static let muted = Color(hex: "6B7280")
+    static let background = AppTheme.background
+    static let surface = AppTheme.surfacePrimary
+    static let border = AppTheme.separator
+    static let muted = AppTheme.textSecondary
 
-    static let accent = Color(hex: "6366F1")
-    static let accentDark = Color(hex: "4F46E5")
+    static let accent = AppTheme.accent
 
-    static let warning = Color(hex: "F59E0B")
-    static let warningText = Color(hex: "FCD34D")
-    static let warningBackground = Color(hex: "3B1F0A").opacity(0.45)
-    static let warningBorder = Color(hex: "78350F")
+    static let warning = AppTheme.warning
+    static let warningText = AppTheme.textPrimary
 
-    static let error = Color(hex: "F87171")
-    static let messageText = Color(hex: "D1D5DB")
+    static let error = AppTheme.danger
+    static let messageText = AppTheme.textPrimary
 }

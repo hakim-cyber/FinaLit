@@ -30,7 +30,7 @@ struct DayRowCard: View {
                 HStack(spacing: 6) {
                     Text(day.isReflection ? "Reflection Day" : "Day \(day.dayNumber)")
                         .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(isLocked ? Color(hex: "374151") : .white)
+                        .foregroundStyle(isLocked ? AppTheme.textTertiary : .white)
                     if day.isReflection {
                         Text("📝")
                             .font(.caption)
@@ -45,7 +45,7 @@ struct DayRowCard: View {
                 } else if day.isReflection {
                     Text(isLocked ? "Complete all days first" : "Write your week reflection")
                         .font(.system(size: 11))
-                        .foregroundStyle(Color(hex: "4B5563"))
+                        .foregroundStyle(AppTheme.textSecondary)
                 }
 
                 if let score = progress?.quizScore,
@@ -53,7 +53,7 @@ struct DayRowCard: View {
                    quizDone {
                     Text("\(score)/\(total) correct")
                         .font(.system(size: 11))
-                        .foregroundStyle(progress?.isPassed == true ? Color(hex: "10B981") : Color(hex: "F87171"))
+                        .foregroundStyle(progress?.isPassed == true ? AppTheme.success : AppTheme.danger)
                 }
             }
 
@@ -62,11 +62,11 @@ struct DayRowCard: View {
             if !isLocked {
                 Image(systemName: "chevron.right")
                     .font(.system(size: 11))
-                    .foregroundStyle(Color(hex: "374151"))
+                    .foregroundStyle(AppTheme.textTertiary)
             }
         }
         .padding(14)
-        .background(Color(hex: "111118"))
+        .background(AppTheme.surfacePrimary)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .overlay(
             RoundedRectangle(cornerRadius: 14)
@@ -84,22 +84,22 @@ struct DayRowCard: View {
     }
 
     private var iconBackground: Color {
-        if isComplete { return Color(hex: "10B981").opacity(0.15) }
-        if lessonDone { return Color(hex: "FACC15").opacity(0.15) }
-        if isLocked { return Color(hex: "1F2937") }
-        return Color(hex: "6366F1").opacity(0.15)
+        if isComplete { return AppTheme.success.opacity(0.15) }
+        if lessonDone { return AppTheme.warning.opacity(0.15) }
+        if isLocked { return AppTheme.separator }
+        return AppTheme.accent.opacity(0.15)
     }
 
     private var iconColor: Color {
-        if isComplete { return Color(hex: "10B981") }
-        if lessonDone { return Color(hex: "FACC15") }
-        if isLocked { return Color(hex: "374151") }
-        return Color(hex: "6366F1")
+        if isComplete { return AppTheme.success }
+        if lessonDone { return AppTheme.warning }
+        if isLocked { return AppTheme.textTertiary }
+        return AppTheme.accent
     }
 
     private var borderColor: Color {
-        if isComplete { return Color(hex: "10B981").opacity(0.3) }
-        if lessonDone { return Color(hex: "FACC15").opacity(0.2) }
-        return Color(hex: "1F2937")
+        if isComplete { return AppTheme.success.opacity(0.3) }
+        if lessonDone { return AppTheme.warning.opacity(0.2) }
+        return AppTheme.separator
     }
 }

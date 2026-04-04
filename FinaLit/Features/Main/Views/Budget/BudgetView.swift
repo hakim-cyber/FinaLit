@@ -12,28 +12,27 @@ struct BudgetView: View {
 
     var body: some View {
         ZStack {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+            AppTheme.background.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 24) {
                     HStack(spacing: 6) {
                         Image(systemName: "calendar")
-                            .font(.system(size: 10))
-                        Text(mainVM.selectedMonthDisplay.uppercased())
-                            .font(.system(size: 10, weight: .semibold))
+                            .font(.system(size: 11, weight: .semibold))
+                        Text(mainVM.selectedMonthDisplay)
+                            .font(AppTheme.Typography.badge)
                     }
-                    .foregroundStyle(Color(hex: "6B7280"))
+                    .foregroundStyle(AppTheme.textSecondary)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
-                    .background(Color(hex: "111118"))
+                    .background(AppTheme.surfacePrimary)
                     .clipShape(Capsule())
-                    .padding(.horizontal, 20)
                     .padding(.top, 8)
 
                     HStack {
                         Text("Set monthly limits per category.")
-                            .font(.system(size: 13))
-                            .foregroundStyle(Color(hex: "4B5563"))
+                            .font(AppTheme.Typography.caption)
+                            .foregroundStyle(AppTheme.textSecondary)
                         Spacer()
                         Button(isEditing ? "Save" : "Edit") {
                             if isEditing {
@@ -43,10 +42,9 @@ struct BudgetView: View {
                             }
                             isEditing.toggle()
                         }
-                        .font(.system(size: 13))
-                        .foregroundStyle(Color(hex: "6366F1"))
+                        .font(AppTheme.Typography.bodySemibold)
+                        .foregroundStyle(AppTheme.accent)
                     }
-                    .padding(.horizontal, 20)
 
                     VStack(spacing: 10) {
                         ForEach(TransactionCategory.expenseCategories) { category in
@@ -62,18 +60,17 @@ struct BudgetView: View {
                             )
                         }
                     }
-                    .padding(.horizontal, 20)
 
                     if let summary = mainVM.summary {
                         TotalBudgetCard(
                             spent: summary.monthlyExpenses,
                             totalLimit: mainVM.budgetLimits.reduce(0) { $0 + $1.limit }
                         )
-                        .padding(.horizontal, 20)
                     }
 
                     Spacer(minLength: 40)
                 }
+                .padding(.horizontal, AppTheme.Spacing.screen)
             }
         }
         .navigationTitle("Budget")

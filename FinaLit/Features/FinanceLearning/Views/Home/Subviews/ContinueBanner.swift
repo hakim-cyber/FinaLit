@@ -27,28 +27,21 @@ struct ContinueBanner: View {
         } label: {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("CONTINUE WHERE YOU LEFT OFF")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(Color(hex: "6366F1"))
+                    Text("Continue where you left off")
+                        .font(AppTheme.Typography.detail.weight(.semibold))
+                        .foregroundStyle(AppTheme.accent)
                     Text("Day \(dayNumber)")
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(AppTheme.textPrimary)
                 }
                 Spacer()
                 Image(systemName: "arrow.right.circle.fill")
                     .font(.title2)
-                    .foregroundStyle(Color(hex: "6366F1"))
+                    .foregroundStyle(AppTheme.accent)
             }
-            .padding(20)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color(hex: "111118"))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color(hex: "6366F1").opacity(0.4), lineWidth: 1)
-                    )
-            )
+            .appSurface(.tinted(.accent), padding: 20, cornerRadius: AppTheme.CornerRadius.large)
         }
         .padding(.horizontal, 20)
+        .buttonStyle(.plain)
     }
 }

@@ -12,7 +12,7 @@ struct LearningProgressView: View {
 
     var body: some View {
         ZStack {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+            AppTheme.background.ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 28) {
@@ -24,34 +24,31 @@ struct LearningProgressView: View {
                             value: "\(summary.totalLessonsRead)",
                             label: "Lessons Read",
                             icon: "book.fill",
-                            color: "6366F1"
+                            tone: .accent
                         )
                         ProgressStatCard(
                             value: "\(summary.totalQuizzesDone)",
                             label: "Quizzes Done",
                             icon: "checkmark.circle.fill",
-                            color: "10B981"
+                            tone: .success
                         )
                         ProgressStatCard(
                             value: "\(summary.currentStreak)",
                             label: "Day Streak",
                             icon: "flame.fill",
-                            color: "F97316"
+                            tone: .orange
                         )
                         ProgressStatCard(
                             value: String(format: "%.0f%%", summary.averageQuizScore),
                             label: "Avg Quiz Score",
                             icon: "chart.bar.fill",
-                            color: "FACC15"
+                            tone: .warning
                         )
                     }
                     .padding(.horizontal, 20)
 
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("WEEK HISTORY")
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(Color(hex: "4B5563"))
-                            .padding(.horizontal, 20)
+                        AppSectionHeader(title: "Week history")
 
                         ForEach(learnVM.weekProgressList) { weekProgress in
                             WeekTimelineRow(
@@ -63,10 +60,7 @@ struct LearningProgressView: View {
 
                     if !learnVM.reflections.isEmpty {
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("YOUR REFLECTIONS")
-                                .font(.system(size: 11, weight: .semibold))
-                                .foregroundStyle(Color(hex: "4B5563"))
-                                .padding(.horizontal, 20)
+                            AppSectionHeader(title: "Your reflections")
 
                             ForEach(learnVM.reflections) { reflection in
                                 ReflectionHistoryCard(reflection: reflection)

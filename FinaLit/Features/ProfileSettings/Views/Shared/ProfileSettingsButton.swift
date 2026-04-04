@@ -12,7 +12,7 @@ struct ProfileSettingsButton: View {
         Button(action: action) {
             Image(systemName: "person.crop.circle.fill")
                 .font(.system(size: 17, weight: .semibold))
-                .foregroundStyle(.white)
+                .foregroundStyle(AppTheme.textPrimary)
                 .frame(width: 34, height: 34)
                 .background(ProfileSettingsPalette.surface, in: RoundedRectangle(cornerRadius: 10))
                 .overlay(

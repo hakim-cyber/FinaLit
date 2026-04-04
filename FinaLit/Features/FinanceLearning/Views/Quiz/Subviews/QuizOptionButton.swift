@@ -18,27 +18,27 @@ struct QuizOptionButton: View {
 
     private var backgroundColor: Color {
         guard isRevealed else {
-            return isSelected ? Color(hex: "6366F1").opacity(0.2) : Color(hex: "111118")
+            return isSelected ? AppTheme.accent.opacity(0.2) : AppTheme.surfacePrimary
         }
-        if isCorrect { return Color(hex: "10B981").opacity(0.15) }
-        if isSelected { return Color(hex: "F87171").opacity(0.15) }
-        return Color(hex: "111118")
+        if isCorrect { return AppTheme.success.opacity(0.15) }
+        if isSelected { return AppTheme.danger.opacity(0.15) }
+        return AppTheme.surfacePrimary
     }
 
     private var borderColor: Color {
         guard isRevealed else {
-            return isSelected ? Color(hex: "6366F1") : Color(hex: "1F2937")
+            return isSelected ? AppTheme.accent : AppTheme.separator
         }
-        if isCorrect { return Color(hex: "10B981") }
-        if isSelected { return Color(hex: "F87171") }
-        return Color(hex: "1F2937")
+        if isCorrect { return AppTheme.success }
+        if isSelected { return AppTheme.danger }
+        return AppTheme.separator
     }
 
     private var textColor: Color {
         guard isRevealed else { return .white }
-        if isCorrect { return Color(hex: "10B981") }
-        if isSelected { return Color(hex: "F87171") }
-        return Color(hex: "4B5563")
+        if isCorrect { return AppTheme.success }
+        if isSelected { return AppTheme.danger }
+        return AppTheme.textSecondary
     }
 
     var body: some View {
@@ -62,7 +62,7 @@ struct QuizOptionButton: View {
 
                 if isRevealed {
                     Image(systemName: isCorrect ? "checkmark.circle.fill" : (isSelected ? "xmark.circle.fill" : ""))
-                        .foregroundStyle(isCorrect ? Color(hex: "10B981") : Color(hex: "F87171"))
+                        .foregroundStyle(isCorrect ? AppTheme.success : AppTheme.danger)
                         .opacity((isCorrect || isSelected) ? 1 : 0)
                 }
             }

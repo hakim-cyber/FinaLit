@@ -50,11 +50,11 @@ struct PersonalInfoEditView: View {
                         .settingsFieldLabelStyle()
                     Text(session.user?.email ?? "No email")
                         .font(.system(size: 15))
-                        .foregroundStyle(Color(hex: "9CA3AF"))
+                        .foregroundStyle(AppTheme.textSecondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 14)
                         .frame(height: 50)
-                        .background(ProfileSettingsPalette.background.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
+                        .background(ProfileSettingsPalette.surface, in: RoundedRectangle(cornerRadius: 12))
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
                                 .stroke(ProfileSettingsPalette.border, lineWidth: 1)

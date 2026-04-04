@@ -12,12 +12,12 @@ struct DetailRow: View {
     var body: some View {
         HStack {
             Text(label)
-                .font(.system(size: 13))
-                .foregroundStyle(Color(hex: "4B5563"))
+                .font(AppTheme.Typography.caption)
+                .foregroundStyle(AppTheme.textSecondary)
             Spacer()
             Text(value)
-                .font(.system(size: 14))
-                .foregroundStyle(.white)
+                .font(AppTheme.Typography.body)
+                .foregroundStyle(AppTheme.textPrimary)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)

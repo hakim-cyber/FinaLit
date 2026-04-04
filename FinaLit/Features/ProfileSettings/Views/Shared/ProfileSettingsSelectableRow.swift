@@ -22,9 +22,9 @@ struct ProfileSettingsSelectableRow: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(AppTheme.textPrimary)
                     Text(subtitle)
-                        .font(.system(size: 11))
+                        .font(AppTheme.Typography.detail)
                         .foregroundStyle(ProfileSettingsPalette.muted)
                         .lineLimit(2)
                 }
@@ -36,15 +36,7 @@ struct ProfileSettingsSelectableRow: View {
                         .foregroundStyle(accent)
                 }
             }
-            .padding(14)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(isSelected ? accent.opacity(0.14) : ProfileSettingsPalette.surface)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? accent : ProfileSettingsPalette.border, lineWidth: 1)
-            )
+            .appSurface(isSelected ? .tinted(.accent) : .primary, padding: 14, cornerRadius: AppTheme.CornerRadius.medium)
         }
         .buttonStyle(.plain)
     }

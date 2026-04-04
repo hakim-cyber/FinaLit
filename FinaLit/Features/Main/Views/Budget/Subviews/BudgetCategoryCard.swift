@@ -27,20 +27,20 @@ struct BudgetCategoryCard: View {
             HStack(spacing: 12) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(Color(hex: category.color).opacity(0.12))
+                        .fill(AppTheme.softFill(for: category.tone))
                         .frame(width: 38, height: 38)
                     Image(systemName: category.icon)
-                        .font(.system(size: 15))
-                        .foregroundStyle(Color(hex: category.color))
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(AppTheme.tint(for: category.tone))
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(category.rawValue)
-                        .font(.system(size: 15))
-                        .foregroundStyle(.white)
+                        .font(AppTheme.Typography.bodySemibold)
+                        .foregroundStyle(AppTheme.textPrimary)
                     Text("Spent: \(formatCurrency(spent))")
-                        .font(.system(size: 11))
-                        .foregroundStyle(Color(hex: "4B5563"))
+                        .font(AppTheme.Typography.detail)
+                        .foregroundStyle(AppTheme.textSecondary)
                 }
 
                 Spacer()
@@ -48,11 +48,11 @@ struct BudgetCategoryCard: View {
                 if isEditing {
                     HStack(spacing: 4) {
                         Text(AppRegion.currencySymbol)
-                            .font(.system(size: 14))
-                            .foregroundStyle(Color(hex: "4B5563"))
+                            .font(AppTheme.Typography.body)
+                            .foregroundStyle(AppTheme.textSecondary)
                         TextField("Limit", text: $editingText)
-                            .font(.system(size: 14))
-                            .foregroundStyle(.white)
+                            .font(AppTheme.Typography.body)
+                            .foregroundStyle(AppTheme.textPrimary)
                             .keyboardType(.decimalPad)
                             .frame(width: 70)
                             .multilineTextAlignment(.trailing)
@@ -60,43 +60,23 @@ struct BudgetCategoryCard: View {
                 } else if let limit {
                     VStack(alignment: .trailing, spacing: 2) {
                         Text(formatCurrency(limit))
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(isOver ? Color(hex: "F87171") : .white)
+                            .font(AppTheme.Typography.bodySemibold)
+                            .foregroundStyle(isOver ? AppTheme.danger : AppTheme.textPrimary)
                         Text("limit")
-                            .font(.system(size: 10))
-                            .foregroundStyle(Color(hex: "4B5563"))
+                            .font(AppTheme.Typography.detail)
+                            .foregroundStyle(AppTheme.textSecondary)
                     }
                 } else {
                     Text("No limit")
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color(hex: "374151"))
+                        .font(AppTheme.Typography.detail)
+                        .foregroundStyle(AppTheme.textSecondary)
                 }
             }
 
             if limit != nil && !isEditing {
-                GeometryReader { geometry in
-                    ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 3)
-                            .fill(Color(hex: "1F2937"))
-                            .frame(height: 5)
-                        RoundedRectangle(cornerRadius: 3)
-                            .fill(isOver ? Color(hex: "F87171") : Color(hex: category.color))
-                            .frame(width: geometry.size.width * CGFloat(usage), height: 5)
-                            .animation(.easeInOut(duration: 0.4), value: usage)
-                    }
-                }
-                .frame(height: 5)
+                AppThinProgressBar(progress: usage, tone: isOver ? .danger : category.tone)
             }
         }
-        .padding(14)
-        .background(Color(hex: "111118"))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(
-                    isOver ? Color(hex: "F87171").opacity(0.3) : Color(hex: "1F2937"),
-                    lineWidth: 1
-                )
-        )
+        .appSurface(isOver ? .tinted(.danger) : .primary, padding: 14, cornerRadius: AppTheme.CornerRadius.large)
     }
 }

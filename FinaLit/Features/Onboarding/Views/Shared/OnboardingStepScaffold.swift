@@ -33,9 +33,9 @@ struct OnboardingStepScaffold<Content: View>: View {
                                     } label: {
                                         Image(systemName: "chevron.left")
                                             .font(.system(size: 13, weight: .semibold))
-                                            .foregroundStyle(.white)
+                                            .foregroundStyle(AppTheme.textPrimary)
                                             .frame(width: 34, height: 34)
-                                            .background(OnboardingPalette.background.opacity(0.8), in: RoundedRectangle(cornerRadius: 10))
+                                            .background(OnboardingPalette.surface, in: RoundedRectangle(cornerRadius: 10))
                                             .overlay(
                                                 RoundedRectangle(cornerRadius: 10)
                                                     .stroke(OnboardingPalette.border, lineWidth: 1)
@@ -47,7 +47,7 @@ struct OnboardingStepScaffold<Content: View>: View {
                                 Spacer()
 
                                 Text("STEP \(page.stepNumber) OF \(OnboardingPages.totalSteps)")
-                                    .font(.system(size: 11, weight: .semibold))
+                                    .font(AppTheme.Typography.badge)
                                     .foregroundStyle(OnboardingPalette.muted)
                             }
 
@@ -58,10 +58,10 @@ struct OnboardingStepScaffold<Content: View>: View {
                         VStack(alignment: .leading, spacing: 6) {
                             Text(title)
                                 .font(.system(size: 30, weight: .medium))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(AppTheme.textPrimary)
                                 .fixedSize(horizontal: false, vertical: true)
                             Text(subtitle)
-                                .font(.system(size: 13))
+                                .font(AppTheme.Typography.caption)
                                 .foregroundStyle(OnboardingPalette.muted)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
@@ -77,25 +77,12 @@ struct OnboardingStepScaffold<Content: View>: View {
                                 if isLoading {
                                     ProgressView()
                                         .progressViewStyle(.circular)
-                                        .tint(.white)
+                                        .tint(AppTheme.inverseText)
                                 }
                                 Text(primaryTitle)
-                                    .font(.system(size: 15, weight: .semibold))
                             }
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 52)
-                            .foregroundStyle((isPrimaryEnabled && !isLoading) ? .white : OnboardingPalette.disabledText)
-                            .background(
-                                LinearGradient(
-                                    colors: (isPrimaryEnabled && !isLoading)
-                                        ? [Color(hex: "6366F1"), Color(hex: "4F46E5")]
-                                        : [OnboardingPalette.border, OnboardingPalette.border],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                            .clipShape(RoundedRectangle(cornerRadius: 14))
                         }
+                        .buttonStyle(AppFilledButtonStyle(tone: .accent))
                         .disabled(!isPrimaryEnabled || isLoading)
 
                         Text("Educational guidance, not financial advice.")
@@ -103,12 +90,7 @@ struct OnboardingStepScaffold<Content: View>: View {
                             .foregroundStyle(OnboardingPalette.muted)
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
-                    .padding(22)
-                    .background(OnboardingPalette.surface, in: RoundedRectangle(cornerRadius: 24))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 24)
-                            .stroke(OnboardingPalette.border, lineWidth: 1)
-                    )
+                    .appSurface(.primary, padding: 22, cornerRadius: 24)
                     .frame(maxWidth: 640)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 28)
@@ -124,18 +106,13 @@ private struct AuthErrorBanner: View {
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(Color(hex: "F87171"))
+                .foregroundStyle(AppTheme.danger)
             Text(message)
-                .font(.system(size: 12))
-                .foregroundStyle(Color(hex: "FCA5A5"))
+                .font(AppTheme.Typography.caption)
+                .foregroundStyle(AppTheme.textPrimary)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(hex: "450A0A").opacity(0.45), in: RoundedRectangle(cornerRadius: 10))
-        .overlay(
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(Color(hex: "7F1D1D"), lineWidth: 1)
-        )
+        .appSurface(.tinted(.danger), padding: 12, cornerRadius: AppTheme.CornerRadius.medium)
     }
 }

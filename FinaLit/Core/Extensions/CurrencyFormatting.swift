@@ -38,6 +38,18 @@ func formatCurrency(_ value: Double) -> String {
     return formatter.string(from: NSNumber(value: value)) ?? "\(AppRegion.currencySymbol)\(formatAmount(value))"
 }
 
+func formatPrimaryCurrency(_ value: Double) -> String {
+    let formatter = NumberFormatter()
+    formatter.locale = AppRegion.locale
+    formatter.numberStyle = .currency
+    formatter.currencyCode = AppRegion.currencyCode
+    formatter.currencySymbol = AppRegion.currencySymbol
+    formatter.maximumFractionDigits = 2
+    formatter.minimumFractionDigits = 2
+    formatter.usesGroupingSeparator = true
+    return formatter.string(from: NSNumber(value: value)) ?? "\(AppRegion.currencySymbol)\(String(format: "%.2f", value))"
+}
+
 func formatCompactCurrency(_ value: Double) -> String {
     let absoluteValue = abs(value)
     let scale: (divisor: Double, suffix: String)

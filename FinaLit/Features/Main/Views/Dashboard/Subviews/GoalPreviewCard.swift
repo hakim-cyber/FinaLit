@@ -29,58 +29,38 @@ struct GoalPreviewCard: View {
     }
 
     private var monthlyPaceColor: Color {
-        guard let monthsUntilDeadline else { return Color(hex: "10B981") }
-        return monthsUntilDeadline < 0 ? Color(hex: "F87171") : Color(hex: "10B981")
+        guard let monthsUntilDeadline else { return AppTheme.success }
+        return monthsUntilDeadline < 0 ? AppTheme.danger : AppTheme.success
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top) {
                 Text(goal.title)
-                    .font(.system(size: 15))
-                    .foregroundStyle(.white)
+                    .font(AppTheme.Typography.headline)
+                    .foregroundStyle(AppTheme.textPrimary)
                 Spacer()
-                Text("\(String(format: "%.0f", goal.progressPercentage))%")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Color(hex: "6366F1"))
+                AppToneBadge(
+                    title: "\(String(format: "%.0f", goal.progressPercentage))%",
+                    systemImage: "target",
+                    tone: .accent
+                )
             }
             HStack {
                 Text(formatCurrency(goal.currentAmount))
-                    .font(.system(size: 13))
-                    .foregroundStyle(Color(hex: "9CA3AF"))
+                    .font(AppTheme.Typography.bodySemibold)
+                    .foregroundStyle(AppTheme.textPrimary)
                 Text("of \(formatCurrency(goal.targetAmount))")
-                    .font(.system(size: 13))
-                    .foregroundStyle(Color(hex: "4B5563"))
+                    .font(AppTheme.Typography.caption)
+                    .foregroundStyle(AppTheme.textSecondary)
             }
             if let monthlyPaceText {
                 Text(monthlyPaceText)
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(AppTheme.Typography.detail.weight(.semibold))
                     .foregroundStyle(monthlyPaceColor)
             }
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 3)
-                        .fill(Color(hex: "1F2937"))
-                        .frame(height: 6)
-                    RoundedRectangle(cornerRadius: 3)
-                        .fill(
-                            LinearGradient(
-                                colors: [Color(hex: "6366F1"), Color(hex: "10B981")],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
-                        .frame(width: geometry.size.width * CGFloat(goal.progressPercentage / 100), height: 6)
-                }
-            }
-            .frame(height: 6)
+            AppThinProgressBar(progress: goal.progressPercentage / 100, tone: .accent)
         }
-        .padding(16)
-        .background(Color(hex: "111118"))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(Color(hex: "1F2937"), lineWidth: 1)
-        )
+        .appSurface(.primary, padding: 16, cornerRadius: AppTheme.CornerRadius.large)
     }
 }

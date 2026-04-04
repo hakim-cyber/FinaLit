@@ -12,19 +12,13 @@ struct EmptyGoalsCard: View {
                 .font(.system(size: 40))
             Text("No goals yet")
                 .font(.system(size: 18))
-                .foregroundStyle(.white)
+                .foregroundStyle(AppTheme.textPrimary)
             Text("Set a financial goal to track your progress.")
                 .font(.system(size: 13))
-                .foregroundStyle(Color(hex: "4B5563"))
+                .foregroundStyle(AppTheme.textSecondary)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(40)
-        .background(Color(hex: "111118"))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color(hex: "1F2937"), lineWidth: 1)
-        )
+        .appSurface(.primary, padding: 40, cornerRadius: AppTheme.CornerRadius.large)
     }
 }

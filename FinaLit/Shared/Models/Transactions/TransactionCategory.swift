@@ -40,21 +40,21 @@ enum TransactionCategory: String, Codable, CaseIterable, Identifiable {
         }
     }
 
-    var color: String {
+    var tone: AppTone {
         switch self {
-        case .rent: return "F87171"
-        case .food: return "FB923C"
-        case .transport: return "FACC15"
-        case .education: return "34D399"
-        case .health: return "F472B6"
-        case .entertainment: return "818CF8"
-        case .shopping: return "A78BFA"
-        case .other: return "6B7280"
-        case .salary: return "10B981"
-        case .freelance: return "06B6D4"
-        case .investment: return "6366F1"
-        case .gift: return "EC4899"
-        case .otherIncome: return "84CC16"
+        case .rent: return .orange
+        case .food: return .amber
+        case .transport: return .blue
+        case .education: return .teal
+        case .health: return .rose
+        case .entertainment: return .accent
+        case .shopping: return .rose
+        case .other: return .slate
+        case .salary: return .success
+        case .freelance: return .info
+        case .investment: return .accent
+        case .gift: return .rose
+        case .otherIncome: return .green
         }
     }
 

@@ -11,5 +11,5 @@ struct SmartInsight: Identifiable {
     var title: String
     var message: String
     var icon: String
-    var color: String
+    var tone: AppTone
 }

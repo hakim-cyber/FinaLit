@@ -31,8 +31,8 @@ struct GoalCard: View {
     }
 
     private var monthlyPaceColor: Color {
-        guard let monthsUntilDeadline else { return Color(hex: "4B5563") }
-        return monthsUntilDeadline < 0 ? Color(hex: "F87171") : Color(hex: "10B981")
+        guard let monthsUntilDeadline else { return AppTheme.textSecondary }
+        return monthsUntilDeadline < 0 ? AppTheme.danger : AppTheme.success
     }
 
     var body: some View {
@@ -40,43 +40,46 @@ struct GoalCard: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(goal.title)
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(AppTheme.textPrimary)
                     if let deadline = goal.deadline {
                         Text("Due \(deadline.formatted(date: .abbreviated, time: .omitted))")
-                            .font(.system(size: 11))
-                            .foregroundStyle(Color(hex: "4B5563"))
+                            .font(AppTheme.Typography.detail)
+                            .foregroundStyle(AppTheme.textSecondary)
                     }
                 }
                 Spacer()
                 if isCompleted {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(Color(hex: "10B981"))
+                        .foregroundStyle(AppTheme.success)
                         .font(.system(size: 20))
                 } else {
-                    Text("\(String(format: "%.0f", goal.progressPercentage))%")
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(Color(hex: "6366F1"))
+                    AppToneBadge(
+                        title: "\(String(format: "%.0f", goal.progressPercentage))%",
+                        systemImage: "target",
+                        tone: .accent
+                    )
                 }
             }
 
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(formatCurrency(goal.currentAmount))
-                        .font(.system(size: 20, weight: .medium))
-                        .foregroundStyle(.white)
+                        .font(.system(size: 22, weight: .semibold, design: .rounded))
+                        .foregroundStyle(AppTheme.textPrimary)
+                        .monospacedDigit()
                     Text("saved")
-                        .font(.system(size: 10))
-                        .foregroundStyle(Color(hex: "4B5563"))
+                        .font(AppTheme.Typography.detail)
+                        .foregroundStyle(AppTheme.textSecondary)
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(formatCurrency(goal.targetAmount))
-                        .font(.system(size: 16))
-                        .foregroundStyle(Color(hex: "6B7280"))
+                        .font(AppTheme.Typography.body)
+                        .foregroundStyle(AppTheme.textSecondary)
                     Text("target")
-                        .font(.system(size: 10))
-                        .foregroundStyle(Color(hex: "4B5563"))
+                        .font(AppTheme.Typography.detail)
+                        .foregroundStyle(AppTheme.textSecondary)
                 }
             }
 
@@ -85,46 +88,14 @@ struct GoalCard: View {
                     Image(systemName: "speedometer")
                         .font(.system(size: 10))
                     Text(monthlyPaceText)
-                        .font(.system(size: 10, weight: .semibold))
+                        .font(AppTheme.Typography.detail.weight(.semibold))
                 }
                 .foregroundStyle(monthlyPaceColor)
             }
 
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(Color(hex: "1F2937"))
-                        .frame(height: 8)
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(
-                            isCompleted
-                                ? LinearGradient(
-                                    colors: [Color(hex: "10B981"), Color(hex: "10B981")],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                                : LinearGradient(
-                                    colors: [Color(hex: "6366F1"), Color(hex: "10B981")],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                        )
-                        .frame(width: geometry.size.width * CGFloat(goal.progressPercentage / 100), height: 8)
-                        .animation(.easeInOut(duration: 0.5), value: goal.progressPercentage)
-                }
-            }
-            .frame(height: 8)
+            AppThinProgressBar(progress: goal.progressPercentage / 100, tone: isCompleted ? .success : .accent)
         }
-        .padding(18)
-        .background(Color(hex: "111118"))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(
-                    isCompleted ? Color(hex: "10B981").opacity(0.3) : Color(hex: "1F2937"),
-                    lineWidth: 1
-                )
-        )
+        .appSurface(isCompleted ? .tinted(.success) : .primary, padding: 18, cornerRadius: AppTheme.CornerRadius.large)
         .opacity(isCompleted ? 0.6 : 1)
     }
 }

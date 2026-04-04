@@ -14,16 +14,16 @@ struct QuizProgressBar: View {
             HStack {
                 Text("Question \(current) of \(total)")
                     .font(.system(size: 12))
-                    .foregroundStyle(Color(hex: "6B7280"))
+                    .foregroundStyle(AppTheme.textSecondary)
                 Spacer()
             }
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(Color(hex: "1F2937"))
+                        .fill(AppTheme.separator)
                         .frame(height: 3)
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(Color(hex: "6366F1"))
+                        .fill(AppTheme.accent)
                         .frame(
                             width: geometry.size.width * CGFloat(current) / CGFloat(total),
                             height: 3

@@ -14,12 +14,12 @@ struct StatCell: View {
         VStack(spacing: 3) {
             Text(value)
                 .font(.system(size: small ? 12 : 18, weight: .semibold))
-                .foregroundStyle(.white)
+                .foregroundStyle(AppTheme.textPrimary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
             Text(label)
-                .font(.system(size: 10))
-                .foregroundStyle(Color(hex: "4B5563"))
+                .font(AppTheme.Typography.detail)
+                .foregroundStyle(AppTheme.textSecondary)
         }
         .frame(maxWidth: .infinity)
     }

@@ -30,7 +30,7 @@ struct QuizView: View {
 
     var body: some View {
         ZStack {
-            Color(hex: "0A0A0F").ignoresSafeArea()
+            AppTheme.background.ignoresSafeArea()
 
             if learnVM.isLoadingQuiz {
                 LearnLoadingView()
@@ -48,7 +48,7 @@ struct QuizView: View {
                         VStack(alignment: .leading, spacing: 24) {
                             Text(question.type.uppercased())
                                 .font(.system(size: 10, weight: .semibold))
-                                .foregroundStyle(Color(hex: "6366F1"))
+                                .foregroundStyle(AppTheme.accent)
 
                             Text(question.questionText)
                                 .font(.system(size: 20, weight: .medium))
@@ -114,12 +114,12 @@ struct QuizView: View {
                             .background(
                                 learnVM.isSubmitting
                                     ? LinearGradient(
-                                        colors: [Color(hex: "1F2937"), Color(hex: "1F2937")],
+                                        colors: [AppTheme.separator, AppTheme.separator],
                                         startPoint: .leading,
                                         endPoint: .trailing
                                     )
                                     : LinearGradient(
-                                        colors: [Color(hex: "6366F1"), Color(hex: "4F46E5")],
+                                        colors: [AppTheme.accent, AppTheme.accent],
                                         startPoint: .leading,
                                         endPoint: .trailing
                                     )

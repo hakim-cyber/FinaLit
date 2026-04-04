@@ -13,15 +13,15 @@ struct AnswerRow: View {
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: correct ? "checkmark.circle.fill" : "xmark.circle.fill")
-                .foregroundStyle(correct ? Color(hex: "10B981") : Color(hex: "F87171"))
+                .foregroundStyle(correct ? AppTheme.success : AppTheme.danger)
                 .font(.system(size: 14))
             VStack(alignment: .leading, spacing: 2) {
                 Text(label.uppercased())
                     .font(.system(size: 9, weight: .semibold))
-                    .foregroundStyle(Color(hex: "4B5563"))
+                    .foregroundStyle(AppTheme.textSecondary)
                 Text(text)
                     .font(.system(size: 14))
-                    .foregroundStyle(correct ? Color(hex: "10B981") : Color(hex: "F87171"))
+                    .foregroundStyle(correct ? AppTheme.success : AppTheme.danger)
             }
         }
     }

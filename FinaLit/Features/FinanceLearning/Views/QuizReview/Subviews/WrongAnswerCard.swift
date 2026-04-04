@@ -32,16 +32,16 @@ struct WrongAnswerCard: View {
 
             Text(question.explanation)
                 .font(.system(size: 13))
-                .foregroundStyle(Color(hex: "6B7280"))
+                .foregroundStyle(AppTheme.textSecondary)
                 .lineSpacing(4)
                 .padding(.top, 4)
         }
         .padding(16)
-        .background(Color(hex: "111118"))
+        .background(AppTheme.surfacePrimary)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .overlay(
             RoundedRectangle(cornerRadius: 14)
-                .stroke(Color(hex: "F87171").opacity(0.2), lineWidth: 1)
+                .stroke(AppTheme.danger.opacity(0.2), lineWidth: 1)
         )
         .padding(.horizontal, 20)
     }

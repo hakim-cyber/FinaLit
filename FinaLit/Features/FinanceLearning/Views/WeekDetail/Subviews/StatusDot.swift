@@ -12,11 +12,11 @@ struct StatusDot: View {
     var body: some View {
         HStack(spacing: 4) {
             Circle()
-                .fill(done ? Color(hex: "10B981") : Color(hex: "374151"))
+                .fill(done ? AppTheme.success : AppTheme.textTertiary)
                 .frame(width: 5, height: 5)
             Text(label)
                 .font(.system(size: 10))
-                .foregroundStyle(done ? Color(hex: "10B981") : Color(hex: "4B5563"))
+                .foregroundStyle(done ? AppTheme.success : AppTheme.textSecondary)
         }
     }
 }

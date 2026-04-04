@@ -289,32 +289,19 @@ struct ProfileSettingsHomeView: View {
                     SecureField("Current password", text: $reauthPassword)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
-                        .font(.system(size: 15))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 14)
-                        .frame(height: 50)
-                        .background(ProfileSettingsPalette.background.opacity(0.8), in: RoundedRectangle(cornerRadius: 12))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(ProfileSettingsPalette.border, lineWidth: 1)
-                        )
+                        .settingsInputStyle()
 
                     Button(action: confirmReauthenticationAndDelete) {
                         HStack(spacing: 10) {
                             if isReauthenticating {
                                 ProgressView()
                                     .progressViewStyle(.circular)
-                                    .tint(.white)
+                                    .tint(AppTheme.inverseText)
                             }
                             Text(isReauthenticating ? "Verifying..." : "Verify & Delete")
-                                .font(.system(size: 14, weight: .semibold))
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .foregroundStyle(.white)
-                        .background(Color(hex: "B91C1C"))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
+                    .buttonStyle(AppFilledButtonStyle(tone: .danger))
                     .disabled(isReauthenticating || reauthPassword.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
                 .padding(20)
@@ -377,17 +364,17 @@ private struct SettingsActionRow: View {
                 title: title,
                 subtitle: subtitle,
                 icon: icon,
-                iconTint: isDestructive ? Color(hex: "F87171") : iconTint,
-                titleTint: isDestructive ? Color(hex: "FCA5A5") : .white
+                iconTint: isDestructive ? AppTheme.danger : iconTint,
+                titleTint: isDestructive ? AppTheme.danger : AppTheme.textPrimary
             ) {
                 if isLoading {
                     ProgressView()
                         .progressViewStyle(.circular)
-                        .tint(.white)
+                        .tint(AppTheme.accent)
                 } else {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(Color(hex: "4B5563"))
+                        .foregroundStyle(ProfileSettingsPalette.muted)
                 }
             }
         }
@@ -407,11 +394,11 @@ private struct SettingsValueRow: View {
             title: title,
             subtitle: subtitle,
             icon: icon,
-            iconTint: Color(hex: "9CA3AF")
+            iconTint: AppTheme.textSecondary
         ) {
             Text(value)
                 .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(Color(hex: "9CA3AF"))
+                .foregroundStyle(AppTheme.textSecondary)
         }
     }
 }
@@ -421,7 +408,7 @@ private struct SettingsRowShell<Accessory: View>: View {
     let subtitle: String
     let icon: String
     let iconTint: Color
-    var titleTint: Color = .white
+    var titleTint: Color = AppTheme.textPrimary
     @ViewBuilder let accessory: () -> Accessory
 
     var body: some View {
