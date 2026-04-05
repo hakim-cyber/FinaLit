@@ -3,8 +3,10 @@
 FinaLit is a production-oriented SwiftUI fintech application built as a freelance social-impact project.
 
 It combines finance tracking, structured financial education, and AI-powered advisory workflows within a real-time architecture.
+<img width="3887" height="2050" alt="IMG_0652 copy" src="https://github.com/user-attachments/assets/a90fb4fc-42e5-4fdf-b479-4ae5be31c4ac" />
 
----
+<img width="3849" height="2052" alt="IMG_0652" src="https://github.com/user-attachments/assets/48aa1bcb-0287-42b3-9e69-0d50f35e7f63" />
+
 
 ## 🏗 Architecture Overview
 
