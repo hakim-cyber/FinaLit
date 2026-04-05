@@ -305,8 +305,8 @@ final class ChatViewModel {
 
                 if reason.rawValue == "MAX_TOKENS" {
                     return (
-                        "AI output limit reached (\(reason.rawValue)). Try asking for a shorter answer.",
-                        "I reached the response length limit. Ask for a shorter focused answer or continue from the last point.\nEducational guidance, not financial advice.",
+                        "AI output limit reached (\(reason.rawValue)). Ask it to continue from the last point.",
+                        "The AI response stopped because the model hit its maximum length. Ask it to continue from the last point.\nEducational guidance, not financial advice.",
                         "GenerateContentError.responseStoppedEarly finishReason=\(reason.rawValue)"
                     )
                 }
@@ -362,7 +362,7 @@ final class ChatViewModel {
         if nsError.domain.contains("GenerateContentError"), nsError.code == 3 {
             return (
                 "Model stopped generation early (error 3). This is usually safety or token limit.",
-                "The AI stopped generation early. Try a simpler or shorter prompt.\nEducational guidance, not financial advice.",
+                "The AI stopped generation early. Please try again or ask it to continue from the last point.\nEducational guidance, not financial advice.",
                 "GenerateContentError code=3 desc=\(error.localizedDescription)"
             )
         }

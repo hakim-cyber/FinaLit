@@ -184,21 +184,21 @@ final class GeminiAIChatService: AIChatService {
             return GenerationConfig(
                 temperature: 0.15,
                 topP: 0.8,
-                maxOutputTokens: 32,
+                maxOutputTokens: AIChatRuntimeConfig.maxOutputTokens,
                 responseMIMEType: "text/plain"
             )
         case .concise:
             return GenerationConfig(
                 temperature: 0.25,
                 topP: 0.85,
-                maxOutputTokens: 120,
+                maxOutputTokens: AIChatRuntimeConfig.maxOutputTokens,
                 responseMIMEType: "text/plain"
             )
         case .deepDive:
             return GenerationConfig(
                 temperature: 0.35,
                 topP: 0.9,
-                maxOutputTokens: 260,
+                maxOutputTokens: AIChatRuntimeConfig.maxOutputTokens,
                 responseMIMEType: "text/plain"
             )
         }

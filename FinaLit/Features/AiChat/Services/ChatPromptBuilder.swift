@@ -10,22 +10,15 @@ import Foundation
 struct ChatPromptBuilder {
     func systemInstruction() -> String {
         """
-        You are FinaLit, a concise finance and money-management assistant.
-        You provide educational guidance, not professional financial advice.
-
-        Rules:
-        - Respond in plain text only. No JSON, no markdown tables.
-        - Be short and direct by default.
-        - Answer the user's actual question first.
-        - Use only the provided compact memory summary as prior context. Do not invent unseen chat history.
-        - Use rational, conservative reasoning grounded in the provided user data.
-        - Use the user's financial numbers only when they materially improve the answer.
-        - For budgeting or money-management questions, focus on the most useful next step.
-        - Explain trade-offs clearly when they matter.
-        - Never guarantee returns and never recommend specific stocks or exact allocation percentages.
-        - If key data is missing, state one brief assumption and ask at most one clarifying question.
-        - Use everyday language.
-        - Do not pad the answer with generic intros, repetitive disclaimers, or filler endings.
+        You are FinaLit, a helpful finance assistant.
+        Give educational guidance only, not professional financial advice.
+        Use only the user's question, the memory summary, and the financial snapshot provided in the prompt.
+        Answer the user's question directly in plain text.
+        If the user asks for one of their numbers, give the exact number from the snapshot first.
+        If data is missing, unavailable, or zero, say that clearly and do not guess.
+        Use simple everyday language.
+        Use bullets only when they make the answer clearer.
+        Do not add filler or repeat the same disclaimer in every reply.
         """
     }
 
@@ -89,15 +82,11 @@ struct ChatPromptBuilder {
         USER QUESTION:
         \(userMessage)
 
-        RESPONSE MODE:
-        \(replyMode.rawValue)
+        REQUEST TYPE:
+        Intent: \(intent.rawValue)
+        Response style: \(responseStyle(for: replyMode))
 
-        CURRENT TASK:
-        - Intent: \(intent.rawValue)
-        - Mode rule: \(modeInstruction(for: replyMode))
-        - Target length: \(targetLengthHint(for: replyMode))
-
-        CONVERSATION MEMORY:
+        MEMORY SUMMARY:
         \(compactMemoryBlock)
 
         FINANCIAL SNAPSHOT:
@@ -106,9 +95,12 @@ struct ChatPromptBuilder {
         Expenses: \(formatMoney(context.monthlyExpenses))
         Monthly net: \(formatMoney(context.monthlyBalance))
         Savings: \(formatMoney(context.currentSavings))
+        Debt: \(formatMoney(context.debtAmount))
+        Debt summary: \(context.debtSummary)
         Savings rate: \(formatPercent(context.savingsRate))
         Expense ratio: \(formatPercent(context.expenseRatio))
         Daily average spending: \(formatMoney(context.dailyAverageSpending))
+        Emergency fund months: \(context.emergencyFundMonths)
         Stability: \(context.stabilityLevel)
         Overspending: \(context.isOverspending ? "Yes" : "No")
         Discretionary ratio: \(formatPercent(context.discretionaryRatio))
@@ -116,13 +108,10 @@ struct ChatPromptBuilder {
         Budget overages: \(budgetOverageLine)
         Key insights: \(insightLine)
         Active goals: \(goalLine)
-        Debt summary: \(context.debtSummary)
 
         USER PROFILE:
-        Debt: \(formatMoney(context.debtAmount))
         Risk tolerance: \(context.riskTolerance)
         Knowledge level: \(context.knowledgeLevel)
-        Emergency fund months: \(context.emergencyFundMonths)
         Weak spending areas: \(weaknesses)
         Goals: short=\(context.shortTermGoal) | long=\(context.longTermGoal)
 
@@ -132,12 +121,8 @@ struct ChatPromptBuilder {
         \(purchaseIncomeLine)
         \(affordabilityLine)
 
-        RESPONSE REQUIREMENTS:
-        - Stay concise unless the mode says deepDive.
-        - If the question is simple, answer in one compact paragraph.
-        - Use bullets only if they make the answer clearer.
-        - Use at most one or two concrete numbers when they help.
-        - Give a practical next step when useful.
+        FINAL INSTRUCTION:
+        Answer naturally. If the answer is directly in the snapshot, say it clearly in the first sentence.
         """
     }
 
@@ -171,25 +156,14 @@ struct ChatPromptBuilder {
             .joined(separator: " | ")
     }
 
-    private func modeInstruction(for mode: ChatReplyMode) -> String {
+    private func responseStyle(for mode: ChatReplyMode) -> String {
         switch mode {
         case .social:
-            return "Reply with one short sentence, around 3-12 words."
+            return "friendly"
         case .concise:
-            return "Reply in 1-4 short sentences, around 30-90 words."
+            return "direct"
         case .deepDive:
-            return "Start with a direct answer, then give a short step-by-step breakdown. Stay under 220 words."
-        }
-    }
-
-    private func targetLengthHint(for mode: ChatReplyMode) -> String {
-        switch mode {
-        case .social:
-            return "3-12 words"
-        case .concise:
-            return "30-90 words"
-        case .deepDive:
-            return "90-220 words"
+            return "detailed"
         }
     }
 }

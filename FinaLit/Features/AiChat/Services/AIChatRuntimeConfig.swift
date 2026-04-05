@@ -20,4 +20,7 @@ enum AIChatRuntimeConfig {
         "gemini-2.5-flash",
         "gemini-2.0-flash"
     ]
+
+    // Keep this high so the app does not impose a short-answer cap.
+    static let maxOutputTokens: Int = 2048
 }
