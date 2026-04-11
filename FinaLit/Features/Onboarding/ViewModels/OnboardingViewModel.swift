@@ -80,9 +80,17 @@ class OnboardingViewModel {
     private let dbService: DatabaseService
     private let session: UserSession
 
+    private var appLanguage: AppLanguage {
+        session.currentAppLanguage
+    }
+
     init(dbService: DatabaseService, session: UserSession) {
         self.dbService = dbService
         self.session = session
+    }
+
+    private func localized(_ key: String, _ arguments: CVarArg...) -> String {
+        L10n.tr(key, language: appLanguage, arguments: arguments)
     }
 
     // MARK: - Validation
@@ -153,7 +161,7 @@ class OnboardingViewModel {
         }
 
         guard spendingWeaknesses.count < maxWeaknessSelections else {
-            errorMessage = "You can select up to \(maxWeaknessSelections) spending categories."
+            errorMessage = localized("You can select up to %d spending categories.", maxWeaknessSelections)
             return
         }
         spendingWeaknesses.append(weakness)
@@ -168,7 +176,7 @@ class OnboardingViewModel {
         }
 
         guard selectedHobbies.count < maxHobbySelections else {
-            errorMessage = "You can select up to \(maxHobbySelections) hobbies."
+            errorMessage = localized("You can select up to %d hobbies.", maxHobbySelections)
             return
         }
         selectedHobbies.append(hobby)
@@ -220,7 +228,7 @@ class OnboardingViewModel {
     // MARK: - Step Saves
     func saveStep1PersonalInfo() async -> Bool {
         guard isStep1Valid else {
-            errorMessage = "Please enter your name, age, and country."
+            errorMessage = localized("Please enter your name, age, and country.")
             return false
         }
         return await saveUserProfileProgress()
@@ -232,7 +240,7 @@ class OnboardingViewModel {
 
     func saveStep3Income() async -> Bool {
         guard isStep3Valid else {
-            errorMessage = "Please set your monthly income."
+            errorMessage = localized("Please set your monthly income.")
             return false
         }
         return await saveUserProfileProgress()
@@ -240,7 +248,7 @@ class OnboardingViewModel {
 
     func saveStep4Expenses() async -> Bool {
         guard isStep4Valid else {
-            errorMessage = "Please set at least one expense value."
+            errorMessage = localized("Please set at least one expense value.")
             return false
         }
         return await saveFinancialProfileProgress()
@@ -253,8 +261,8 @@ class OnboardingViewModel {
     func saveStep6Debt() async -> Bool {
         guard isStep6Valid else {
             errorMessage = hasDebt
-                ? "Add at least one debt with account name and amount."
-                : "Please confirm your debt status."
+                ? localized("Add at least one debt with account name and amount.")
+                : localized("Please confirm your debt status.")
             return false
         }
         return await saveFinancialProfileProgress()
@@ -266,7 +274,7 @@ class OnboardingViewModel {
 
     func saveStep8ShortTermGoal() async -> Bool {
         guard isStep8Valid else {
-            errorMessage = "Please set a short-term goal."
+            errorMessage = localized("Please set a short-term goal.")
             return false
         }
         return await saveFinancialProfileProgress()
@@ -274,7 +282,7 @@ class OnboardingViewModel {
 
     func saveStep9LongTermGoal() async -> Bool {
         guard isStep9Valid else {
-            errorMessage = "Please set a long-term goal."
+            errorMessage = localized("Please set a long-term goal.")
             return false
         }
         return await saveFinancialProfileProgress()
@@ -282,7 +290,7 @@ class OnboardingViewModel {
 
     func validateStep10Weaknesses() -> Bool {
         guard isStep10Valid else {
-            errorMessage = "Select at least one spending weakness."
+            errorMessage = localized("Select at least one spending weakness.")
             return false
         }
         return true
@@ -290,7 +298,7 @@ class OnboardingViewModel {
 
     func validateStep11Hobbies() -> Bool {
         guard isStep11Valid else {
-            errorMessage = "Select at least one hobby."
+            errorMessage = localized("Select at least one hobby.")
             return false
         }
         return true
@@ -298,17 +306,17 @@ class OnboardingViewModel {
 
     func completeOnboarding() async -> Bool {
         guard isStep10Valid else {
-            errorMessage = "Select at least one spending weakness."
+            errorMessage = localized("Select at least one spending weakness.")
             return false
         }
 
         guard isStep11Valid else {
-            errorMessage = "Select at least one hobby."
+            errorMessage = localized("Select at least one hobby.")
             return false
         }
 
         guard let uid = session.user?.id else {
-            errorMessage = "Session expired. Please log in again."
+            errorMessage = localized("Session expired. Please log in again.")
             return false
         }
 
@@ -351,7 +359,7 @@ class OnboardingViewModel {
     // MARK: - Private Saves
     private func saveUserProfileProgress() async -> Bool {
         guard let uid = session.user?.id else {
-            errorMessage = "Session expired. Please log in again."
+            errorMessage = localized("Session expired. Please log in again.")
             return false
         }
 
@@ -381,7 +389,7 @@ class OnboardingViewModel {
 
     private func saveFinancialProfileProgress() async -> Bool {
         guard let uid = session.user?.id else {
-            errorMessage = "Session expired. Please log in again."
+            errorMessage = localized("Session expired. Please log in again.")
             return false
         }
 

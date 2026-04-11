@@ -9,10 +9,15 @@ struct WeekDetailView: View {
     let weekID: String
 
     @Environment(LearnViewModel.self) private var learnVM
+    @Environment(AppPreferencesStore.self) private var preferences
     @Environment(Coordinator<LearnPages>.self) private var coordinator
 
     private var week: Week? {
         learnVM.publishedWeeks.first { $0.id == weekID }
+    }
+
+    private var localizedWeek: Week? {
+        week?.resolved(for: preferences.effectiveLearningLanguage)
     }
 
     var body: some View {
@@ -21,15 +26,15 @@ struct WeekDetailView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 24) {
-                    if let week {
+                    if let localizedWeek {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("WEEK \(week.weekNumber)")
+                            Text(L10n.tr("WEEK %@", preferences: preferences, String(localizedWeek.weekNumber)))
                                 .font(.system(size: 11, weight: .semibold))
                                 .foregroundStyle(AppTheme.accent)
-                            Text(week.title)
+                            Text(localizedWeek.title)
                                 .font(.system(size: 28, weight: .medium))
                                 .foregroundStyle(AppTheme.textPrimary)
-                            Text(week.description)
+                            Text(localizedWeek.description)
                                 .font(.system(size: 14))
                                 .foregroundStyle(AppTheme.textSecondary)
                         }
@@ -72,6 +77,11 @@ struct WeekDetailView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                LearningLanguageMenu()
+            }
+        }
         .task { await learnVM.loadWeek(weekID: weekID) }
     }
 

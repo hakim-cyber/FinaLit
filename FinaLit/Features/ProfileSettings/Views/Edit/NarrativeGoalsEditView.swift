@@ -22,6 +22,14 @@ struct NarrativeGoalsEditView: View {
         !isSaving
     }
 
+    private var appLanguage: AppLanguage {
+        session.currentAppLanguage
+    }
+
+    private func localized(_ key: String, _ arguments: CVarArg...) -> String {
+        L10n.tr(key, language: appLanguage, arguments: arguments)
+    }
+
     var body: some View {
         ProfileSettingsFormScaffold(
             title: "Goals",
@@ -65,14 +73,14 @@ struct NarrativeGoalsEditView: View {
 
     private func save() {
         guard let uid = session.user?.id else {
-            errorMessage = "Session expired. Please log in again."
+            errorMessage = localized("Session expired. Please log in again.")
             return
         }
 
         let trimmedShort = settingsTrimmed(shortTermGoal)
         let trimmedLong = settingsTrimmed(longTermGoal)
         guard !trimmedShort.isEmpty, !trimmedLong.isEmpty else {
-            errorMessage = "Both goals are required."
+            errorMessage = localized("Both goals are required.")
             return
         }
 
@@ -98,7 +106,7 @@ struct NarrativeGoalsEditView: View {
             do {
                 try dbService.saveFinancialProfile(updatedFinancial, uid: uid)
                 session.updateFinancialProfile(updatedFinancial)
-                successMessage = "Goals updated."
+                successMessage = localized("Goals updated.")
             } catch {
                 errorMessage = error.localizedDescription
             }

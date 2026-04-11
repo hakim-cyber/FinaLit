@@ -12,6 +12,7 @@ struct ContinueBanner: View {
 
     @Environment(Coordinator<LearnPages>.self) private var coordinator
     @Environment(LearnViewModel.self) private var learnVM
+    @Environment(AppPreferencesStore.self) private var preferences
 
     var body: some View {
         Button {
@@ -30,7 +31,7 @@ struct ContinueBanner: View {
                     Text("Continue where you left off")
                         .font(AppTheme.Typography.detail.weight(.semibold))
                         .foregroundStyle(AppTheme.accent)
-                    Text("Day \(dayNumber)")
+                    Text(L10n.tr("Day %@", preferences: preferences, String(dayNumber)))
                         .font(.system(size: 20, weight: .semibold))
                         .foregroundStyle(AppTheme.textPrimary)
                 }

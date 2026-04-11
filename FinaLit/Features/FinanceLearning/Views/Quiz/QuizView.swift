@@ -11,12 +11,17 @@ struct QuizView: View {
     let weekID: String
 
     @Environment(LearnViewModel.self) private var learnVM
+    @Environment(AppPreferencesStore.self) private var preferences
     @Environment(Coordinator<LearnPages>.self) private var coordinator
     @State private var showingExplanation = false
     @State private var selectedIndex: Int?
 
+    private var localizedQuiz: Quiz? {
+        learnVM.currentQuiz?.resolved(for: preferences.effectiveLearningLanguage)
+    }
+
     private var questions: [QuizQuestion] {
-        learnVM.currentQuiz?.questions ?? []
+        localizedQuiz?.questions ?? []
     }
 
     private var currentQuestion: QuizQuestion? {
@@ -141,6 +146,11 @@ struct QuizView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                LearningLanguageMenu()
+            }
+        }
         .task { await learnVM.loadQuiz(quizID: quizID) }
         .alert("Error", isPresented: isShowingErrorAlert) {
             Button("Try again") {

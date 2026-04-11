@@ -64,6 +64,11 @@ final class MainViewModel {
     }
 
     private var uid: String? { session.user?.id }
+    private var appLanguage: AppLanguage { session.currentAppLanguage }
+
+    private func localized(_ key: String, _ arguments: CVarArg...) -> String {
+        L10n.tr(key, language: appLanguage, arguments: arguments)
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
     // MARK: - Load Home
@@ -151,7 +156,7 @@ final class MainViewModel {
     func addTransaction() async -> Bool {
         guard let uid else { return false }
         guard let amount = parseMonetaryInput(formAmount), amount > 0 else {
-            errorMessage = "Please enter a valid amount."
+            errorMessage = localized("Please enter a valid amount.")
             return false
         }
 
@@ -276,12 +281,12 @@ final class MainViewModel {
 
         let remaining = max(goal.targetAmount - goal.currentAmount, 0)
         guard remaining > 0 else {
-            errorMessage = "This goal is already completed."
+            errorMessage = localized("This goal is already completed.")
             return false
         }
 
         guard amount > 0 else {
-            errorMessage = "Enter a valid contribution amount."
+            errorMessage = localized("Enter a valid contribution amount.")
             return false
         }
 
@@ -343,11 +348,11 @@ final class MainViewModel {
 
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedName.isEmpty else {
-            errorMessage = "Please enter a debt account name."
+            errorMessage = localized("Please enter a debt account name.")
             return false
         }
         guard balance > 0 else {
-            errorMessage = "Please enter a valid debt balance."
+            errorMessage = localized("Please enter a valid debt balance.")
             return false
         }
 
@@ -380,11 +385,11 @@ final class MainViewModel {
     func payDebt(account: DebtAccount, amount: Double, note: String = "") async -> Bool {
         guard let uid, let debtID = account.id else { return false }
         guard account.currentBalance > 0 else {
-            errorMessage = "This debt account is already paid."
+            errorMessage = localized("This debt account is already paid.")
             return false
         }
         guard amount > 0 else {
-            errorMessage = "Enter a valid payment amount."
+            errorMessage = localized("Enter a valid payment amount.")
             return false
         }
 
@@ -431,7 +436,7 @@ final class MainViewModel {
     func closeSelectedMonthAndRollover() async -> MonthCloseResult? {
         guard let uid else { return nil }
         guard let summary else {
-            errorMessage = "Month data is still loading. Try again in a moment."
+            errorMessage = localized("Month data is still loading. Try again in a moment.")
             return nil
         }
 
@@ -444,7 +449,7 @@ final class MainViewModel {
             let nextMonth = offsetMonth(closingMonth, by: 1)
 
             if try await db.isMonthClosed(uid: uid, month: closingMonth) {
-                errorMessage = "\(displayMonth(closingMonth)) is already closed."
+                errorMessage = localized("%@ is already closed.", displayMonth(closingMonth))
                 return nil
             }
 

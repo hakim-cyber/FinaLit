@@ -9,6 +9,7 @@ struct DayRowCard: View {
     let day: Day
     let weekID: String
     let progress: DayProgress?
+    @Environment(AppPreferencesStore.self) private var preferences
 
     private var isLocked: Bool { progress?.isUnlocked != true }
     private var isComplete: Bool { progress?.isFullyComplete == true }
@@ -28,7 +29,7 @@ struct DayRowCard: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 6) {
-                    Text(day.isReflection ? "Reflection Day" : "Day \(day.dayNumber)")
+                    Text(day.isReflection ? "Reflection Day" : L10n.tr("Day %@", preferences: preferences, String(day.dayNumber)))
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(isLocked ? AppTheme.textTertiary : AppTheme.textPrimary)
                     if day.isReflection {
@@ -51,7 +52,7 @@ struct DayRowCard: View {
                 if let score = progress?.quizScore,
                    let total = progress?.totalQuestions,
                    quizDone {
-                    Text("\(score)/\(total) correct")
+                    Text(L10n.tr("%@/%@ correct", preferences: preferences, String(score), String(total)))
                         .font(.system(size: 11))
                         .foregroundStyle(progress?.isPassed == true ? AppTheme.success : AppTheme.danger)
                 }

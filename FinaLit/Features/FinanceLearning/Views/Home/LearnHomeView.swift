@@ -91,6 +91,9 @@ struct LearnHomeView: View {
                 }
              
             }
+            ToolbarItem(placement: .topBarTrailing) {
+                LearningLanguageMenu()
+            }
             if #available(iOS 26.0, *) {
                 ToolbarSpacer(.flexible, placement: .topBarTrailing)
             }

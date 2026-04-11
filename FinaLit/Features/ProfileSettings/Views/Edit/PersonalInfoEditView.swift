@@ -25,6 +25,14 @@ struct PersonalInfoEditView: View {
         !isSaving
     }
 
+    private var appLanguage: AppLanguage {
+        session.currentAppLanguage
+    }
+
+    private func localized(_ key: String, _ arguments: CVarArg...) -> String {
+        L10n.tr(key, language: appLanguage, arguments: arguments)
+    }
+
     var body: some View {
         ProfileSettingsFormScaffold(
             title: "Personal Info",
@@ -117,14 +125,14 @@ struct PersonalInfoEditView: View {
 
     private func save() {
         guard let uid = session.user?.id else {
-            errorMessage = "Session expired. Please log in again."
+            errorMessage = localized("Session expired. Please log in again.")
             return
         }
 
         let trimmedName = settingsTrimmed(name)
         let trimmedCountry = settingsTrimmed(country)
         guard !trimmedName.isEmpty, !trimmedCountry.isEmpty else {
-            errorMessage = "Name and country are required."
+            errorMessage = localized("Name and country are required.")
             return
         }
 
@@ -147,7 +155,7 @@ struct PersonalInfoEditView: View {
                 try await dbService.updateUser(uid: uid, data: ["name": trimmedName])
                 session.updateProfile(updatedProfile)
                 session.updateName(trimmedName)
-                successMessage = "Personal info updated."
+                successMessage = localized("Personal info updated.")
             } catch {
                 errorMessage = error.localizedDescription
             }

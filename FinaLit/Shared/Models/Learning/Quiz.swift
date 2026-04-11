@@ -11,6 +11,7 @@ struct Quiz: Codable,Identifiable  {
     var weekNumber: Int
     var dayNumber: Int
     var questions: [QuizQuestion]
+    var translations: LocalizedContent<QuizTranslationPayload>? = nil
 
     func normalizedQuestionIDs() -> Quiz {
         var copy = self
@@ -19,6 +20,45 @@ struct Quiz: Codable,Identifiable  {
                 fallback: "w\(weekNumber)-d\(dayNumber)-q\(index + 1)"
             )
         }
+        return copy
+    }
+
+    func resolved(for language: AppLanguage, fallback: AppLanguage = .en) -> Quiz {
+        guard let translation = translations?.value(for: language) ?? translations?.value(for: fallback) else {
+            return self
+        }
+
+        guard translation.questions.count == questions.count else {
+            return self
+        }
+
+        let translationByID = Dictionary(uniqueKeysWithValues: translation.questions.map { ($0.id, $0) })
+        let translatedQuestions = questions.map { question -> QuizQuestion in
+            guard let translated = translationByID[question.id] else {
+                return question
+            }
+
+            let translatedQuestionText = translated.questionText.trimmingCharacters(in: .whitespacesAndNewlines)
+            let translatedType = translated.type.trimmingCharacters(in: .whitespacesAndNewlines)
+            let translatedExplanation = translated.explanation.trimmingCharacters(in: .whitespacesAndNewlines)
+            let translatedOptions = translated.options.map {
+                $0.trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+
+            return QuizQuestion(
+                id: question.id,
+                questionText: translatedQuestionText.isEmpty ? question.questionText : translatedQuestionText,
+                type: translatedType.isEmpty ? question.type : translatedType,
+                options: translatedOptions.count == question.options.count && translatedOptions.allSatisfy({ !$0.isEmpty })
+                    ? translatedOptions
+                    : question.options,
+                correctIndex: question.correctIndex,
+                explanation: translatedExplanation.isEmpty ? question.explanation : translatedExplanation
+            )
+        }
+
+        var copy = self
+        copy.questions = translatedQuestions
         return copy
     }
 }

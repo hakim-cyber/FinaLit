@@ -17,6 +17,7 @@ struct OnboardingStepScaffold<Content: View>: View {
     @ViewBuilder let content: () -> Content
 
     @Environment(Coordinator<OnboardingPages>.self) private var coordinator
+    @Environment(AppPreferencesStore.self) private var preferences
 
     var body: some View {
         ZStack {
@@ -49,6 +50,31 @@ struct OnboardingStepScaffold<Content: View>: View {
                                 Text("STEP \(page.stepNumber) OF \(OnboardingPages.totalSteps)")
                                     .font(AppTheme.Typography.badge)
                                     .foregroundStyle(OnboardingPalette.muted)
+
+                                Menu {
+                                    ForEach(AppLanguage.allCases) { language in
+                                        Button {
+                                            preferences.setAppLanguage(language)
+                                        } label: {
+                                            if preferences.appLanguage == language {
+                                                Label(language.nativeDisplayName, systemImage: "checkmark")
+                                            } else {
+                                                Text(language.nativeDisplayName)
+                                            }
+                                        }
+                                    }
+                                } label: {
+                                    Image(systemName: "globe")
+                                        .font(.system(size: 13, weight: .semibold))
+                                        .foregroundStyle(AppTheme.textPrimary)
+                                        .frame(width: 34, height: 34)
+                                        .background(OnboardingPalette.surface, in: RoundedRectangle(cornerRadius: 10))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(OnboardingPalette.border, lineWidth: 1)
+                                        )
+                                }
+                                .buttonStyle(.plain)
                             }
 
                             ProgressView(value: Double(page.stepNumber), total: Double(OnboardingPages.totalSteps))

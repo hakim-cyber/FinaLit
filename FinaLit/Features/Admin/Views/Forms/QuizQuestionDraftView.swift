@@ -84,6 +84,80 @@ struct QuizQuestionDraftView: View {
                     set: { adminVM.questions[index].explanation = $0 }
                 )
             )
+
+            AdminTranslationSection(title: "AZERBAIJANI TRANSLATION (OPTIONAL)") {
+                AdminTextArea(
+                    label: "QUESTION TEXT (AZ)",
+                    placeholder: "Sual mətni...",
+                    text: Binding(
+                        get: { adminVM.questions[safe: index]?.questionTextAZ ?? "" },
+                        set: { adminVM.questions[index].questionTextAZ = $0 }
+                    )
+                )
+
+                VStack(spacing: 8) {
+                    ForEach(0..<4, id: \.self) { optionIndex in
+                        TextField(
+                            "Option \(["A", "B", "C", "D"][optionIndex]) (AZ)",
+                            text: Binding(
+                                get: { adminVM.questions[safe: index]?.optionsAZ[safe: optionIndex] ?? "" },
+                                set: { adminVM.questions[index].optionsAZ[optionIndex] = $0 }
+                            )
+                        )
+                        .font(.system(size: 14))
+                        .foregroundStyle(.white)
+                    }
+                }
+                .padding(12)
+                .background(Color(hex: "0D0D14"))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                AdminTextArea(
+                    label: "EXPLANATION (AZ)",
+                    placeholder: "İzah...",
+                    text: Binding(
+                        get: { adminVM.questions[safe: index]?.explanationAZ ?? "" },
+                        set: { adminVM.questions[index].explanationAZ = $0 }
+                    )
+                )
+            }
+
+            AdminTranslationSection(title: "RUSSIAN TRANSLATION (OPTIONAL)") {
+                AdminTextArea(
+                    label: "QUESTION TEXT (RU)",
+                    placeholder: "Текст вопроса...",
+                    text: Binding(
+                        get: { adminVM.questions[safe: index]?.questionTextRU ?? "" },
+                        set: { adminVM.questions[index].questionTextRU = $0 }
+                    )
+                )
+
+                VStack(spacing: 8) {
+                    ForEach(0..<4, id: \.self) { optionIndex in
+                        TextField(
+                            "Option \(["A", "B", "C", "D"][optionIndex]) (RU)",
+                            text: Binding(
+                                get: { adminVM.questions[safe: index]?.optionsRU[safe: optionIndex] ?? "" },
+                                set: { adminVM.questions[index].optionsRU[optionIndex] = $0 }
+                            )
+                        )
+                        .font(.system(size: 14))
+                        .foregroundStyle(.white)
+                    }
+                }
+                .padding(12)
+                .background(Color(hex: "0D0D14"))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                AdminTextArea(
+                    label: "EXPLANATION (RU)",
+                    placeholder: "Объяснение...",
+                    text: Binding(
+                        get: { adminVM.questions[safe: index]?.explanationRU ?? "" },
+                        set: { adminVM.questions[index].explanationRU = $0 }
+                    )
+                )
+            }
         }
         .padding(14)
         .background(Color(hex: "0D0D14"))

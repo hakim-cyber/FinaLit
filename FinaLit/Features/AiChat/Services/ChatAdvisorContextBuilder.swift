@@ -8,10 +8,13 @@
 import Foundation
 
 struct ChatAdvisorContextBuilder {
-    func analyzeMessage(_ message: String) -> ChatMessageAnalysis {
+    func analyzeMessage(
+        _ message: String,
+        preferredLanguage: AppLanguage = .default
+    ) -> ChatMessageAnalysis {
         let normalized = normalizeMessage(message)
 
-        if let localReply = localSocialReply(for: normalized) {
+        if let localReply = localSocialReply(for: normalized, language: preferredLanguage) {
             return ChatMessageAnalysis(
                 intent: .general,
                 replyMode: .social,
@@ -193,25 +196,47 @@ struct ChatAdvisorContextBuilder {
         return "Debt total: \(formatCurrency(debtAmount))."
     }
 
-    private func localSocialReply(for normalized: String) -> String? {
+    private func localSocialReply(for normalized: String, language: AppLanguage) -> String? {
         guard !normalized.isEmpty, !containsFinanceKeywords(normalized) else { return nil }
 
         let greetingPhrases = [
             "hi", "hello", "hey", "hi there", "hey there",
-            "good morning", "good afternoon", "good evening", "salam"
+            "good morning", "good afternoon", "good evening", "salam",
+            "salam necesen", "salam neceksen", "привет", "здравствуйте", "добрый день"
         ]
         if greetingPhrases.contains(normalized) {
-            return "Hi, how can I help?"
+            switch language {
+            case .az:
+                return "Salam, necə kömək edə bilərəm?"
+            case .ru:
+                return "Здравствуйте, чем могу помочь?"
+            case .en:
+                return "Hi, how can I help?"
+            }
         }
 
-        let thanksPhrases = ["thanks", "thank you", "thx", "thanks a lot"]
+        let thanksPhrases = ["thanks", "thank you", "thx", "thanks a lot", "tesekkur", "təşəkkür", "спасибо"]
         if thanksPhrases.contains(normalized) {
-            return "You're welcome."
+            switch language {
+            case .az:
+                return "Buyurun."
+            case .ru:
+                return "Пожалуйста."
+            case .en:
+                return "You're welcome."
+            }
         }
 
-        let byePhrases = ["bye", "goodbye", "see you", "see ya", "later", "talk later"]
+        let byePhrases = ["bye", "goodbye", "see you", "see ya", "later", "talk later", "gorusenedek", "görüşənədək", "пока", "до свидания"]
         if byePhrases.contains(normalized) {
-            return "See you soon."
+            switch language {
+            case .az:
+                return "Görüşənədək."
+            case .ru:
+                return "До скорого."
+            case .en:
+                return "See you soon."
+            }
         }
 
         return nil

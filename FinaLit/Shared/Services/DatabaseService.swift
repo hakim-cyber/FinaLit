@@ -40,6 +40,10 @@ final class DatabaseService {
         let behaviorProfile: BehaviorProfile
     }
 
+    private struct UserPreferencesPatch: Codable {
+        let preferences: UserPreferences
+    }
+
     // MARK: - User
 
     /// Called once after register — creates the user document in Firestore
@@ -83,6 +87,10 @@ final class DatabaseService {
 
     func saveBehaviorProfile(_ profile: BehaviorProfile, uid: String) throws {
         try userDocument(uid).setData(from: BehaviorProfilePatch(behaviorProfile: profile), merge: true)
+    }
+
+    func saveUserPreferences(_ preferences: UserPreferences, uid: String) async throws {
+        try userDocument(uid).setData(from: UserPreferencesPatch(preferences: preferences), merge: true)
     }
 
     // MARK: - Account Cleanup

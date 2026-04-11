@@ -71,25 +71,33 @@ class AuthViewModel {
     private let dbService: DatabaseService
     private let session: UserSession
 
+    private var appLanguage: AppLanguage {
+        session.currentAppLanguage
+    }
+
     init(authService: AuthService, dbService: DatabaseService, session: UserSession) {
         self.authService = authService
         self.dbService   = dbService
         self.session     = session
     }
 
+    private func localized(_ key: String, _ arguments: CVarArg...) -> String {
+        L10n.tr(key, language: appLanguage, arguments: arguments)
+    }
+
     // MARK: - Register
     func register() async {
         guard isRegisterFormValid else {
             if trimmedName.isEmpty {
-                errorMessage = "Please enter your name."
+                errorMessage = localized("Please enter your name.")
             } else if !isEmailValid {
-                errorMessage = "Please enter a valid email address."
+                errorMessage = localized("Please enter a valid email address.")
             } else if password.count < 8 {
-                errorMessage = "Password must be at least 8 characters."
+                errorMessage = localized("Password must be at least 8 characters.")
             } else if password != confirmPassword {
-                errorMessage = "Passwords do not match."
+                errorMessage = localized("Passwords do not match.")
             } else {
-                errorMessage = "Please fill in all fields."
+                errorMessage = localized("Please fill in all fields.")
             }
             return
         }
@@ -103,10 +111,10 @@ class AuthViewModel {
 
             do {
                 try await authService.sendCurrentUserEmailVerification()
-                postRegistrationVerificationAlert = "Your FinaLit account was created and we sent a verification email. Verify your address, then log in."
+                postRegistrationVerificationAlert = localized("Your FinaLit account was created and we sent a verification email. Verify your address, then log in.")
                 shouldReturnToLoginAfterRegister = true
             } catch {
-                errorMessage = "Your account was created, but we couldn't send the verification email. Try logging in to resend it."
+                errorMessage = localized("Your account was created, but we couldn't send the verification email. Try logging in to resend it.")
             }
 
             try? authService.signOut()
@@ -122,7 +130,7 @@ class AuthViewModel {
     // MARK: - Login
     func login() async {
         guard isLoginFormValid else {
-            errorMessage = "Please enter a valid email and password."
+            errorMessage = localized("Please enter a valid email and password.")
             return
         }
 
@@ -140,8 +148,8 @@ class AuthViewModel {
                 session.signOut()
                 lastAuthError = .emailNotVerified
                 errorMessage = resentVerification
-                    ? AuthError.emailNotVerified.errorDescription
-                    : "Verify your email first, then log in again."
+                    ? localizedAuthError(.emailNotVerified)
+                    : localized("Verify your email first, then log in again.")
                 return
             }
 
@@ -156,7 +164,8 @@ class AuthViewModel {
                     id: uid,
                     email: trimmedEmail,
                     name: fallbackName,
-                    createdAt: .now
+                    createdAt: .now,
+                    preferences: UserPreferences(appLanguage: .default)
                 )
                 try dbService.createUser(recoveredUser)
                 user = recoveredUser
@@ -177,7 +186,7 @@ class AuthViewModel {
     func sendPasswordReset(to rawEmail: String) async {
         let trimmedEmail = rawEmail.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedEmail.isEmpty else {
-            errorMessage = "Please enter your email address."
+            errorMessage = localized("Please enter your email address.")
             return
         }
 
@@ -188,7 +197,7 @@ class AuthViewModel {
 
         do {
             try await authService.sendPasswordReset(email: trimmedEmail)
-            successMessage = "Password reset email sent. Check your inbox."
+            successMessage = localized("Password reset email sent. Check your inbox.")
         } catch {
             handleError(error)
         }
@@ -287,7 +296,7 @@ class AuthViewModel {
     // MARK: - Delete Account
     func deleteAccount() async {
         guard let uid = session.user?.id else {
-            errorMessage = "Session expired. Please log in again."
+            errorMessage = localized("Session expired. Please log in again.")
             return
         }
 
@@ -306,12 +315,12 @@ class AuthViewModel {
     func reauthenticateForAccountDeletion(password: String) async -> Bool {
         let trimmedPassword = password.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedPassword.isEmpty else {
-            errorMessage = "Please enter your password."
+            errorMessage = localized("Please enter your password.")
             return false
         }
 
         guard let email = session.user?.email, !email.isEmpty else {
-            errorMessage = "Email is unavailable for this account."
+            errorMessage = localized("Email is unavailable for this account.")
             return false
         }
 
@@ -321,7 +330,7 @@ class AuthViewModel {
 
         do {
             try await authService.reauthenticateCurrentUser(email: email, password: trimmedPassword)
-            successMessage = "Identity confirmed."
+            successMessage = localized("Identity confirmed.")
             return true
         } catch {
             handleError(error)
@@ -379,7 +388,8 @@ class AuthViewModel {
                 createdAt: .now,
                 profile: nil,
                 financialProfile: nil,
-                behaviorProfile: nil
+                behaviorProfile: nil,
+                preferences: UserPreferences(appLanguage: .default)
             )
 
             do {
@@ -408,11 +418,54 @@ class AuthViewModel {
                 return
             }
             lastAuthError = authError
-            errorMessage = authError.errorDescription
+            errorMessage = localizedAuthError(authError)
             return
         }
 
         lastAuthError = nil
         errorMessage = error.localizedDescription
+    }
+
+    private func localizedAuthError(_ authError: AuthError) -> String? {
+        switch authError {
+        case .invalidEmail:
+            return localized("Please enter a valid email address.")
+        case .wrongPassword:
+            return localized("Incorrect password. Please try again.")
+        case .invalidCredential:
+            return localized("Incorrect credentials. Please try again.")
+        case .userNotFound:
+            return localized("No account found with this email.")
+        case .emailAlreadyInUse:
+            return localized("An account with this email already exists.")
+        case .weakPassword:
+            return localized("Password must be at least 8 characters.")
+        case .emailNotVerified:
+            return localized("Verify your email first. We sent a new verification link.")
+        case .networkError:
+            return localized("Network error. Please check your connection.")
+        case .tooManyRequests:
+            return localized("Too many attempts. Try again in a moment.")
+        case .requiresRecentLogin:
+            return localized("Please confirm your password before deleting your account.")
+        case .noAuthenticatedUser:
+            return localized("No active account session was found.")
+        case .missingGoogleClientID:
+            return localized("Google Sign-In is not configured. Download a fresh GoogleService-Info.plist and add its URL scheme.")
+        case .missingIdentityToken:
+            return localized("The identity provider did not return a valid sign-in token.")
+        case .missingProviderEmail:
+            return localized("The sign-in provider did not return an email address.")
+        case .invalidAppleCredential:
+            return localized("Apple Sign-In returned an invalid credential.")
+        case .unableToPresentSocialSignIn:
+            return localized("Unable to open the sign-in sheet right now. Please try again.")
+        case .providerUnavailable(let message):
+            return message
+        case .cancelled:
+            return nil
+        case .unknown(let message):
+            return message
+        }
     }
 }

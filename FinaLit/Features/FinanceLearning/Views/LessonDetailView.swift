@@ -13,6 +13,7 @@ struct LessonDetailView: View {
     let weekID: String
 
     @Environment(LearnViewModel.self)          private var learnVM
+    @Environment(AppPreferencesStore.self) private var preferences
     @Environment(Coordinator<LearnPages>.self) private var coordinator
 
     private var dayProgress: DayProgress? {
@@ -43,13 +44,17 @@ struct LessonDetailView: View {
         return "I've read this ✓"
     }
 
+    private var localizedLesson: Lesson? {
+        learnVM.currentLesson?.resolved(for: preferences.effectiveLearningLanguage)
+    }
+
     var body: some View {
         ZStack(alignment: .bottom) {
             AppTheme.background.ignoresSafeArea()
 
             if learnVM.isLoadingLesson {
                 LearnLoadingView()
-            } else if let lesson = learnVM.currentLesson {
+            } else if let lesson = localizedLesson {
                 ScrollView(showsIndicators: false) {
                     LazyVStack(alignment: .leading, spacing: 0) {
                         lessonHeader(lesson)
@@ -128,6 +133,11 @@ struct LessonDetailView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                LearningLanguageMenu()
+            }
+        }
         .task { await learnVM.loadLesson(lessonID: lessonID) }
     }
 
@@ -291,7 +301,7 @@ struct LessonDetailView: View {
                     .foregroundStyle(AppTheme.textSecondary)
                 Text("·")
                     .foregroundStyle(AppTheme.textTertiary)
-                Label("Day \(lesson.dayNumber)", systemImage: "calendar")
+                Label(L10n.tr("Day %@", preferences: preferences, String(lesson.dayNumber)), systemImage: "calendar")
                     .font(.system(size: 12))
                     .foregroundStyle(AppTheme.textSecondary)
             }

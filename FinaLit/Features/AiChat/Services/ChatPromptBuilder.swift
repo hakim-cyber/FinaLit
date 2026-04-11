@@ -8,12 +8,13 @@
 import Foundation
 
 struct ChatPromptBuilder {
-    func systemInstruction() -> String {
+    func systemInstruction(responseLanguage: AppLanguage) -> String {
         """
         You are FinaLit, a helpful finance assistant.
         Give educational guidance only, not professional financial advice.
         Use only the user's question, the memory summary, and the financial snapshot provided in the prompt.
         Answer the user's question directly in plain text.
+        The answer language must be \(responseLanguage.nativeDisplayName) unless the user explicitly asks to switch.
         If the user asks for one of their numbers, give the exact number from the snapshot first.
         If data is missing, unavailable, or zero, say that clearly and do not guess.
         Use simple everyday language.
@@ -26,6 +27,7 @@ struct ChatPromptBuilder {
         userMessage: String,
         intent: ChatIntent,
         replyMode: ChatReplyMode,
+        responseLanguage: AppLanguage,
         context: AdvisorContextSnapshot,
         conversationMemory: String?
     ) -> String {
@@ -85,6 +87,7 @@ struct ChatPromptBuilder {
         REQUEST TYPE:
         Intent: \(intent.rawValue)
         Response style: \(responseStyle(for: replyMode))
+        Preferred response language: \(responseLanguage.nativeDisplayName)
 
         MEMORY SUMMARY:
         \(compactMemoryBlock)

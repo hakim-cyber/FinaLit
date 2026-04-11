@@ -13,6 +13,13 @@ struct AddLessonView: View {
     var body: some View {
         var adminVM = Bindable(adminVM)
         AdminFormView(title: "Add Lesson", icon: "book.fill") {
+            AdminField(label: "DOCUMENT ID (OPTIONAL)", placeholder: "Reuse an existing lesson ID to update the same document", text: adminVM.lessonDocumentID)
+            Button("Load Existing Lesson") {
+                Task { _ = await self.adminVM.loadLessonForEditing() }
+            }
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(Color(hex: "6366F1"))
+            .frame(maxWidth: .infinity, alignment: .leading)
             HStack(spacing: 12) {
                 AdminField(label: "WEEK #", placeholder: "1", text: adminVM.lessonWeekNumber)
                     .keyboardType(.numberPad)
@@ -22,6 +29,26 @@ struct AddLessonView: View {
 
             AdminField(label: "CATEGORY", placeholder: "Budgeting", text: adminVM.lessonCategory)
             AdminField(label: "TITLE", placeholder: "Opportunity Cost", text: adminVM.lessonTitle)
+            AdminTranslationSection(title: "AZERBAIJANI TRANSLATION (OPTIONAL)") {
+                AdminField(label: "CATEGORY (AZ)", placeholder: "Büdcə", text: adminVM.lessonCategoryAZ)
+                AdminField(label: "TITLE (AZ)", placeholder: "Alternativ dəyər", text: adminVM.lessonTitleAZ)
+                AdminTextArea(
+                    label: "BODY / ARTICLE CONTENT (AZ)",
+                    placeholder: "Dərsin Azərbaycan dilində mətni...",
+                    text: adminVM.lessonBodyAZ,
+                    minHeight: 180
+                )
+            }
+            AdminTranslationSection(title: "RUSSIAN TRANSLATION (OPTIONAL)") {
+                AdminField(label: "CATEGORY (RU)", placeholder: "Бюджет", text: adminVM.lessonCategoryRU)
+                AdminField(label: "TITLE (RU)", placeholder: "Альтернативная стоимость", text: adminVM.lessonTitleRU)
+                AdminTextArea(
+                    label: "BODY / ARTICLE CONTENT (RU)",
+                    placeholder: "Текст урока на русском...",
+                    text: adminVM.lessonBodyRU,
+                    minHeight: 180
+                )
+            }
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("DIFFICULTY")

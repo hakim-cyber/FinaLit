@@ -9,6 +9,7 @@ struct ScoreCard: View {
     let score: Int
     let total: Int
     let passed: Bool
+    @Environment(AppPreferencesStore.self) private var preferences
 
     private var percentage: Int {
         total > 0 ? Int((Double(score) / Double(total)) * 100) : 0
@@ -20,7 +21,7 @@ struct ScoreCard: View {
                 Text("\(score)/\(total)")
                     .font(.system(size: 56, weight: .medium))
                     .foregroundStyle(AppTheme.textPrimary)
-                Text("\(percentage)% correct")
+                Text(L10n.tr("%@%% correct", preferences: preferences, String(percentage)))
                     .font(.system(size: 14))
                     .foregroundStyle(passed ? AppTheme.success : AppTheme.danger)
             }

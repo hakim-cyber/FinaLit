@@ -13,6 +13,13 @@ struct AddQuizView: View {
     var body: some View {
         var adminVM = Bindable(adminVM)
         AdminFormView(title: "Add Quiz", icon: "questionmark.circle.fill") {
+            AdminField(label: "DOCUMENT ID (OPTIONAL)", placeholder: "Reuse an existing quiz ID to update the same document", text: adminVM.quizDocumentID)
+            Button("Load Existing Quiz") {
+                Task { _ = await self.adminVM.loadQuizForEditing() }
+            }
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(Color(hex: "6366F1"))
+            .frame(maxWidth: .infinity, alignment: .leading)
             HStack(spacing: 12) {
                 AdminField(label: "WEEK #", placeholder: "1", text: adminVM.quizWeekNumber)
                     .keyboardType(.numberPad)

@@ -20,6 +20,15 @@ extension DatabaseService {
         }
     }
 
+    func fetchWeek(weekID: String) async throws -> Week {
+        guard !weekID.isEmpty else { throw DBError.invalidDocumentID }
+
+        let snapshot = try await weeksCollection.document(weekID).getDocument()
+        guard snapshot.exists else { throw DBError.notFound }
+
+        return try snapshot.data(as: Week.self)
+    }
+
     // MARK: - Admin: Create Week
     func createWeek(_ week: Week) throws {
         guard let id = week.id, !id.isEmpty else { throw DBError.invalidDocumentID }
@@ -48,6 +57,15 @@ extension DatabaseService {
     func createDailyTip(_ tip: DailyTip) throws {
         guard let id = tip.id, !id.isEmpty else { throw DBError.invalidDocumentID }
         try dailyTipsCollection.document(id).setData(from: tip)
+    }
+
+    func fetchDailyTip(tipID: String) async throws -> DailyTip {
+        guard !tipID.isEmpty else { throw DBError.invalidDocumentID }
+
+        let snapshot = try await dailyTipsCollection.document(tipID).getDocument()
+        guard snapshot.exists else { throw DBError.notFound }
+
+        return try snapshot.data(as: DailyTip.self)
     }
 
     // MARK: - Admin: Publish / Unpublish Week

@@ -10,6 +10,7 @@ import SwiftUI
 struct ProfileSettingsHomeView: View {
     @Environment(UserSession.self) private var session
     @Environment(AuthViewModel.self) private var authViewModel
+    @Environment(AppPreferencesStore.self) private var preferences
     @Environment(Coordinator<SettingsPages>.self) private var coordinator
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
@@ -32,6 +33,10 @@ struct ProfileSettingsHomeView: View {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "0"
         return "v\(version) (\(build))"
+    }
+
+    private func localized(_ key: String, _ arguments: CVarArg...) -> String {
+        L10n.tr(key, language: preferences.appLanguage, arguments: arguments)
     }
 
     var body: some View {
@@ -67,6 +72,36 @@ struct ProfileSettingsHomeView: View {
                             icon: "target",
                             action: { coordinator.push(.goals) }
                         )
+                    }
+
+                    SettingsSectionCard(title: "LANGUAGE") {
+                        SettingsLanguageMenuRow(
+                            title: "App Language",
+                            subtitle: "Changes labels, alerts, onboarding, and assistant defaults",
+                            value: preferences.appLanguage.nativeDisplayName,
+                            icon: "globe",
+                            options: AppLanguage.allCases.map { ($0.nativeDisplayName, $0.rawValue) }
+                        ) { selectedValue in
+                            guard let language = AppLanguage(rawValue: selectedValue) else { return }
+                            preferences.setAppLanguage(language)
+                        }
+
+                        Divider()
+                            .overlay(ProfileSettingsPalette.border)
+
+                        SettingsLanguageMenuRow(
+                            title: "Learning Content",
+                            subtitle: "Lesson, quiz, week, and tip language",
+                            value: learningContentLabel,
+                            icon: "book.closed.fill",
+                            options: learningOptions
+                        ) { selectedValue in
+                            if selectedValue == "followApp" {
+                                preferences.setLearningLanguagePreference(.followApp)
+                            } else if let language = AppLanguage(rawValue: selectedValue) {
+                                preferences.setLearningLanguagePreference(.specific(language))
+                            }
+                        }
                     }
 
                     SettingsSectionCard(title: "APP & ACCOUNT") {
@@ -185,8 +220,8 @@ struct ProfileSettingsHomeView: View {
     private func sendPasswordReset() {
         guard let email = session.user?.email, !email.isEmpty else {
             presentFeedback(
-                title: "Reset unavailable",
-                message: "No email address is available for this account."
+                title: localized("Reset unavailable"),
+                message: localized("No email address is available for this account.")
             )
             return
         }
@@ -198,13 +233,13 @@ struct ProfileSettingsHomeView: View {
             isSendingPasswordReset = false
 
             if let error = authViewModel.errorMessage, !error.isEmpty {
-                presentFeedback(title: "Reset failed", message: error)
+                presentFeedback(title: localized("Reset failed"), message: error)
                 return
             }
 
             presentFeedback(
-                title: "Reset email sent",
-                message: authViewModel.successMessage ?? "Check your inbox for reset instructions."
+                title: localized("Reset email sent"),
+                message: authViewModel.successMessage ?? localized("Check your inbox for reset instructions.")
             )
         }
     }
@@ -222,7 +257,7 @@ struct ProfileSettingsHomeView: View {
                     showReauthSheet = true
                     return
                 }
-                presentFeedback(title: "Delete failed", message: error)
+                presentFeedback(title: localized("Delete failed"), message: error)
                 return
             }
 
@@ -239,8 +274,8 @@ struct ProfileSettingsHomeView: View {
 
             guard isVerified else {
                 presentFeedback(
-                    title: "Verification failed",
-                    message: authViewModel.errorMessage ?? "Please try again."
+                    title: localized("Verification failed"),
+                    message: authViewModel.errorMessage ?? localized("Please try again.")
                 )
                 return
             }
@@ -253,7 +288,10 @@ struct ProfileSettingsHomeView: View {
 
     private func openLegalLink(_ url: URL?, name: String) {
         guard let url else {
-            presentFeedback(title: "\(name) unavailable", message: "Link is not configured.")
+            presentFeedback(
+                title: localized("%@ unavailable", name),
+                message: localized("Link is not configured.")
+            )
             return
         }
 
@@ -261,8 +299,8 @@ struct ProfileSettingsHomeView: View {
             if !accepted {
                 Task { @MainActor in
                     presentFeedback(
-                        title: "\(name) unavailable",
-                        message: "Unable to open this link right now."
+                        title: localized("%@ unavailable", name),
+                        message: localized("Unable to open this link right now.")
                     )
                 }
             }
@@ -273,6 +311,24 @@ struct ProfileSettingsHomeView: View {
         feedbackTitle = title
         feedbackMessage = message
         showFeedback = true
+    }
+
+    private var learningOptions: [(String, String)] {
+        [(L10n.tr("Follow App", language: preferences.appLanguage), "followApp")]
+            + AppLanguage.allCases.map { ($0.nativeDisplayName, $0.rawValue) }
+    }
+
+    private var learningContentLabel: String {
+        switch preferences.learningLanguagePreference {
+        case .followApp:
+            return L10n.tr(
+                "Follow App (%@)",
+                language: preferences.appLanguage,
+                preferences.appLanguage.nativeDisplayName
+            )
+        case .specific(let language):
+            return language.nativeDisplayName
+        }
     }
 
     private var reauthSheet: some View {
@@ -297,7 +353,7 @@ struct ProfileSettingsHomeView: View {
                                     .progressViewStyle(.circular)
                                     .tint(AppTheme.inverseText)
                             }
-                            Text(isReauthenticating ? "Verifying..." : "Verify & Delete")
+                            Text(isReauthenticating ? localized("Verifying...") : localized("Verify & Delete"))
                         }
                     }
                     .buttonStyle(AppFilledButtonStyle(tone: .danger))
@@ -399,6 +455,42 @@ private struct SettingsValueRow: View {
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(AppTheme.textSecondary)
         }
+    }
+}
+
+private struct SettingsLanguageMenuRow: View {
+    let title: String
+    let subtitle: String
+    let value: String
+    let icon: String
+    let options: [(label: String, value: String)]
+    let onSelect: (String) -> Void
+
+    var body: some View {
+        Menu {
+            ForEach(options, id: \.value) { option in
+                Button(option.label) {
+                    onSelect(option.value)
+                }
+            }
+        } label: {
+            SettingsRowShell(
+                title: title,
+                subtitle: subtitle,
+                icon: icon,
+                iconTint: AppTheme.accent
+            ) {
+                HStack(spacing: 8) {
+                    Text(value)
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(AppTheme.textSecondary)
+                    Image(systemName: "chevron.up.chevron.down")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(ProfileSettingsPalette.muted)
+                }
+            }
+        }
+        .buttonStyle(.plain)
     }
 }
 

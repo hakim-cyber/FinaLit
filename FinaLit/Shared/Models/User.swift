@@ -17,6 +17,7 @@ struct User: Codable, Identifiable {
     var isAdmin:          Bool = false
     var financialProfile: FinancialProfile?
     var behaviorProfile: BehaviorProfile?
+    var preferences: UserPreferences?
     var financialSummaryLastUpdated: Date?  // know when snapshot was last computed
     var monthlyBudgetGoal: Double?          // optional: user sets a monthly spend limit
 
@@ -28,6 +29,7 @@ struct User: Codable, Identifiable {
         profile: UserProfile? = nil,
         financialProfile: FinancialProfile? = nil,
         behaviorProfile: BehaviorProfile? = nil,
+        preferences: UserPreferences? = nil,
         financialSummaryLastUpdated: Date? = nil,
         monthlyBudgetGoal: Double? = nil
     ) {
@@ -38,6 +40,7 @@ struct User: Codable, Identifiable {
         self.profile = profile
         self.financialProfile = financialProfile
         self.behaviorProfile = behaviorProfile
+        self.preferences = preferences
         self.financialSummaryLastUpdated = financialSummaryLastUpdated
         self.monthlyBudgetGoal = monthlyBudgetGoal
     }

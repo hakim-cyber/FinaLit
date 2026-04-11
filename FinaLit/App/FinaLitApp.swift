@@ -27,6 +27,7 @@ struct FinaLitApp: App {
     @State private var adminViewModel: AdminViewModel
     @State private var mainViewModel: MainViewModel
     @State private var chatViewModel: ChatViewModel
+    @State private var appPreferences: AppPreferencesStore
 
     init() {
         FirebaseApp.configure()
@@ -47,9 +48,10 @@ struct FinaLitApp: App {
         ))
         _onboardingViewModel = State(initialValue: OnboardingViewModel(dbService: dbService, session: session))
         _learnViewModel = State(initialValue: LearnViewModel(db: dbService, session: session))
-        _adminViewModel  = State(initialValue: AdminViewModel(db: dbService))
+        _adminViewModel  = State(initialValue: AdminViewModel(db: dbService, session: session))
         _mainViewModel = State(initialValue: MainViewModel(db: dbService, session: session))
         _chatViewModel = State(initialValue: ChatViewModel(session: session, repository: LocalChatRepository(), contextBuilder: ChatAdvisorContextBuilder(), memoryService: ChatConversationMemoryService(), aiService:GeminiAIChatService() ))
+        _appPreferences = State(initialValue: AppPreferencesStore(dbService: dbService, session: session))
     }
 
     var body: some Scene {
@@ -65,9 +67,14 @@ struct FinaLitApp: App {
                 .environment(adminViewModel)
                 .environment(mainViewModel)
                 .environment(chatViewModel)
-                .environment(\.locale, AppRegion.locale)
+                .environment(appPreferences)
+                .environment(\.locale, appPreferences.locale)
                 .task {
                     await restoreSession()
+                    appPreferences.refreshFromCurrentSession()
+                }
+                .onChange(of: session.user?.id) { _, _ in
+                    appPreferences.handleSessionUserChanged()
                 }
                 .onOpenURL { url in
 #if canImport(GoogleSignIn)

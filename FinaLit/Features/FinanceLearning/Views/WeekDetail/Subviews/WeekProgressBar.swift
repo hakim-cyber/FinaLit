@@ -8,6 +8,7 @@ import SwiftUI
 struct WeekProgressBar: View {
     let weekID: String
     @Environment(LearnViewModel.self) private var learnVM
+    @Environment(AppPreferencesStore.self) private var preferences
 
     private var completedCount: Int {
         let days = learnVM.days(for: weekID).filter { !$0.isReflection }
@@ -23,7 +24,7 @@ struct WeekProgressBar: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("\(completedCount) of \(totalNonReflection) days complete")
+                Text(L10n.tr("%@ of %@ days complete", preferences: preferences, String(completedCount), String(totalNonReflection)))
                     .font(.system(size: 12))
                     .foregroundStyle(AppTheme.textSecondary)
                 Spacer()

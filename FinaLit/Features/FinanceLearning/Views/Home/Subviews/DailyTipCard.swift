@@ -8,6 +8,11 @@ import SwiftUI
 struct DailyTipCard: View {
     let tip: DailyTip
     @State private var expanded = false
+    @Environment(AppPreferencesStore.self) private var preferences
+
+    private var localizedTip: DailyTip {
+        tip.resolved(for: preferences.effectiveLearningLanguage)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -16,17 +21,17 @@ struct DailyTipCard: View {
                     .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(AppTheme.success)
                 Spacer()
-                Text(tip.category.uppercased())
+                Text(localizedTip.category.uppercased())
                     .font(.system(size: 10))
                     .foregroundStyle(AppTheme.textSecondary)
             }
 
-            Text(tip.title)
+            Text(localizedTip.title)
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(AppTheme.textPrimary)
 
             if expanded {
-                Text(tip.body)
+                Text(localizedTip.body)
                     .font(AppTheme.Typography.body)
                     .foregroundStyle(AppTheme.textSecondary)
                     .lineSpacing(4)

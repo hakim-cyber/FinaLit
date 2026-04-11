@@ -27,6 +27,14 @@ struct FinancialProfileEditView: View {
         !monthlyIncome.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !isSaving
     }
 
+    private var appLanguage: AppLanguage {
+        session.currentAppLanguage
+    }
+
+    private func localized(_ key: String, _ arguments: CVarArg...) -> String {
+        L10n.tr(key, language: appLanguage, arguments: arguments)
+    }
+
     var body: some View {
         ProfileSettingsFormScaffold(
             title: "Financial Profile",
@@ -179,12 +187,12 @@ struct FinancialProfileEditView: View {
 
     private func save() {
         guard let uid = session.user?.id else {
-            errorMessage = "Session expired. Please log in again."
+            errorMessage = localized("Session expired. Please log in again.")
             return
         }
 
         guard let parsedMonthlyIncome = parseMonetaryInput(monthlyIncome), parsedMonthlyIncome > 0 else {
-            errorMessage = "Monthly income must be greater than 0."
+            errorMessage = localized("Monthly income must be greater than 0.")
             return
         }
 
@@ -195,7 +203,7 @@ struct FinancialProfileEditView: View {
         var parsedDebtAmount: Double?
         if hasDebt {
             guard let value = parseMonetaryInput(debtAmount), value > 0 else {
-                errorMessage = "Debt amount must be greater than 0 when debt is enabled."
+                errorMessage = localized("Debt amount must be greater than 0 when debt is enabled.")
                 return
             }
             parsedDebtAmount = value
@@ -236,7 +244,7 @@ struct FinancialProfileEditView: View {
                 try dbService.saveFinancialProfile(updatedFinancial, uid: uid)
                 session.updateProfile(updatedProfile)
                 session.updateFinancialProfile(updatedFinancial)
-                successMessage = "Financial profile updated."
+                successMessage = localized("Financial profile updated.")
             } catch {
                 errorMessage = error.localizedDescription
             }

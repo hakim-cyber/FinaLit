@@ -13,6 +13,7 @@ protocol AIChatService {
         userMessage: String,
         intent: ChatIntent,
         replyMode: ChatReplyMode,
+        responseLanguage: AppLanguage,
         context: AdvisorContextSnapshot,
         conversationMemory: String?
     ) -> AsyncThrowingStream<String, Error>
@@ -21,6 +22,7 @@ protocol AIChatService {
         userMessage: String,
         intent: ChatIntent,
         replyMode: ChatReplyMode,
+        responseLanguage: AppLanguage,
         context: AdvisorContextSnapshot,
         conversationMemory: String?
     ) async throws -> String
@@ -46,7 +48,6 @@ final class GeminiAIChatService: AIChatService {
     private let preferredModelName: String
     private let fallbackModelNames: [String]
     private let safetySettings: [SafetySetting]
-    private let systemInstruction: ModelContent
 
     init(
         modelName: String = AIChatRuntimeConfig.modelName,
@@ -65,14 +66,13 @@ final class GeminiAIChatService: AIChatService {
             SafetySetting(harmCategory: .sexuallyExplicit, threshold: .blockOnlyHigh),
             SafetySetting(harmCategory: .dangerousContent, threshold: .blockOnlyHigh),
         ]
-
-        systemInstruction = ModelContent(role: "system", parts: promptBuilder.systemInstruction())
     }
 
     func streamReply(
         userMessage: String,
         intent: ChatIntent,
         replyMode: ChatReplyMode,
+        responseLanguage: AppLanguage,
         context: AdvisorContextSnapshot,
         conversationMemory: String?
     ) -> AsyncThrowingStream<String, Error> {
@@ -80,6 +80,7 @@ final class GeminiAIChatService: AIChatService {
             userMessage: userMessage,
             intent: intent,
             replyMode: replyMode,
+            responseLanguage: responseLanguage,
             context: context,
             conversationMemory: conversationMemory
         )
@@ -88,7 +89,10 @@ final class GeminiAIChatService: AIChatService {
         let backend = backend
         let generationConfig = generationConfig(for: replyMode)
         let safetySettings = safetySettings
-        let systemInstruction = systemInstruction
+        let systemInstruction = ModelContent(
+            role: "system",
+            parts: promptBuilder.systemInstruction(responseLanguage: responseLanguage)
+        )
 
         return AsyncThrowingStream { continuation in
             Task {
@@ -155,6 +159,7 @@ final class GeminiAIChatService: AIChatService {
         userMessage: String,
         intent: ChatIntent,
         replyMode: ChatReplyMode,
+        responseLanguage: AppLanguage,
         context: AdvisorContextSnapshot,
         conversationMemory: String?
     ) async throws -> String {
@@ -164,6 +169,7 @@ final class GeminiAIChatService: AIChatService {
             userMessage: userMessage,
             intent: intent,
             replyMode: replyMode,
+            responseLanguage: responseLanguage,
             context: context,
             conversationMemory: conversationMemory
         ) {

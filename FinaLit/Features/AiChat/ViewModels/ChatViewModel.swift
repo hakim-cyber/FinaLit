@@ -30,6 +30,13 @@ final class ChatViewModel {
     private var thread: ChatThreadEntity?
     private var assistantContext: AIAssistantContext?
     private var consentOwnerUID: String?
+    private var currentAppLanguage: AppLanguage {
+        session.user?.preferences?.appLanguage ?? .default
+    }
+
+    private func localized(_ key: String, _ arguments: CVarArg...) -> String {
+        L10n.tr(key, language: currentAppLanguage, arguments: arguments)
+    }
 
     init(
         session: UserSession,
@@ -49,7 +56,7 @@ final class ChatViewModel {
         syncConsentStateForCurrentUser()
 
         guard let uid = session.user?.id else {
-            errorMessage = ChatViewModelError.userMissing.errorDescription
+            errorMessage = localized("User data is missing. Please log out and log in again.")
             return
         }
 
@@ -82,10 +89,11 @@ final class ChatViewModel {
 
         let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, !isSending else { return }
-        let analysis = contextBuilder.analyzeMessage(text)
+        let responseLanguage = AppLanguage.detectPreferredMessageLanguage(from: text) ?? currentAppLanguage
+        let analysis = contextBuilder.analyzeMessage(text, preferredLanguage: responseLanguage)
 
         guard !analysis.requiresRemoteReply || hasAIDataSharingConsent else {
-            errorMessage = "Allow AI data sharing before sending messages."
+            errorMessage = L10n.tr("Allow AI data sharing before sending messages.", language: currentAppLanguage)
             return
         }
 
@@ -138,6 +146,7 @@ final class ChatViewModel {
                 userMessage: text,
                 intent: analysis.intent,
                 replyMode: analysis.replyMode,
+                responseLanguage: responseLanguage,
                 context: snapshot,
                 conversationMemory: memoryForPrompt
             ) {
@@ -169,7 +178,7 @@ final class ChatViewModel {
                let thread {
                 do {
                     let partialCore = streamedReply.trimmingCharacters(in: .whitespacesAndNewlines)
-                    let truncatedReply = partialCore + "\n\n(Partial response due to model stop condition.)"
+                    let truncatedReply = partialCore + "\n\n" + localized("(Partial response due to model stop condition.)")
                     liveAssistantText = nil
                     try repository.appendMessage(
                         role: .assistant,
@@ -234,7 +243,7 @@ final class ChatViewModel {
         consentOwnerUID = uid
         UserDefaults.standard.set(hasConsent, forKey: consentKey(uid: uid))
 
-        if hasConsent && errorMessage == "Allow AI data sharing before sending messages." {
+        if hasConsent && errorMessage == L10n.tr("Allow AI data sharing before sending messages.", language: currentAppLanguage) {
             errorMessage = nil
         }
     }
@@ -273,10 +282,14 @@ final class ChatViewModel {
     private func partialReplyHint(for error: Error) -> String {
         if let generateError = error as? GenerateContentError,
            case let .responseStoppedEarly(reason, _) = generateError {
-            return "AI stopped early (\(reason.rawValue)). Showing partial response."
+            return L10n.tr(
+                "AI stopped early (%@). Showing partial response.",
+                language: currentAppLanguage,
+                reason.rawValue
+            )
         }
 
-        return "AI stopped early. Showing partial response."
+        return L10n.tr("AI stopped early. Showing partial response.", language: currentAppLanguage)
     }
 
     private func diagnoseAIError(_ error: Error) -> (userMessage: String, assistantMessage: String, debugDetails: String) {
@@ -286,8 +299,8 @@ final class ChatViewModel {
                 let blockReason = response.promptFeedback?.blockReason?.rawValue ?? "UNKNOWN"
                 let blockMessage = response.promptFeedback?.blockReasonMessage ?? "Prompt was blocked."
                 return (
-                    "Prompt blocked by model safety (\(blockReason)). Try rephrasing.",
-                    "I couldn't answer because the prompt was blocked by safety checks (\(blockReason)). Try rephrasing your question.\nEducational guidance, not financial advice.",
+                    L10n.tr("Prompt blocked by model safety (%@). Try rephrasing.", language: currentAppLanguage, blockReason),
+                    L10n.tr("I couldn't answer because the prompt was blocked by safety checks (%@). Try rephrasing your question.\nEducational guidance, not financial advice.", language: currentAppLanguage, blockReason),
                     "GenerateContentError.promptBlocked reason=\(blockReason) message=\(blockMessage)"
                 )
 
@@ -297,30 +310,30 @@ final class ChatViewModel {
                     reason.rawValue == "PROHIBITED_CONTENT" ||
                     reason.rawValue == "SPII" {
                     return (
-                        "Model blocked the response for safety (\(reason.rawValue)). Try rephrasing.",
-                        "I couldn't complete this answer because the model stopped for safety (\(reason.rawValue)). Try a safer phrasing.\nEducational guidance, not financial advice.",
+                        L10n.tr("Model blocked the response for safety (%@). Try rephrasing.", language: currentAppLanguage, reason.rawValue),
+                        L10n.tr("I couldn't complete this answer because the model stopped for safety (%@). Try a safer phrasing.\nEducational guidance, not financial advice.", language: currentAppLanguage, reason.rawValue),
                         "GenerateContentError.responseStoppedEarly finishReason=\(reason.rawValue)"
                     )
                 }
 
                 if reason.rawValue == "MAX_TOKENS" {
                     return (
-                        "AI output limit reached (\(reason.rawValue)). Ask it to continue from the last point.",
-                        "The AI response stopped because the model hit its maximum length. Ask it to continue from the last point.\nEducational guidance, not financial advice.",
+                        L10n.tr("AI output limit reached (%@). Ask it to continue from the last point.", language: currentAppLanguage, reason.rawValue),
+                        L10n.tr("The AI response stopped because the model hit its maximum length. Ask it to continue from the last point.\nEducational guidance, not financial advice.", language: currentAppLanguage),
                         "GenerateContentError.responseStoppedEarly finishReason=\(reason.rawValue)"
                     )
                 }
 
                 return (
-                    "AI stopped early (\(reason.rawValue)). Please try again.",
-                    "I couldn't complete the response because generation stopped early (\(reason.rawValue)). Please try again.\nEducational guidance, not financial advice.",
+                    L10n.tr("AI stopped early (%@). Please try again.", language: currentAppLanguage, reason.rawValue),
+                    L10n.tr("I couldn't complete the response because generation stopped early (%@). Please try again.\nEducational guidance, not financial advice.", language: currentAppLanguage, reason.rawValue),
                     "GenerateContentError.responseStoppedEarly finishReason=\(reason.rawValue)"
                 )
 
             case let .promptImageContentError(underlying):
                 return (
-                    "Invalid prompt content for AI request.",
-                    "I couldn't process this request because the prompt content format was invalid.\nEducational guidance, not financial advice.",
+                    L10n.tr("Invalid prompt content for AI request.", language: currentAppLanguage),
+                    L10n.tr("I couldn't process this request because the prompt content format was invalid.\nEducational guidance, not financial advice.", language: currentAppLanguage),
                     "GenerateContentError.promptImageContentError underlying=\(underlying)"
                 )
 
@@ -341,8 +354,8 @@ final class ChatViewModel {
             lowered.contains("not connected") ||
             lowered.contains("network") {
             return (
-                "No internet connection. Check your network and try again.",
-                "I couldn't reach the AI service because your device appears offline. Please reconnect and try again.\nEducational guidance, not financial advice.",
+                L10n.tr("No internet connection. Check your network and try again.", language: currentAppLanguage),
+                L10n.tr("I couldn't reach the AI service because your device appears offline. Please reconnect and try again.\nEducational guidance, not financial advice.", language: currentAppLanguage),
                 "Network error domain=\(nsError.domain) code=\(nsError.code) desc=\(error.localizedDescription)"
             )
         }
@@ -353,23 +366,23 @@ final class ChatViewModel {
             lowered.contains("unauthenticated") ||
             lowered.contains("permission") {
             return (
-                "AI authentication failed. Verify Firebase AI Logic setup and API key restrictions.",
-                "I couldn't authenticate with the AI service. Please verify project setup and API key restrictions.\nEducational guidance, not financial advice.",
+                L10n.tr("AI authentication failed. Verify Firebase AI Logic setup and API key restrictions.", language: currentAppLanguage),
+                L10n.tr("I couldn't authenticate with the AI service. Please verify project setup and API key restrictions.\nEducational guidance, not financial advice.", language: currentAppLanguage),
                 "Auth error domain=\(nsError.domain) code=\(nsError.code) desc=\(error.localizedDescription)"
             )
         }
 
         if nsError.domain.contains("GenerateContentError"), nsError.code == 3 {
             return (
-                "Model stopped generation early (error 3). This is usually safety or token limit.",
-                "The AI stopped generation early. Please try again or ask it to continue from the last point.\nEducational guidance, not financial advice.",
+                L10n.tr("Model stopped generation early (error 3). This is usually safety or token limit.", language: currentAppLanguage),
+                L10n.tr("The AI stopped generation early. Please try again or ask it to continue from the last point.\nEducational guidance, not financial advice.", language: currentAppLanguage),
                 "GenerateContentError code=3 desc=\(error.localizedDescription)"
             )
         }
 
         return (
             error.localizedDescription,
-            "I hit an issue while generating a reply. Please try again.\nEducational guidance, not financial advice.",
+            L10n.tr("I hit an issue while generating a reply. Please try again.\nEducational guidance, not financial advice.", language: currentAppLanguage),
             "Unhandled error domain=\(nsError.domain) code=\(nsError.code) desc=\(error.localizedDescription)"
         )
     }

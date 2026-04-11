@@ -59,6 +59,7 @@ final class LearnViewModel {
     private var loadedUID: String?
     private var hasLoadedHome = false
     private var hasLoadedSummary = false
+    private var hasPrintedAvailableLearningCatalog = false
 
     init(db: DatabaseService, session: UserSession) {
         self.db      = db
@@ -134,6 +135,13 @@ final class LearnViewModel {
             await preloadUnlockedWeekData(uid: uid, weeks: weeks, progressList: weekProgressList)
             hasLoadedHome = true
             hasLoadedSummary = true
+
+            if !hasPrintedAvailableLearningCatalog || force {
+                hasPrintedAvailableLearningCatalog = true
+                Task {
+                    await printAvailableLearningCatalog()
+                }
+            }
 
         } catch {
             errorMessage = error.localizedDescription
@@ -478,6 +486,63 @@ final class LearnViewModel {
         }
     }
 
+    private func printAvailableLearningCatalog() async {
+        print("========== AVAILABLE LEARNING CONTENT START ==========")
+
+        if let todaysTip {
+            print("TODAYS TIP DATA -> \(todaysTip)")
+        } else {
+            print("TODAYS TIP DATA -> none")
+        }
+
+        for week in publishedWeeks.sorted(by: { $0.weekNumber < $1.weekNumber }) {
+            print("WEEK DATA -> \(week)")
+
+            guard let weekID = week.id else {
+                print("WEEK DAYS FETCH SKIPPED -> missing week id")
+                continue
+            }
+
+            let weekDays: [Day]
+            do {
+                if let cachedDays = daysCache[weekID] {
+                    weekDays = cachedDays
+                } else {
+                    let fetchedDays = try await db.fetchDays(weekID: weekID)
+                    daysCache[weekID] = fetchedDays
+                    weekDays = fetchedDays
+                }
+            } catch {
+                print("WEEK DAYS FETCH FAILED -> weekID=\(weekID) error=\(error.localizedDescription)")
+                continue
+            }
+
+            for day in weekDays.sorted(by: { $0.dayNumber < $1.dayNumber }) {
+                print("DAY DATA -> \(day)")
+
+                guard !day.isReflection else {
+                    continue
+                }
+
+                do {
+                    let lesson = try await db.fetchLesson(lessonID: day.lessonID)
+                    print("LESSON DATA -> \(lesson)")
+                } catch {
+                    print("LESSON FETCH FAILED -> lessonID=\(day.lessonID) error=\(error.localizedDescription)")
+                }
+
+                do {
+                    let quiz = try await db.fetchQuiz(quizID: day.quizID)
+                    print("QUIZ DATA -> \(quiz)")
+                } catch {
+                    print("QUIZ FETCH FAILED -> quizID=\(day.quizID) error=\(error.localizedDescription)")
+                }
+            }
+        }
+
+        print("=========== AVAILABLE LEARNING CONTENT END ===========")
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // MARK: - Convenience Accessors
     // Used by views to get state without knowing the data structure
@@ -580,6 +645,7 @@ final class LearnViewModel {
     private func resetStateForUserSwitch() {
         hasLoadedHome = false
         hasLoadedSummary = false
+        hasPrintedAvailableLearningCatalog = false
         isLoadingHome = false
         isLoadingLesson = false
         isLoadingQuiz = false

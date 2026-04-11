@@ -10,6 +10,7 @@ struct QuizReviewView: View {
     let weekID: String
 
     @Environment(LearnViewModel.self) private var learnVM
+    @Environment(AppPreferencesStore.self) private var preferences
     @Environment(Coordinator<LearnPages>.self) private var coordinator
 
     private var day: Day? {
@@ -23,7 +24,7 @@ struct QuizReviewView: View {
     private var quiz: Quiz? {
         guard let quizID = day?.quizID else { return nil }
         guard learnVM.currentQuiz?.id == quizID else { return nil }
-        return learnVM.currentQuiz
+        return learnVM.currentQuiz?.resolved(for: preferences.effectiveLearningLanguage)
     }
 
     private var wrongQuestions: [QuizQuestion] {
@@ -106,6 +107,11 @@ struct QuizReviewView: View {
         .navigationTitle("Quiz Results")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                LearningLanguageMenu()
+            }
+        }
         .task(id: day?.quizID) {
             guard let quizID = day?.quizID else { return }
             guard learnVM.currentQuiz?.id != quizID else { return }

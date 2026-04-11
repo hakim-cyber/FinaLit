@@ -1,0 +1,283 @@
+{
+  "weeks": [
+    {
+      "id": "04F5C0B4-827B-4975-9E41-AE27BCD8EFB8",
+      "weekNumber": 1,
+      "translations": {
+        "az": {
+          "title": "1-ci Həftə - Maliyyə Savadlılığı",
+          "description": "Giriş və maliyyə savadlılığı üzrə ilk dörd dərs."
+        }
+      }
+    }
+  ],
+  "lessons": [
+    {
+      "id": "6EA0AF0C-0551-4FF0-BF81-F98F5BC3DB0E",
+      "weekNumber": 1,
+      "dayNumber": 1,
+      "translations": {
+        "az": {
+          "category": "Maliyyə Savadlılığı",
+          "title": "Giriş",
+          "body": "Bu bölmədən siz nə gözləyə bilərsiniz? Addım-addım sərvət qurmaq yalnız bir paylaşım və ya kitab oxumaqdan daha artığını tələb edir. Təəssüf ki, bunun sehrli bir həlli mövcud deyil. Bu səbəbdən də biz əsaslardan başlamaq istəyirik. Biz niyə bəzi insanların daha çox qazandığını və qazandıqlarını qoruyub saxladığını, digərlərinin isə dolanışıqda çətinlik çəkdiyini, sərvətin zamanla necə qurulduğunu və sizin özünüz üçün necə davamlı maliyyə sabitliyi yarada biləcəyinizi müzakirə edəcəyik. Bu öyrənmə mühiti quru nəzəriyyələr və ya akademik dil ilə dolu olmayacaq. Əksinə, burada beş əsas kateqoriya üzrə təşkil olunmuş praktik və faydalı məzmun tapacaqsınız.\n\n1. Şəxsi Büdcə\nBu bölmədə biz pulunuzu ağıllı idarə etməyin əsaslarını əhatə edəcəyik — qazandığınızın hamısını xərcləməmək, gələcəyi necə planlamaq, ipoteka götürməyin nə zaman məntiqli olduğunu və lazımsız maliyyə səhvlərindən necə qaçınmaq olar. Sadə dillə desək, bu bölmə güclü maliyyə vərdişləri qurmağınıza və pul mövzusunda daha inamlı olmağınıza kömək etmək üçündür.\n\n2. İnvestisiyalar\nBiz aylıq 2000 manatadək qazanan bir insan üçün mövcud olan bütün investisiya növlərini təhlil edirik. Siz fond bazarında hansı investisiya strategiyalarının mövcud olduğunu, daşınmaz əmlaka necə yatırım etməyi və niyə bitcoin almalı və ya almamalı olduğunuzu öyrənəcəksiniz. Hər biri addım-addım təlimatlar və nümunələrlə birlikdə.\n\n3. Geosiyasət\nHazırda dünyada nə baş verdiyini, bunun hansı hadisələrə gətirib çıxaracağını və həyatımıza və büdcəmizə necə təsir edəcəyini izah edirik. Bütün bunlar sizin özünüzü daha təhlükəsiz hiss etməyiniz və pulunuzu hara yönləndirməli olduğunuzu anlamağınız üçündür.\n\n4. Gəlir\nBiz işçi olaraq daha çox necə qazanmağı, biznesə başlamağın dəyərli olub-olmadığını, düzgün sahəni necə seçməyi və biznes planı necə qurmağı izah edəcəyik. Bu bölmə investisiyalara toxunmadan gəliri artırmaq haqqında olacaq.\n\n5. Özünüinkişaf\nBiz vaxtınızı necə səmərəli istifadə etməlisiniz, həyatın bütün sahələrində necə effektiv olmalısınız və sizi özünüzün ən yaxşı versiyanıza çevrilməkdən saxlayan zehni maneələrdən necə qurtulmalısınız haqqında yazacağıq. Bütün təlimlərimizin məzmunu yalnız bu beş sahə ilə bağlı olacaq. Bu o deməkdir ki, burada müxtəlif ölkələrin iqtisadiyyatlarını təhlil etməyəcək, iqtisadi filmləri incələməyəcək və ya sadəcə “maraqlıdır” deyə hekayələr danışmayacağıq."
+        }
+      }
+    },
+    {
+      "id": "F71D3BFE-D2AB-4F66-8915-3CBE3779A91E",
+      "weekNumber": 1,
+      "dayNumber": 2,
+      "translations": {
+        "az": {
+          "category": "Maliyyə Savadlılığı",
+          "title": "Dərs 1: Sərvət Yolunda İlk Addım — Qazanmaq üçün Mübadilə Etmək",
+          "body": "Əgər siz həqiqi sərvət qurmaq istəyirsinizsə, başa düşməli olduğunuz ilk şey budur: dünya mübadilə üzərində qurulub. İnsanlar daim nəsə verir və qarşılığında nəsə alırlar. Min illərdir ki, pul bu mübadiləni mümkün edən əsas vasitədir.\n\nSiz digər insanlara nə qədər çox dəyər qatarsınızsa, onlar da sizə bir o qədər çox geri qaytarmağa hazır olurlar. Çox hallarda bu dəyər pul şəklində geri qayıdır. Məhz buna görə təcrübəli bir hüquqşünas təmizlik işçisindən daha çox qazana bilər. Bu, birinin digərindən daha vacib olması ilə bağlı deyil. Bu, onların bacarığının nə qədər nadir və çətin olması ilə bağlıdır. Demək olar ki, hər kəs təmizlik işi görə bilər, amma yalnız az sayda insan mürəkkəb korporativ mübahisəni məhkəmədə uğurla idarə edə bilər. Sadə dillə desək, sizin verdiyiniz töhfə nə qədər dəyərli və əvəzolunmazdırsa, qazanma ehtimalınız da bir o qədər yüksəkdir.\n\nBu nöqtədə bəzi insanlar belə suallar verə bilər: Bu o deməkdir ki, müəllimlər və ya həkimlər ekranda klik edən treyderdən daha az dəyərlidir? Bu emosional reaksiya başa düşüləndir, lakin bu proqramın fokusunda deyil. FinaLit-in məqsədi dünyanın ədalətli olub-olmadığını müzakirə etmək deyil. Məqsədimiz pulun real dünyada necə işlədiyini başa salmaqdır ki, siz maliyyə baxımından daha güvənli ola biləsiniz və pul həyatınızdakı əsas problem olmasın.\n\nBiz burada boş şüarlarla, dramatik şikayətlərlə və nəticə verməyən fəlsəfi mübahisələrlə məşğul olmayacağıq. İnternetdə onsuz da bunlardan kifayət qədər var. Burada əsas olan praktikadır. Müasir dünyada sizin maliyyə nəticələriniz digər insanlara yarada bildiyiniz dəyərlə birbaşa əlaqəlidir.\n\nBu dəyər adətən dörd əsas resursdan yaranır: zaman, bilik və bacarıqlar, pul və əlaqələr. Yaxşı xəbər isə budur ki, əgər bunlardan biri sizdə yoxdursa, çox vaxt digəri ilə bunu kompensasiya edə bilərsiniz.\n\nMəsələn, mənzilinizi təmir etmək üçün komanda tutmağa pulunuz yoxdursa, zaman sərf edib bəzi işləri özünüz öyrənə bilərsiniz. Bu halda siz pulu zamanla əvəz edirsiniz. Əgər təmir sahəsində təcrübəli tanışınız varsa, əlaqələriniz həm zaman, həm də pula qənaət etməyə kömək edə bilər. Həyatın bir çox sahəsində belədir: insanlar daim bir resursu digəri ilə əvəz edir.\n\nFinaLit də eyni prinsiplə işləyir. Burada siz pul yatıraraq faydalı bilik, praktik istiqamət və həyatınızı yaxşılaşdıra biləcək ideyalara və əlaqələrə çıxış əldə edirsiniz.\n\nƏksər insanlar üçün pul ən vacib resurs kimi görünür. Biz çox vaxt kiçik məbləği belə qənaət etmək üçün əlavə səy göstəririk: 2 manat qənaət etmək üçün daha uzun yol seçmək, 200 manat ucuz olsun deyə yorucu transferli uçuşlar bron etmək və ya ailə ilə vaxt keçirmək əvəzinə həftə sonları əlavə işləmək. Həqiqi sərvətə sahib insanlar isə adətən fərqli düşünürlər. Onlar anlayırlar ki, zaman çox vaxt puldan daha dəyərlidir. Buna görə də sürətə, rahatlığa, komforta və dəstəyə pul xərcləməyə hazır olurlar.\n\nFinaLit ilə məqsədimiz sizi bu nöqtəyə çatdırmaqdır. İstəyirik ki, bu dərslərə sərf etdiyiniz zaman və pul sizə daha çox qazanmağa, daha yaxşı qərarlar verməyə, daha güclü əlaqələr qurmağa və ümumi həyat keyfiyyətinizi yaxşılaşdırmağa kömək etsin.\n\nNövbəti mərhələdə sərvətli olmağın əslində nə demək olduğunu müzakirə edəcəyik ki, real gözləntilər qura biləsiniz və pul haqqında yanlış təsəvvürlərdən qaçasınız."
+        }
+      }
+    },
+    {
+      "id": "4A5C842E-E9F5-42AD-91ED-24957E1B17D4",
+      "weekNumber": 1,
+      "dayNumber": 3,
+      "translations": {
+        "az": {
+          "category": "Maliyyə Savadlılığı",
+          "title": "Dərs 2: Sərvətli Olmaq Əslində Nə Deməkdir",
+          "body": "Sərvət iki şeydən asılıdır: nə qədər qazandığınız və yaşamaq üçün nə qədər xərclədiyiniz. Gəlirinizlə xərcləriniz arasındakı fərq nə qədər böyükdürsə, siz bir o qədər maliyyə baxımından təhlükəsiz, müstəqil və varlı sayılırsınız.\n\nBurada başa düşülməli iki vacib məqam var.\n\nBirincisi, ayda 10,000 manat qazanan, amma demək olar ki, hamısını xərcləyən insanı varlı hesab etmək olarmı? Cavab aydındır: yox. Belə insan maliyyə baxımından hələ də asılıdır, sadəcə ayda 1,000 manat qazanan birindən fərqli həyat tərzi var. Bəli, onun həyatı daha rahat görünə bilər, amma gözlənilməz hadisə baş verərsə — işini itirmək, sağlamlıq problemi və ya böhran — o, çox tez çətin vəziyyətə düşə bilər. Yüksək gəlir təkbaşına insanı varlı etmir, əgər onun maliyyə ehtiyatı yoxdursa və heç nə kənara qoymursa.\n\nİkincisi, demək olar ki, heç nə xərcləməyən və hər qəpiyi yığan insanı varlı saymaq olarmı? Yenə də cavab yoxdur. Pul həyatınızı yaxşılaşdırmalı olan bir vasitədir. O sizə daha çox azadlıq, rahatlıq və seçim imkanı verməlidir. Səyahət etmək, yaxşı təcrübələr yaşamaq, yeni insanlarla tanış olmaq, keyfiyyətli qidalanmaq və sizin üçün mənalı olan işi seçmək imkanı yaratmalıdır. Əgər siz daim hər şeydən imtina edərək yalnız pul yığırsınızsa, bir müddətdən sonra yorğun, məyus və motivasiyasız hiss edəcəksiniz. Bu zaman pul qazanmağın mənası itir.\n\nBuna görə də 20–50 yaş arası insanların əksəriyyəti üçün ən düzgün maliyyə strategiyası balansdır. Sadə dillə, bu o deməkdir ki, imkanlarınız daxilində yaxşı yaşamaq və eyni zamanda gəlirinizin ən azı 10%-ni müntəzəm olaraq gələcək üçün ayırmaq lazımdır.\n\nBu niyə vacibdir? Çünki zamanla həmin pul sizə passiv gəlir qazandıra bilər. Passiv gəlir — hər dəfə işləmədən, müntəzəm olaraq əldə etdiyiniz gəlirdir. Məsələn, bu investisiyalardan gələn gəlir, kirayə haqqı, dividendlər, faizlər və ya zamanla gəlir gətirməyə davam edən digər aktivlər ola bilər. Başqa sözlə, siz yalnız maaşdan asılı qalmırsınız, eyni zamanda işləmədən də sizə gəlir gətirən mənbələr qurmağa başlayırsınız.\n\nBu balanslı yanaşma passiv gəlirinizi addım-addım artırır. Zaman keçdikcə isə bu gəlir gündəlik xərclərinizin bir hissəsini — bəzi hallarda isə böyük hissəsini və ya hamısını qarşılaya bilər."
+        }
+      }
+    },
+    {
+      "id": "71A211DA-7722-412E-AD4F-0E4B36F2069F",
+      "weekNumber": 1,
+      "dayNumber": 4,
+      "translations": {
+        "az": {
+          "category": "Maliyyə Savadlılığı",
+          "title": "Dərs 3: Passiv Gəlir üçün Təməl Yaratmaq",
+          "body": "İlk addım — aylıq nə qədər pul yığa biləcəyinizi anlamaqdır.\n\nƏlbəttə, bəzən qazandığınız bütün pulu xərcləməyiniz, hətta borca girməyiniz normal ola bilər. Məsələn, əməliyyata ehtiyacınız ola bilər və ya çətin dövrdə biznesinizi dəstəkləməli ola bilərsiniz.\n\nAmma gələcəkdə maliyyə baxımından müstəqil bir insan kimi rahat yaşamaq istəyirsinizsə, sizi daim istiqamətləndirməli olan bir prinsip var: gəliriniz xərclərinizdən çox olmalıdır. Uzunmüddətli və dayanıqlı başqa yol yoxdur.\n\nHətta varlı ailədən gəlsəniz və ya birdən-birə böyük məbləğdə pul qazansanız belə, bu prinsipi nəzərə almasanız, gec-tez yenə də əlinizdə heç nə qalmayacaq.\n\nBəs gəlirinizin hər zaman xərclərinizdən çox olmasına necə nail olmaq olar?\n\nGəlirinizin müəyyən faizini yığım üçün ayırmağa qərar verməlisiniz və pul əlinizə çatan kimi həmin faizi dərhal kənara qoymalısınız. Bu faiz əvvəlcə cəmi 1% olsa belə, yenə də yaxşı başlanğıcdır.\n\nAmma bu ay bunu almaq istəyirdim və ya sabah kiminsə ad günüdür, ona pul lazımdır kimi bəhanələr gətirmədən bunu edin. Bu vərdişin niyə bu qədər vacib olduğunu daha sonra izah edəcəyik.\n\nSabit məbləğ yox, faiz yığmalısınız. Çünki gəliriniz hər zaman sabit olmaya bilər. Üstəlik, psixoloji baxımdan da faizlə yığım etmək daha asandır. Sadəcə qayda qoyursunuz ki, əldə etdiyiniz hər bir gəlirin müəyyən faizi avtomatik olaraq yığıma gedir.\n\nBəs necə müəyyənləşdirmək olar ki, nə qədər yığmaq lazımdır?\n\nİnternetdə və maliyyə savadlılığı üzrə müxtəlif mənbələrdə bu məbləğin hesablanması üçün mürəkkəb sxemlər verilir. Amma real həyatda insanların çoxu bunları tətbiq etmir.\n\nÜstəlik, xərclərin böyük və kiçik, müntəzəm və təsadüfi kimi bölünməsi hər kəs üçün fərqlidir, ona görə də həddindən artıq ümumi tövsiyələr əksər hallarda faydalı olmur.\n\nBunun əvəzinə, biz daha sadə və praktik bir üsul təklif edirik.\n\nAddım 1: Son altı ay üzrə aylıq xərclərinizi nəzərdən keçirin\nİdeal halda, bütün ödənişlərinizi bir bank vasitəsilə edirsinizsə, bank tətbiqinizi açın və analitika bölməsinə baxın. Bir neçə kartdan və ya nağd puldan istifadə edirsinizsə, bütün məlumatları Excel-də və ya başqa bir tətbiqdə birləşdirin. Məqsəd son altı ay ərzində orta aylıq xərcləriniz barədə real mənzərə əldə etməkdir.\n\nAddım 2: Hansı xərclərin zəruri, hansılarının isə qeyri-zəruri olduğunu müəyyən edin\nMəsələn, tutaq ki, siz ayda orta hesabla 1200 ₼ xərcləyirsiniz. Bu məbləğin bir hissəsi kredit ödənişlərinə, kommunal xərclərə və ya Naxçıvana planlaşdırdığınız tətil üçün topladığınız vəsaitə gedə bilər. Bunlar asanlıqla azaldıla bilməyən zəruri xərclər sayıla bilər.\n\nAmma bəzi xərclər seçim xarakterli ola bilər. Məsələn, kafeyə getməyi azalda, daha çox evdə yemək bişirə, taksi əvəzinə avtobusdan istifadə edə və ya kinoya getmək əvəzinə filmlərə evdə baxa bilərsiniz.\n\nBu o demək deyil ki, siz asketik həyat yaşamalı və ya bütün xoş şeylərdən imtina etməlisiniz. Amma hər büdcədə ən azı müəyyən qədər vacib olmayan xərclər olur. Sizin yığımınız da məhz oradan formalaşacaq.\n\nAddım 3: Bəs mənim qeyri-zəruri xərclərim yoxdursa?\nBu halda, çox güman ki, iki vəziyyətdən biri doğrudur: ya həyat tərziniz lazım olduğundan daha bahadır, ya da gəliriniz çox aşağıdır.\n\nƏgər problem həddindən artıq xərcləmədirsə, vərdişlərinizi yenidən nəzərdən keçirməlisiniz. Əgər problem aşağı gəlirdirsə, o zaman qazancınızı artırmaq yolları barədə düşünməlisiniz. Bu mövzuya daha sonra qayıdacağıq.\n\nDüzünü desək, yəqin ki, son manatınızı FinaLit abunəsinə xərcləməmisiniz. Bu isə o deməkdir ki, böyük ehtimalla hər ay heç olmasa az da olsa pul yığa bilərsiniz. Əsas məsələ həmin pulun hazırda hara getdiyini müəyyən etməkdir."
+        }
+      }
+    },
+    {
+      "id": "C74CB34E-8274-4D4D-9888-686AD0D53CE8",
+      "weekNumber": 1,
+      "dayNumber": 5,
+      "translations": {
+        "az": {
+          "category": "Maliyyə Savadlılığı",
+          "title": "Dərs 4: Pulu Nəyə Xərcləmək Lazımdır, Nəyə Yox?",
+          "body": "Pul həyat keyfiyyətinizi yaxşılaşdırmaq və sizi hədəflərinizə yaxınlaşdırmaq üçün mövcuddur. Əgər hələ dəqiq məqsədləriniz formalaşmayıbsa və hansı alışların faydalı, hansılarının isə zərərli olduğunu ayırd edə bilmirsinizsə, iki əsas tələdən qaçmalısınız.\n\nBirinci tələ marketinq üsulları və emosiyalar nəticəsində yaranan impulsiv xərclərdir. Endirimlər, mağazanın quruluşu, işıqlandırma, rənglər, qoxular və məhsulların yerləşdirilməsi — bunların hamısı qərarlarınıza təsir etmək üçün düşünülmüş üsullardır. Emosiyalar da eyni cür təsir göstərə bilər. Özünüzü kədərli, gərgin və ya yorğun hiss etdikdə, sadəcə yaxşı hiss etmək üçün nəsə almaq sizə cəlbedici görünə bilər.\n\nMəsələn, təsəvvür edin ki, siz ayda 1500 ₼ qazanırsınız və çaydanınız xarab olub. Yeni çaydan almaq üçün onlayn mağazaya daxil olursunuz və dərhal qarşınıza 50% endirimlə, 200 ₼ əvəzinə 100 ₼-ə satılan dəbli qulaqlıqlar çıxır. Düşünürsünüz ki, Niyə də özümü sevindirməyim? və nəticədə həm çaydanı, həm də qulaqlığı alırsınız. Çaydan məntiqli və zəruri bir xərcdir. Qulaqlıq isə belə deyil, çünki onu almaq planınız yox idi. Sadəcə platforma sizi impulsiv qərara sövq etdi.\n\nİkinci tələ isə alış-veriş vasitəsilə status qazanmağa çalışmaqdır.\n\nMəsələn, təsəvvür edin ki, siz 30 min ₼-a BYD ala bilərsiniz, amma bunun əvəzinə eyni qiymətə 8 illik BMW seçirsiniz. Səbəb odur ki, düşünürsünüz, başqaları buna daha çox hörmət edəcək, halbuki sizin əsl ehtiyacınız sadəcə evlə iş arasında etibarlı nəqliyyat vasitəsidir.\n\nBu, iqtisadçı Torsteyn Veblenin hələ XIX əsrin sonlarında izah etdiyi bir haldır: insanlar bəzən bahalı şeyləri daha yaxşı olduqları üçün yox, var-dövlətlərini və sosial statuslarını göstərmək üçün alırlar.\n\nSizin hələ milyonlarla kapitalınız yoxdursa, bu cür xərclər maliyyə müstəqilliyinə çatmaq məqsədiniz üçün zərərlidir.\n\nƏslində, həqiqətən uğurlu insanların çoxu başqalarını maddi əşyalar vasitəsilə təsirləndirməyə ehtiyac duymur. Məsələn, Stiv Cobs həyatının yarısını qara vodolazka və mavi cins şalvarda keçirmişdi və bu ona tam uyğun idi. Yəni qısası, özünü göstərmək zəruri deyil.\n\nBunu da anlamaq lazımdır ki, bahalı anlayışı nisbidir. Kimsə üçün Bakıdan Naxçıvana kupedə 100 ₼-lik bilet bahalı görünə bilər, digəri isə eyni istiqamətə 1000 ₼-lik biznes-klas uçuşunu ciddi xərc saymır.\n\nYəni bahalı və ucuz anlayışları çox vaxt şəxsi vəziyyətdən asılı olur. Əgər bir şey müəyyən qiymətə satılırsa, bu o deməkdir ki, kimsə həmin qiyməti ödəməyə hazırdır. Sadəcə ola bilər ki, siz həmin məhsulun hədəf müştərisi deyilsiniz.\n\nEyni zamanda, qiymətlər çox vaxt real və obyektiv səbəblərlə formalaşır. Buna görə də maliyyə qərarlarınızı yalnız qiymətə əsasən verməməlisiniz. Bunun əvəzinə özünüzə üç sual verin:\nBu alış mənim üçün həqiqətən vacibdirmi?\nMən bunu uzunmüddətli maliyyə planlarıma zərər vermədən ala bilərəmmi?\nBuna bənzər keyfiyyətdə daha ucuz alternativ varmı?\n\nƏgər ilk iki suala cavab yoxdursa, bu alış ya sizə lazım deyil, ya da hazırda buna imkanınız çatmır.\n\nƏlbəttə, bəzən gözəl bir restorana getmək, yeni idman ayaqqabısı almaq və ya həftəsonunu gözəl bir bağ evində keçirmək istəyə bilərsiniz. Bu tamamilə normaldır — hamımız insanıq.\n\nAmma əgər bu xırda şeylər səbəbindən siz maaşdan maaşa yaşayırsınızsa, problemin kökünü başqa yerdə axtarın. Məsələn, ola bilər ki, tez-tez özünüzü ruhdan düşmüş hiss edirsiniz və qısa müddətli dopamin hissi almaq üçün fast food sifariş edirsiniz. Bu halda əsl problem yemək deyil. Problem həmin xərcləmənin arxasında duran emosional vəziyyətdir.\n\nFaydalı üsullardan biri büdcənizdə ayrıca ruh üçün xərclər kateqoriyası yaratmaqdır. Bunun üçün planlaşdırılmamış xərclərə 100–400 ₼ arası bir məbləğ ayıra bilərsiniz. Bu sizə həm azadlıq, həm də zövq verir və eyni zamanda maliyyə sabitliyinizi pozmur.\n\nBununla maliyyə savadlılığının əsas təməl hissəsini tamamlayırıq və növbəti mərhələyə keçirik: pulu necə artırmağı öyrənməyə."
+        }
+      }
+    }
+  ],
+  "quizzes": [
+    {
+      "id": "D8F761D7-C5B3-4377-883D-0CE206262F30",
+      "weekNumber": 1,
+      "dayNumber": 1,
+      "translations": {
+        "az": {
+          "questions": [
+            {
+              "questionText": "Giriş hansı məzmunu vəd edir?",
+              "options": [
+                "Beş əsas kateqoriya ətrafında qurulmuş praktik və faydalı məzmun",
+                "Yalnız akademik nəzəriyyə və mürəkkəb dil",
+                "Əsasən iqtisadi filmlərin təhlili",
+                "Tez varlanmaq üçün sehrli həll"
+              ],
+              "explanation": "Girişdə deyilir ki, bu bölmə beş əsas kateqoriya üzrə təşkil olunmuş praktik və faydalı məzmun təqdim edəcək."
+            },
+            {
+              "questionText": "Aşağıdakılardan hansı girişdə adı çəkilən beş əsas kateqoriyadan biridir?",
+              "options": [
+                "İnvestisiyalar",
+                "Film icmalları",
+                "Lüks alış-veriş",
+                "Turizm"
+              ],
+              "explanation": "İnvestisiyalar girişdə açıq şəkildə beş əsas kateqoriyadan biri kimi göstərilir."
+            },
+            {
+              "questionText": "Girişdə deyilir ki, bu bölmə nə OLMAYACAQ?",
+              "options": [
+                "Quru nəzəriyyə və mürəkkəb akademik dil məkanı",
+                "Maliyyə sabitliyi qurmaq üçün bələdçi",
+                "Praktik öyrənmə bölməsi",
+                "Strukturlaşdırılmış dərslər toplusu"
+              ],
+              "explanation": "Girişdə açıq şəkildə qeyd olunur ki, bu bölmə quru nəzəriyyə və mürəkkəb akademik dillə dolu olmayacaq."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "1CD3853E-74E8-42C8-BCB1-DCBE6356820F",
+      "weekNumber": 1,
+      "dayNumber": 2,
+      "translations": {
+        "az": {
+          "questions": [
+            {
+              "questionText": "Dərs 1-ə görə dünya nəyin üzərində qurulub?",
+              "options": [
+                "Mübadilə",
+                "Şans",
+                "Status",
+                "Təkcə rəqabət"
+              ],
+              "explanation": "Dərsdə deyilir ki, dünya mübadilə üzərində qurulub, insanlar daim nəsə verib qarşılığında nəsə alırlar."
+            },
+            {
+              "questionText": "Dəyərin əsas mənbələri kimi hansı dörd resurs göstərilir?",
+              "options": [
+                "Zaman, bilik və bacarıqlar, pul və əlaqələr",
+                "Pul, şöhrət, istedad və moda",
+                "İş, status, miras və şans",
+                "İntizam, güc, sahiblik və sürət"
+              ],
+              "explanation": "Dərsdə açıq şəkildə zaman, bilik və bacarıqlar, pul və əlaqələr sadalanır."
+            },
+            {
+              "questionText": "Dərsə görə niyə bir insan digərindən daha çox qazana bilər?",
+              "options": [
+                "Çünki onun töhfəsi daha dəyərlidir və əvəz edilməsi daha çətindir",
+                "Çünki o, insan kimi daha vacibdir",
+                "Çünki daha şanslıdır",
+                "Çünki daha az pul xərcləyir"
+              ],
+              "explanation": "Dərsdə izah olunur ki, gəlir insanın verdiyi töhfənin nə qədər dəyərli və əvəzolunmaz olması ilə bağlıdır."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "2257D8CA-3BA6-4E9F-844B-D651D9749CD6",
+      "weekNumber": 1,
+      "dayNumber": 3,
+      "translations": {
+        "az": {
+          "questions": [
+            {
+              "questionText": "Dərs 2-yə görə sərvət hansı iki şeydən asılıdır?",
+              "options": [
+                "Nə qədər qazandığınızdan və yaşamaq üçün nə qədər xərclədiyinizdən",
+                "Nə qədər qazandığınızdan və hansı maşını sürdüyünüzdən",
+                "Nə qədər yığdığınızdan və həyatdan nə qədər az zövq aldığınızdan",
+                "Artıq nə qədər passiv gəliriniz olduğundan və hansı statusu göstərdiyinizdən"
+              ],
+              "explanation": "Dərsdə deyilir ki, sərvət gəlirdən və yaşamaq üçün lazım olan xərclərdən asılıdır."
+            },
+            {
+              "questionText": "20–50 yaş arası insanların əksəriyyəti üçün hansı balanslı strategiya tövsiyə olunur?",
+              "options": [
+                "İmkanlar daxilində yaxşı yaşamaq və gəlirin ən azı 10%-ni kənara qoymaq",
+                "Demək olar ki, heç nə xərcləməyib hər qəpiyi yığmaq",
+                "Yalnız gəliri artırmağa fokuslanıb xərcləri görməzlikdən gəlmək",
+                "Passiv gəlir qurmaq əvəzinə yalnız maaşa güvənmək"
+              ],
+              "explanation": "Dərs balansı tövsiyə edir: yaxşı yaşamaq, amma imkanları aşmamaq və müntəzəm olaraq ən azı 10% yığmaq."
+            },
+            {
+              "questionText": "Bu dərsdə passiv gəlir nədir?",
+              "options": [
+                "Hər dəfə işləmədən, müntəzəm olaraq əldə olunan gəlir",
+                "Ayın sonunda ödənilən istənilən maaş",
+                "Bankdan götürülən borc pul",
+                "İşdən alınan birdəfəlik bonus"
+              ],
+              "explanation": "Dərsdə passiv gəlir investisiya, kirayə, dividend və faiz kimi aktivlərdən gələn müntəzəm gəlir kimi izah olunur."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "2F10B788-77E4-48E9-BBDE-D328F7697A8F",
+      "weekNumber": 1,
+      "dayNumber": 4,
+      "translations": {
+        "az": {
+          "questions": [
+            {
+              "questionText": "Dərsdə niyə sabit məbləğ əvəzinə faiz yığmaq tövsiyə olunur?",
+              "options": [
+                "Çünki gəlir həmişə sabit olmur və faizlə yığım psixoloji baxımdan daha asandır",
+                "Çünki sabit məbləğlər yalnız varlı insanlar üçündür",
+                "Çünki faizlə yığım dərhal passiv gəlir yaradır",
+                "Çünki sabit məbləği hesablamaq daha çətindir"
+              ],
+              "explanation": "Dərsdə deyilir ki, gəlir dəyişə bilər və faizi yığmaq vərdiş halına salmaq psixoloji baxımdan daha asandır."
+            },
+            {
+              "questionText": "Dərs 3-də təsvir olunan praktik üsulun 1-ci addımı nədir?",
+              "options": [
+                "Son altı ay üzrə aylıq xərclərinizi nəzərdən keçirmək",
+                "Dərhal broker hesabı açmaq",
+                "Bütün əyləncə xərclərini tamamilə kəsmək",
+                "Yığım yaratmaq üçün borc götürmək"
+              ],
+              "explanation": "Birinci addım son altı aydakı xərcləri nəzərdən keçirib real orta aylıq xərci anlamaqdır."
+            },
+            {
+              "questionText": "Dərsə görə, əgər sizdə qeyri-zəruri xərc olmadığını düşünürsünüzsə, bu adətən nə deməkdir?",
+              "options": [
+                "Ya həyat tərziniz lazım olduğundan bahadır, ya da gəliriniz çox aşağıdır",
+                "Siz artıq maliyyə baxımından müstəqilsiniz",
+                "Xərcləri izləməyə artıq ehtiyac yoxdur",
+                "Artıq pul yığmağa ehtiyacınız yoxdur"
+              ],
+              "explanation": "Dərsdə izah olunur ki, belə hallarda problem adətən ya həddindən artıq xərcləmə, ya da kifayət qədər gəlirin olmamasıdır."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "E95F9D53-79D0-4915-AEC3-0537F74FC6D8",
+      "weekNumber": 1,
+      "dayNumber": 5,
+      "translations": {
+        "az": {
+          "questions": [
+            {
+              "questionText": "Dərs 4-də təsvir olunan birinci əsas tələ nədir?",
+              "options": [
+                "Marketinq üsulları və emosiyaların yaratdığı impulsiv xərclər",
+                "Çox erkən mərhələdə həddindən artıq yığım etmək",
+                "Nağd pul əvəzinə bank kartından istifadə etmək",
+                "Kommunal xərcləri vaxtında ödəmək"
+              ],
+              "explanation": "Dərsdə deyilir ki, birinci əsas tələ marketinq siqnalları və emosional vəziyyət səbəbilə edilən impulsiv xərclərdir."
+            },
+            {
+              "questionText": "Dərs 4-də təsvir olunan ikinci əsas tələ nədir?",
+              "options": [
+                "Alış-veriş vasitəsilə status qazanmağa çalışmaq",
+                "Evdə çox yemək bişirmək",
+                "Gələcək hədəflər üçün pul yığmaq",
+                "Almazdan əvvəl qiymətləri müqayisə etmək"
+              ],
+              "explanation": "Dərs var-dövləti və statusu nümayiş etdirmək üçün alış etməyin təhlükəsindən xəbərdar edir."
+            },
+            {
+              "questionText": "Nəsə almadan əvvəl özünüzə verməli olduğunuz üç sualdan biri hansıdır?",
+              "options": [
+                "Mən bunu uzunmüddətli maliyyə planlarıma zərər vermədən ala bilərəmmi?",
+                "Bunu alsam, insanlar mənə daha çox hörmət edəcəkmi?",
+                "Bu, alternativlərdən daha bahadırmı?",
+                "Bunu bu gün sosial şəbəkədə paylaşa bilərəmmi?"
+              ],
+              "explanation": "Dərs tövsiyə edir ki, alışın həqiqətən lazım olub-olmadığını, uzunmüddətli planları pozmadan alına bilib-bilinmədiyini və daha ucuz, oxşar keyfiyyətli alternativin olub-olmadığını soruşasınız."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

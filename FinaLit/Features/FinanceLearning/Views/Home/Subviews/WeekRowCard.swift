@@ -8,9 +8,13 @@ import SwiftUI
 struct WeekRowCard: View {
     let week: Week
     let progress: WeekProgress?
+    @Environment(AppPreferencesStore.self) private var preferences
 
     private var isLocked: Bool { progress?.isUnlocked != true }
     private var isComplete: Bool { progress?.isCompleted == true }
+    private var localizedWeek: Week {
+        week.resolved(for: preferences.effectiveLearningLanguage)
+    }
 
     var body: some View {
         HStack(spacing: 16) {
@@ -41,10 +45,10 @@ struct WeekRowCard: View {
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(week.title)
+                Text(localizedWeek.title)
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(isLocked ? AppTheme.textTertiary : AppTheme.textPrimary)
-                Text(week.description)
+                Text(localizedWeek.description)
                     .font(AppTheme.Typography.caption)
                     .foregroundStyle(AppTheme.textSecondary)
                     .lineLimit(1)

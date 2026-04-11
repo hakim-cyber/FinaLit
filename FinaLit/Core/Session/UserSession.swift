@@ -18,6 +18,7 @@ class UserSession {
     var isRestoringSession: Bool = true
     
     var isAuthenticated: Bool { user != nil }
+    var currentAppLanguage: AppLanguage { user?.preferences?.appLanguage ?? .default }
     
     var hasCompletedOnboarding: Bool {
         user?.hasCompletedOnboarding ?? false
@@ -43,6 +44,10 @@ class UserSession {
     
     func updateBehaviorProfile(_ profile: BehaviorProfile) {
         user?.behaviorProfile = profile
+    }
+
+    func updatePreferences(_ preferences: UserPreferences) {
+        user?.preferences = preferences
     }
     
     func signOut() {
