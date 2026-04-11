@@ -27,12 +27,9 @@ struct FinancialProfileEditView: View {
         !monthlyIncome.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !isSaving
     }
 
-    private var appLanguage: AppLanguage {
-        session.currentAppLanguage
-    }
-
-    private func localized(_ key: String, _ arguments: CVarArg...) -> String {
-        L10n.tr(key, language: appLanguage, arguments: arguments)
+    private func localized(_ text: String, _ arguments: CVarArg...) -> String {
+        guard !arguments.isEmpty else { return text }
+        return String(format: text, locale: Locale(identifier: "en_US_POSIX"), arguments: arguments)
     }
 
     var body: some View {

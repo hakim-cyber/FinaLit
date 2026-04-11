@@ -6,22 +6,23 @@
 import Foundation
 
 struct UserPreferences: Codable, Equatable {
-    var appLanguage: AppLanguage?
-    var learningContentLanguageOverride: AppLanguage?
+    var legacyLanguage: AppLanguage?
+    var learningContentLanguage: AppLanguage?
 
-    init(
-        appLanguage: AppLanguage? = nil,
-        learningContentLanguageOverride: AppLanguage? = nil
-    ) {
-        self.appLanguage = appLanguage
-        self.learningContentLanguageOverride = learningContentLanguageOverride
+    enum CodingKeys: String, CodingKey {
+        case legacyLanguage = "appLanguage"
+        case learningContentLanguage = "learningContentLanguageOverride"
     }
 
-    var resolvedAppLanguage: AppLanguage {
-        appLanguage ?? .default
+    init(
+        legacyLanguage: AppLanguage? = nil,
+        learningContentLanguage: AppLanguage? = nil
+    ) {
+        self.legacyLanguage = legacyLanguage
+        self.learningContentLanguage = learningContentLanguage
     }
 
     func effectiveLearningLanguage(fallbackAppLanguage: AppLanguage? = nil) -> AppLanguage {
-        learningContentLanguageOverride ?? appLanguage ?? fallbackAppLanguage ?? .default
+        learningContentLanguage ?? legacyLanguage ?? fallbackAppLanguage ?? .default
     }
 }

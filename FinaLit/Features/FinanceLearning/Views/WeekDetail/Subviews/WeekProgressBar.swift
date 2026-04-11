@@ -24,7 +24,7 @@ struct WeekProgressBar: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text(L10n.tr("%@ of %@ days complete", preferences: preferences, String(completedCount), String(totalNonReflection)))
+                Text("\(completedCount) of \(totalNonReflection) days complete")
                     .font(.system(size: 12))
                     .foregroundStyle(AppTheme.textSecondary)
                 Spacer()

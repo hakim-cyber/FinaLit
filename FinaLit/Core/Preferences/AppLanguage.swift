@@ -14,32 +14,6 @@ enum AppLanguage: String, Codable, CaseIterable, Identifiable, Hashable {
 
     var id: String { rawValue }
 
-    var localeIdentifier: String {
-        switch self {
-        case .en:
-            return "en"
-        case .az:
-            return "az_AZ"
-        case .ru:
-            return "ru_RU"
-        }
-    }
-
-    var locale: Locale {
-        Locale(identifier: localeIdentifier)
-    }
-
-    var displayName: String {
-        switch self {
-        case .en:
-            return "English"
-        case .az:
-            return "Azerbaijani"
-        case .ru:
-            return "Russian"
-        }
-    }
-
     var nativeDisplayName: String {
         switch self {
         case .en:
@@ -49,24 +23,6 @@ enum AppLanguage: String, Codable, CaseIterable, Identifiable, Hashable {
         case .ru:
             return "Русский"
         }
-    }
-
-    static func from(localeIdentifier: String) -> AppLanguage? {
-        let normalized = localeIdentifier.lowercased()
-
-        if normalized.hasPrefix("az") {
-            return .az
-        }
-
-        if normalized.hasPrefix("ru") {
-            return .ru
-        }
-
-        if normalized.hasPrefix("en") {
-            return .en
-        }
-
-        return nil
     }
 
     static func detectPreferredMessageLanguage(from text: String) -> AppLanguage? {
@@ -123,19 +79,5 @@ enum AppLanguage: String, Codable, CaseIterable, Identifiable, Hashable {
         text
             .lowercased()
             .folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
-    }
-}
-
-enum LearningLanguagePreference: Hashable, Identifiable {
-    case followApp
-    case specific(AppLanguage)
-
-    var id: String {
-        switch self {
-        case .followApp:
-            return "followApp"
-        case .specific(let language):
-            return language.rawValue
-        }
     }
 }

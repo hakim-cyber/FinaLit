@@ -301,7 +301,7 @@ struct LessonDetailView: View {
                     .foregroundStyle(AppTheme.textSecondary)
                 Text("·")
                     .foregroundStyle(AppTheme.textTertiary)
-                Label(L10n.tr("Day %@", preferences: preferences, String(lesson.dayNumber)), systemImage: "calendar")
+                Label("Day \(lesson.dayNumber)", systemImage: "calendar")
                     .font(.system(size: 12))
                     .foregroundStyle(AppTheme.textSecondary)
             }

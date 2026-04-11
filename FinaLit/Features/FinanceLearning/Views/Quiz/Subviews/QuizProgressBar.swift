@@ -13,7 +13,7 @@ struct QuizProgressBar: View {
     var body: some View {
         VStack(spacing: 8) {
             HStack {
-                Text(L10n.tr("Question %@ of %@", preferences: preferences, String(current), String(total)))
+                Text("Question \(current) of \(total)")
                     .font(.system(size: 12))
                     .foregroundStyle(AppTheme.textSecondary)
                 Spacer()

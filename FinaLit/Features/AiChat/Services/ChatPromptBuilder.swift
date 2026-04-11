@@ -14,7 +14,7 @@ struct ChatPromptBuilder {
         Give educational guidance only, not professional financial advice.
         Use only the user's question, the memory summary, and the financial snapshot provided in the prompt.
         Answer the user's question directly in plain text.
-        The answer language must be \(responseLanguage.nativeDisplayName) unless the user explicitly asks to switch.
+        Answer in the same language as the user's latest message. If the user explicitly asks to switch languages, follow that request.
         If the user asks for one of their numbers, give the exact number from the snapshot first.
         If data is missing, unavailable, or zero, say that clearly and do not guess.
         Use simple everyday language.

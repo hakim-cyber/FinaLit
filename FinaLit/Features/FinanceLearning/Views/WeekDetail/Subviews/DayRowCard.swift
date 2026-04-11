@@ -29,7 +29,7 @@ struct DayRowCard: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 6) {
-                    Text(day.isReflection ? "Reflection Day" : L10n.tr("Day %@", preferences: preferences, String(day.dayNumber)))
+                    Text(day.isReflection ? "Reflection Day" : "Day \(day.dayNumber)")
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(isLocked ? AppTheme.textTertiary : AppTheme.textPrimary)
                     if day.isReflection {
@@ -52,7 +52,7 @@ struct DayRowCard: View {
                 if let score = progress?.quizScore,
                    let total = progress?.totalQuestions,
                    quizDone {
-                    Text(L10n.tr("%@/%@ correct", preferences: preferences, String(score), String(total)))
+                    Text("\(score)/\(total) correct")
                         .font(.system(size: 11))
                         .foregroundStyle(progress?.isPassed == true ? AppTheme.success : AppTheme.danger)
                 }

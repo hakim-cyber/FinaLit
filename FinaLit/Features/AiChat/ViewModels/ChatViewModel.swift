@@ -30,12 +30,10 @@ final class ChatViewModel {
     private var thread: ChatThreadEntity?
     private var assistantContext: AIAssistantContext?
     private var consentOwnerUID: String?
-    private var currentAppLanguage: AppLanguage {
-        session.user?.preferences?.appLanguage ?? .default
-    }
 
-    private func localized(_ key: String, _ arguments: CVarArg...) -> String {
-        L10n.tr(key, language: currentAppLanguage, arguments: arguments)
+    private func localized(_ text: String, _ arguments: CVarArg...) -> String {
+        guard !arguments.isEmpty else { return text }
+        return String(format: text, locale: Locale(identifier: "en_US_POSIX"), arguments: arguments)
     }
 
     init(
@@ -89,11 +87,11 @@ final class ChatViewModel {
 
         let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, !isSending else { return }
-        let responseLanguage = AppLanguage.detectPreferredMessageLanguage(from: text) ?? currentAppLanguage
+        let responseLanguage = preferredReplyLanguage(for: text)
         let analysis = contextBuilder.analyzeMessage(text, preferredLanguage: responseLanguage)
 
         guard !analysis.requiresRemoteReply || hasAIDataSharingConsent else {
-            errorMessage = L10n.tr("Allow AI data sharing before sending messages.", language: currentAppLanguage)
+            errorMessage = localized("Allow AI data sharing before sending messages.")
             return
         }
 
@@ -243,7 +241,7 @@ final class ChatViewModel {
         consentOwnerUID = uid
         UserDefaults.standard.set(hasConsent, forKey: consentKey(uid: uid))
 
-        if hasConsent && errorMessage == L10n.tr("Allow AI data sharing before sending messages.", language: currentAppLanguage) {
+        if hasConsent && errorMessage == localized("Allow AI data sharing before sending messages.") {
             errorMessage = nil
         }
     }
@@ -282,14 +280,10 @@ final class ChatViewModel {
     private func partialReplyHint(for error: Error) -> String {
         if let generateError = error as? GenerateContentError,
            case let .responseStoppedEarly(reason, _) = generateError {
-            return L10n.tr(
-                "AI stopped early (%@). Showing partial response.",
-                language: currentAppLanguage,
-                reason.rawValue
-            )
+            return localized("AI stopped early (%@). Showing partial response.", reason.rawValue)
         }
 
-        return L10n.tr("AI stopped early. Showing partial response.", language: currentAppLanguage)
+        return localized("AI stopped early. Showing partial response.")
     }
 
     private func diagnoseAIError(_ error: Error) -> (userMessage: String, assistantMessage: String, debugDetails: String) {
@@ -299,8 +293,8 @@ final class ChatViewModel {
                 let blockReason = response.promptFeedback?.blockReason?.rawValue ?? "UNKNOWN"
                 let blockMessage = response.promptFeedback?.blockReasonMessage ?? "Prompt was blocked."
                 return (
-                    L10n.tr("Prompt blocked by model safety (%@). Try rephrasing.", language: currentAppLanguage, blockReason),
-                    L10n.tr("I couldn't answer because the prompt was blocked by safety checks (%@). Try rephrasing your question.\nEducational guidance, not financial advice.", language: currentAppLanguage, blockReason),
+                    localized("Prompt blocked by model safety (%@). Try rephrasing.", blockReason),
+                    localized("I couldn't answer because the prompt was blocked by safety checks (%@). Try rephrasing your question.\nEducational guidance, not financial advice.", blockReason),
                     "GenerateContentError.promptBlocked reason=\(blockReason) message=\(blockMessage)"
                 )
 
@@ -310,30 +304,30 @@ final class ChatViewModel {
                     reason.rawValue == "PROHIBITED_CONTENT" ||
                     reason.rawValue == "SPII" {
                     return (
-                        L10n.tr("Model blocked the response for safety (%@). Try rephrasing.", language: currentAppLanguage, reason.rawValue),
-                        L10n.tr("I couldn't complete this answer because the model stopped for safety (%@). Try a safer phrasing.\nEducational guidance, not financial advice.", language: currentAppLanguage, reason.rawValue),
+                        localized("Model blocked the response for safety (%@). Try rephrasing.", reason.rawValue),
+                        localized("I couldn't complete this answer because the model stopped for safety (%@). Try a safer phrasing.\nEducational guidance, not financial advice.", reason.rawValue),
                         "GenerateContentError.responseStoppedEarly finishReason=\(reason.rawValue)"
                     )
                 }
 
                 if reason.rawValue == "MAX_TOKENS" {
                     return (
-                        L10n.tr("AI output limit reached (%@). Ask it to continue from the last point.", language: currentAppLanguage, reason.rawValue),
-                        L10n.tr("The AI response stopped because the model hit its maximum length. Ask it to continue from the last point.\nEducational guidance, not financial advice.", language: currentAppLanguage),
+                        localized("AI output limit reached (%@). Ask it to continue from the last point.", reason.rawValue),
+                        localized("The AI response stopped because the model hit its maximum length. Ask it to continue from the last point.\nEducational guidance, not financial advice."),
                         "GenerateContentError.responseStoppedEarly finishReason=\(reason.rawValue)"
                     )
                 }
 
                 return (
-                    L10n.tr("AI stopped early (%@). Please try again.", language: currentAppLanguage, reason.rawValue),
-                    L10n.tr("I couldn't complete the response because generation stopped early (%@). Please try again.\nEducational guidance, not financial advice.", language: currentAppLanguage, reason.rawValue),
+                    localized("AI stopped early (%@). Please try again.", reason.rawValue),
+                    localized("I couldn't complete the response because generation stopped early (%@). Please try again.\nEducational guidance, not financial advice.", reason.rawValue),
                     "GenerateContentError.responseStoppedEarly finishReason=\(reason.rawValue)"
                 )
 
             case let .promptImageContentError(underlying):
                 return (
-                    L10n.tr("Invalid prompt content for AI request.", language: currentAppLanguage),
-                    L10n.tr("I couldn't process this request because the prompt content format was invalid.\nEducational guidance, not financial advice.", language: currentAppLanguage),
+                    localized("Invalid prompt content for AI request."),
+                    localized("I couldn't process this request because the prompt content format was invalid.\nEducational guidance, not financial advice."),
                     "GenerateContentError.promptImageContentError underlying=\(underlying)"
                 )
 
@@ -354,8 +348,8 @@ final class ChatViewModel {
             lowered.contains("not connected") ||
             lowered.contains("network") {
             return (
-                L10n.tr("No internet connection. Check your network and try again.", language: currentAppLanguage),
-                L10n.tr("I couldn't reach the AI service because your device appears offline. Please reconnect and try again.\nEducational guidance, not financial advice.", language: currentAppLanguage),
+                localized("No internet connection. Check your network and try again."),
+                localized("I couldn't reach the AI service because your device appears offline. Please reconnect and try again.\nEducational guidance, not financial advice."),
                 "Network error domain=\(nsError.domain) code=\(nsError.code) desc=\(error.localizedDescription)"
             )
         }
@@ -366,25 +360,40 @@ final class ChatViewModel {
             lowered.contains("unauthenticated") ||
             lowered.contains("permission") {
             return (
-                L10n.tr("AI authentication failed. Verify Firebase AI Logic setup and API key restrictions.", language: currentAppLanguage),
-                L10n.tr("I couldn't authenticate with the AI service. Please verify project setup and API key restrictions.\nEducational guidance, not financial advice.", language: currentAppLanguage),
+                localized("AI authentication failed. Verify Firebase AI Logic setup and API key restrictions."),
+                localized("I couldn't authenticate with the AI service. Please verify project setup and API key restrictions.\nEducational guidance, not financial advice."),
                 "Auth error domain=\(nsError.domain) code=\(nsError.code) desc=\(error.localizedDescription)"
             )
         }
 
         if nsError.domain.contains("GenerateContentError"), nsError.code == 3 {
             return (
-                L10n.tr("Model stopped generation early (error 3). This is usually safety or token limit.", language: currentAppLanguage),
-                L10n.tr("The AI stopped generation early. Please try again or ask it to continue from the last point.\nEducational guidance, not financial advice.", language: currentAppLanguage),
+                localized("Model stopped generation early (error 3). This is usually safety or token limit."),
+                localized("The AI stopped generation early. Please try again or ask it to continue from the last point.\nEducational guidance, not financial advice."),
                 "GenerateContentError code=3 desc=\(error.localizedDescription)"
             )
         }
 
         return (
             error.localizedDescription,
-            L10n.tr("I hit an issue while generating a reply. Please try again.\nEducational guidance, not financial advice.", language: currentAppLanguage),
+            localized("I hit an issue while generating a reply. Please try again.\nEducational guidance, not financial advice."),
             "Unhandled error domain=\(nsError.domain) code=\(nsError.code) desc=\(error.localizedDescription)"
         )
+    }
+
+    private func preferredReplyLanguage(for text: String) -> AppLanguage {
+        if let detected = AppLanguage.detectPreferredMessageLanguage(from: text) {
+            return detected
+        }
+
+        if let recentUserLanguage = messages
+            .reversed()
+            .first(where: { $0.role == .user })
+            .flatMap({ AppLanguage.detectPreferredMessageLanguage(from: $0.text) }) {
+            return recentUserLanguage
+        }
+
+        return .default
     }
 
     private func syncConsentStateForCurrentUser() {

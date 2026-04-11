@@ -68,7 +68,6 @@ struct FinaLitApp: App {
                 .environment(mainViewModel)
                 .environment(chatViewModel)
                 .environment(appPreferences)
-                .environment(\.locale, appPreferences.locale)
                 .task {
                     await restoreSession()
                     appPreferences.refreshFromCurrentSession()

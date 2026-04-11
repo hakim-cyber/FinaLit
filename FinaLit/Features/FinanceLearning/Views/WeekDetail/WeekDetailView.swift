@@ -28,7 +28,7 @@ struct WeekDetailView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     if let localizedWeek {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text(L10n.tr("WEEK %@", preferences: preferences, String(localizedWeek.weekNumber)))
+                            Text("WEEK \(localizedWeek.weekNumber)")
                                 .font(.system(size: 11, weight: .semibold))
                                 .foregroundStyle(AppTheme.accent)
                             Text(localizedWeek.title)

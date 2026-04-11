@@ -35,8 +35,9 @@ struct ProfileSettingsHomeView: View {
         return "v\(version) (\(build))"
     }
 
-    private func localized(_ key: String, _ arguments: CVarArg...) -> String {
-        L10n.tr(key, language: preferences.appLanguage, arguments: arguments)
+    private func localized(_ text: String, _ arguments: CVarArg...) -> String {
+        guard !arguments.isEmpty else { return text }
+        return String(format: text, locale: Locale(identifier: "en_US_POSIX"), arguments: arguments)
     }
 
     var body: some View {
@@ -74,32 +75,16 @@ struct ProfileSettingsHomeView: View {
                         )
                     }
 
-                    SettingsSectionCard(title: "LANGUAGE") {
+                    SettingsSectionCard(title: "LEARNING") {
                         SettingsLanguageMenuRow(
-                            title: "App Language",
-                            subtitle: "Changes labels, alerts, onboarding, and assistant defaults",
-                            value: preferences.appLanguage.nativeDisplayName,
-                            icon: "globe",
-                            options: AppLanguage.allCases.map { ($0.nativeDisplayName, $0.rawValue) }
-                        ) { selectedValue in
-                            guard let language = AppLanguage(rawValue: selectedValue) else { return }
-                            preferences.setAppLanguage(language)
-                        }
-
-                        Divider()
-                            .overlay(ProfileSettingsPalette.border)
-
-                        SettingsLanguageMenuRow(
-                            title: "Learning Content",
-                            subtitle: "Lesson, quiz, week, and tip language",
+                            title: "Content Language",
+                            subtitle: "Lessons, quizzes, weeks, daily tips, and translated Firebase content",
                             value: learningContentLabel,
-                            icon: "book.closed.fill",
+                            icon: "globe",
                             options: learningOptions
                         ) { selectedValue in
-                            if selectedValue == "followApp" {
-                                preferences.setLearningLanguagePreference(.followApp)
-                            } else if let language = AppLanguage(rawValue: selectedValue) {
-                                preferences.setLearningLanguagePreference(.specific(language))
+                            if let language = AppLanguage(rawValue: selectedValue) {
+                                preferences.setLearningLanguage(language)
                             }
                         }
                     }
@@ -314,21 +299,11 @@ struct ProfileSettingsHomeView: View {
     }
 
     private var learningOptions: [(String, String)] {
-        [(L10n.tr("Follow App", language: preferences.appLanguage), "followApp")]
-            + AppLanguage.allCases.map { ($0.nativeDisplayName, $0.rawValue) }
+        AppLanguage.allCases.map { ($0.nativeDisplayName, $0.rawValue) }
     }
 
     private var learningContentLabel: String {
-        switch preferences.learningLanguagePreference {
-        case .followApp:
-            return L10n.tr(
-                "Follow App (%@)",
-                language: preferences.appLanguage,
-                preferences.appLanguage.nativeDisplayName
-            )
-        case .specific(let language):
-            return language.nativeDisplayName
-        }
+        preferences.effectiveLearningLanguage.nativeDisplayName
     }
 
     private var reauthSheet: some View {

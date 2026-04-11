@@ -71,18 +71,15 @@ class AuthViewModel {
     private let dbService: DatabaseService
     private let session: UserSession
 
-    private var appLanguage: AppLanguage {
-        session.currentAppLanguage
-    }
-
     init(authService: AuthService, dbService: DatabaseService, session: UserSession) {
         self.authService = authService
         self.dbService   = dbService
         self.session     = session
     }
 
-    private func localized(_ key: String, _ arguments: CVarArg...) -> String {
-        L10n.tr(key, language: appLanguage, arguments: arguments)
+    private func localized(_ text: String, _ arguments: CVarArg...) -> String {
+        guard !arguments.isEmpty else { return text }
+        return String(format: text, locale: Locale(identifier: "en_US_POSIX"), arguments: arguments)
     }
 
     // MARK: - Register
@@ -165,7 +162,7 @@ class AuthViewModel {
                     email: trimmedEmail,
                     name: fallbackName,
                     createdAt: .now,
-                    preferences: UserPreferences(appLanguage: .default)
+                    preferences: UserPreferences()
                 )
                 try dbService.createUser(recoveredUser)
                 user = recoveredUser
@@ -389,7 +386,7 @@ class AuthViewModel {
                 profile: nil,
                 financialProfile: nil,
                 behaviorProfile: nil,
-                preferences: UserPreferences(appLanguage: .default)
+                preferences: UserPreferences()
             )
 
             do {

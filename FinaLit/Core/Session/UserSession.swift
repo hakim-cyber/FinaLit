@@ -18,7 +18,6 @@ class UserSession {
     var isRestoringSession: Bool = true
     
     var isAuthenticated: Bool { user != nil }
-    var currentAppLanguage: AppLanguage { user?.preferences?.appLanguage ?? .default }
     
     var hasCompletedOnboarding: Bool {
         user?.hasCompletedOnboarding ?? false

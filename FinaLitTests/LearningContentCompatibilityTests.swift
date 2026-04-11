@@ -1,7 +1,7 @@
 import XCTest
 @testable import FinaLit
 
-final class LocalizationCompatibilityTests: XCTestCase {
+final class LearningContentCompatibilityTests: XCTestCase {
     func testUserDecodesWithoutPreferences() throws {
         let json = """
         {
@@ -184,14 +184,14 @@ final class LocalizationCompatibilityTests: XCTestCase {
         XCTAssertEqual(resolved.questions.map(\.questionText), ["Base 1", "Base 2"])
     }
 
-    func testLearningLanguageOverrideFallsBackToAppLanguage() {
-        let followAppPreferences = UserPreferences(appLanguage: .ru, learningContentLanguageOverride: nil)
-        XCTAssertEqual(followAppPreferences.effectiveLearningLanguage(), .ru)
+    func testLearningLanguageFallsBackToLegacyLanguage() {
+        let legacyPreferences = UserPreferences(legacyLanguage: .ru, learningContentLanguage: nil)
+        XCTAssertEqual(legacyPreferences.effectiveLearningLanguage(), .ru)
 
-        let overriddenPreferences = UserPreferences(appLanguage: .az, learningContentLanguageOverride: .en)
-        XCTAssertEqual(overriddenPreferences.effectiveLearningLanguage(), .en)
+        let explicitPreferences = UserPreferences(legacyLanguage: .az, learningContentLanguage: .en)
+        XCTAssertEqual(explicitPreferences.effectiveLearningLanguage(), .en)
 
-        let emptyPreferences = UserPreferences(appLanguage: nil, learningContentLanguageOverride: nil)
+        let emptyPreferences = UserPreferences(legacyLanguage: nil, learningContentLanguage: nil)
         XCTAssertEqual(emptyPreferences.effectiveLearningLanguage(), .default)
     }
 }

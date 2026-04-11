@@ -31,7 +31,7 @@ struct ContinueBanner: View {
                     Text("Continue where you left off")
                         .font(AppTheme.Typography.detail.weight(.semibold))
                         .foregroundStyle(AppTheme.accent)
-                    Text(L10n.tr("Day %@", preferences: preferences, String(dayNumber)))
+                    Text("Day \(dayNumber)")
                         .font(.system(size: 20, weight: .semibold))
                         .foregroundStyle(AppTheme.textPrimary)
                 }

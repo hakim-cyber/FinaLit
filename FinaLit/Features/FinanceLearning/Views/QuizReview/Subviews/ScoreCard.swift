@@ -21,7 +21,7 @@ struct ScoreCard: View {
                 Text("\(score)/\(total)")
                     .font(.system(size: 56, weight: .medium))
                     .foregroundStyle(AppTheme.textPrimary)
-                Text(L10n.tr("%@%% correct", preferences: preferences, String(percentage)))
+                Text("\(percentage)% correct")
                     .font(.system(size: 14))
                     .foregroundStyle(passed ? AppTheme.success : AppTheme.danger)
             }

@@ -10,12 +10,11 @@ import Observation
 @Observable
 final class AppPreferencesStore {
     private enum StorageKey {
-        static let appLanguage = "finalit.preferences.appLanguage"
+        static let legacyAppLanguage = "finalit.preferences.appLanguage"
         static let learningLanguage = "finalit.preferences.learningContentLanguageOverride"
     }
 
-    var appLanguage: AppLanguage
-    var learningContentLanguageOverride: AppLanguage?
+    var learningContentLanguage: AppLanguage
 
     private let defaults: UserDefaults
     private let dbService: DatabaseService
@@ -30,28 +29,11 @@ final class AppPreferencesStore {
         self.dbService = dbService
         self.session = session
         self.defaults = defaults
-        appLanguage = AppLanguage(
-            rawValue: defaults.string(forKey: StorageKey.appLanguage) ?? ""
-        ) ?? .default
-        learningContentLanguageOverride = AppLanguage(
-            rawValue: defaults.string(forKey: StorageKey.learningLanguage) ?? ""
-        )
-    }
-
-    var locale: Locale {
-        appLanguage.locale
+        learningContentLanguage = Self.languageFromDefaults(defaults)
     }
 
     var effectiveLearningLanguage: AppLanguage {
-        learningContentLanguageOverride ?? appLanguage
-    }
-
-    var learningLanguagePreference: LearningLanguagePreference {
-        if let learningContentLanguageOverride {
-            return .specific(learningContentLanguageOverride)
-        }
-
-        return .followApp
+        learningContentLanguage
     }
 
     func handleSessionUserChanged() {
@@ -83,32 +65,21 @@ final class AppPreferencesStore {
         )
     }
 
-    func setAppLanguage(_ language: AppLanguage) {
-        guard appLanguage != language else { return }
-        appLanguage = language
-        persistLocally()
-        persistToSessionAndRemote()
-    }
-
-    func setLearningLanguagePreference(_ preference: LearningLanguagePreference) {
-        switch preference {
-        case .followApp:
-            learningContentLanguageOverride = nil
-        case .specific(let language):
-            learningContentLanguageOverride = language
-        }
-
+    func setLearningLanguage(_ language: AppLanguage) {
+        guard learningContentLanguage != language else { return }
+        learningContentLanguage = language
         persistLocally()
         persistToSessionAndRemote()
     }
 
     private func defaultPreferences() -> UserPreferences {
-        UserPreferences(appLanguage: .default, learningContentLanguageOverride: nil)
+        UserPreferences(learningContentLanguage: .default)
     }
 
     private func apply(_ preferences: UserPreferences, persistToRemoteIfMissing: Bool) {
-        appLanguage = preferences.appLanguage ?? .default
-        learningContentLanguageOverride = preferences.learningContentLanguageOverride
+        learningContentLanguage = preferences.learningContentLanguage
+            ?? preferences.legacyLanguage
+            ?? .default
         persistLocally()
         session.updatePreferences(currentPreferences())
 
@@ -117,24 +88,19 @@ final class AppPreferencesStore {
     }
 
     private func loadFromLocalDefaults() {
-        appLanguage = AppLanguage(
-            rawValue: defaults.string(forKey: StorageKey.appLanguage) ?? ""
-        ) ?? .default
-        learningContentLanguageOverride = AppLanguage(
-            rawValue: defaults.string(forKey: StorageKey.learningLanguage) ?? ""
-        )
+        learningContentLanguage = Self.languageFromDefaults(defaults)
     }
 
     private func currentPreferences() -> UserPreferences {
         UserPreferences(
-            appLanguage: appLanguage,
-            learningContentLanguageOverride: learningContentLanguageOverride
+            legacyLanguage: nil,
+            learningContentLanguage: learningContentLanguage
         )
     }
 
     private func persistLocally() {
-        defaults.set(appLanguage.rawValue, forKey: StorageKey.appLanguage)
-        defaults.set(learningContentLanguageOverride?.rawValue, forKey: StorageKey.learningLanguage)
+        defaults.removeObject(forKey: StorageKey.legacyAppLanguage)
+        defaults.set(learningContentLanguage.rawValue, forKey: StorageKey.learningLanguage)
     }
 
     private func persistToSessionAndRemote() {
@@ -149,5 +115,17 @@ final class AppPreferencesStore {
         Task {
             try? await dbService.saveUserPreferences(preferences, uid: uid)
         }
+    }
+
+    private static func languageFromDefaults(_ defaults: UserDefaults) -> AppLanguage {
+        if let language = AppLanguage(rawValue: defaults.string(forKey: StorageKey.learningLanguage) ?? "") {
+            return language
+        }
+
+        if let legacyLanguage = AppLanguage(rawValue: defaults.string(forKey: StorageKey.legacyAppLanguage) ?? "") {
+            return legacyLanguage
+        }
+
+        return .default
     }
 }
