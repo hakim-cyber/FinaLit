@@ -12,12 +12,18 @@ struct QuizReviewView: View {
     @Environment(LearnViewModel.self) private var learnVM
     @Environment(Coordinator<LearnPages>.self) private var coordinator
 
+    private var day: Day? {
+        learnVM.days(for: weekID).first { $0.id == dayID }
+    }
+
     private var dayProgress: DayProgress? {
         learnVM.dayProgress(for: dayID, in: weekID)
     }
 
     private var quiz: Quiz? {
-        learnVM.currentQuiz
+        guard let quizID = day?.quizID else { return nil }
+        guard learnVM.currentQuiz?.id == quizID else { return nil }
+        return learnVM.currentQuiz
     }
 
     private var wrongQuestions: [QuizQuestion] {
@@ -100,5 +106,10 @@ struct QuizReviewView: View {
         .navigationTitle("Quiz Results")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
+        .task(id: day?.quizID) {
+            guard let quizID = day?.quizID else { return }
+            guard learnVM.currentQuiz?.id != quizID else { return }
+            await learnVM.loadQuiz(quizID: quizID)
+        }
     }
 }

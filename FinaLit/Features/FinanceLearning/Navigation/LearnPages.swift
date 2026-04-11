@@ -18,7 +18,7 @@ import SwiftUI
 enum LearnPages: Coordinatable {
     case home
     case weekDetail(String)              // weekID
-    case lessonDetail(String, String)    // lessonID, dayID, weekID handled via env
+    case lessonDetail(String, String, String) // lessonID, dayID, weekID
     case quiz(String, String, String)    // quizID, dayID, weekID
     case quizReview(String, String)      // dayID, weekID
     case reflection(String, String)      // weekID, weekTitle
@@ -29,7 +29,7 @@ enum LearnPages: Coordinatable {
         switch self {
         case .home:                              return "learn.home"
         case .weekDetail(let id):                return "learn.week.\(id)"
-        case .lessonDetail(let l, let d):        return "learn.lesson.\(l).\(d)"
+        case .lessonDetail(let l, let d, let w): return "learn.lesson.\(l).\(d).\(w)"
         case .quiz(let q, let d, let w):         return "learn.quiz.\(q).\(d).\(w)"
         case .quizReview(let d, let w):          return "learn.quizReview.\(d).\(w)"
         case .reflection(let w, _):              return "learn.reflection.\(w)"
@@ -45,8 +45,8 @@ enum LearnPages: Coordinatable {
             LearnHomeView()
         case .weekDetail(let weekID):
             WeekDetailView(weekID: weekID)
-        case .lessonDetail(let lessonID, let dayID):
-            LessonDetailView(lessonID: lessonID, dayID: dayID)
+        case .lessonDetail(let lessonID, let dayID, let weekID):
+            LessonDetailView(lessonID: lessonID, dayID: dayID, weekID: weekID)
         case .quiz(let quizID, let dayID, let weekID):
             QuizView(quizID: quizID, dayID: dayID, weekID: weekID)
         case .quizReview(let dayID, let weekID):

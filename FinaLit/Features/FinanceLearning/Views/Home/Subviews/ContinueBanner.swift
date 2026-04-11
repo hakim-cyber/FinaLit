@@ -21,7 +21,7 @@ struct ContinueBanner: View {
                     let week = learnVM.publishedWeeks.first { $0.id == weekID }
                     coordinator.push(.reflection(weekID, week?.title ?? ""))
                 } else {
-                    coordinator.push(.lessonDetail(day.lessonID, dayID))
+                    coordinator.push(.lessonDetail(day.lessonID, dayID, weekID))
                 }
             }
         } label: {

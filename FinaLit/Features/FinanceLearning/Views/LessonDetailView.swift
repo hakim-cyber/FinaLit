@@ -10,10 +10,38 @@ import SwiftUI
 struct LessonDetailView: View {
     let lessonID: String
     let dayID: String
+    let weekID: String
 
     @Environment(LearnViewModel.self)          private var learnVM
     @Environment(Coordinator<LearnPages>.self) private var coordinator
-    @State private var hasMarkedRead = false
+
+    private var dayProgress: DayProgress? {
+        learnVM.dayProgress(for: dayID, in: weekID)
+    }
+
+    private var currentDay: Day? {
+        learnVM.days(for: weekID).first { $0.id == dayID }
+    }
+
+    private var hasReadLesson: Bool {
+        dayProgress?.lessonRead == true
+    }
+
+    private var hasCompletedQuiz: Bool {
+        dayProgress?.quizCompleted == true
+    }
+
+    private var primaryButtonTitle: String {
+        if hasCompletedQuiz {
+            return "Retake Quiz →"
+        }
+
+        if hasReadLesson {
+            return "Continue to Quiz →"
+        }
+
+        return "I've read this ✓"
+    }
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -47,11 +75,32 @@ struct LessonDetailView: View {
                     )
                     .frame(height: 40)
 
+                    if hasCompletedQuiz {
+                        Button {
+                            coordinator.push(.quizReview(dayID, weekID))
+                        } label: {
+                            Text("View Last Results")
+                                .font(.system(size: 15, weight: .medium))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 14)
+                                .background(AppTheme.surfacePrimary)
+                                .foregroundStyle(AppTheme.textPrimary)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(AppTheme.separator, lineWidth: 1)
+                                )
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 12)
+                        .buttonStyle(.plain)
+                    }
+
                     Button {
-                        Task { await handleReadComplete() }
+                        Task { await handlePrimaryAction() }
                     } label: {
                         HStack {
-                            Text(hasMarkedRead ? "Continue to Quiz →" : "I've read this ✓")
+                            Text(primaryButtonTitle)
                                 .font(.system(size: 16))
                             if learnVM.isSubmitting {
                                 ProgressView()
@@ -74,7 +123,7 @@ struct LessonDetailView: View {
                     .padding(.horizontal, 20)
                     .padding(.bottom, 32)
                     .background(AppTheme.background)
-                    .disabled(learnVM.isSubmitting)
+                    .disabled(learnVM.isSubmitting || currentDay == nil)
                 }
             }
         }
@@ -264,28 +313,15 @@ struct LessonDetailView: View {
         }
     }
 
-    private func handleReadComplete() async {
-        guard let weekID = findWeekID() else { return }
+    private func handlePrimaryAction() async {
+        guard let day = currentDay, !day.quizID.isEmpty else { return }
 
-        if !hasMarkedRead {
+        if !hasReadLesson {
             let didMarkRead = await learnVM.markLessonRead(weekID: weekID, dayID: dayID)
             guard didMarkRead else { return }
-            hasMarkedRead = true
         }
 
-        let days = learnVM.daysCache.values.flatMap { $0 }
-        if let day = days.first(where: { $0.id == dayID }) {
-            coordinator.push(.quiz(day.quizID, dayID, weekID))
-        }
-    }
-
-    private func findWeekID() -> String? {
-        for (weekID, days) in learnVM.daysCache {
-            if days.contains(where: { $0.id == dayID }) {
-                return weekID
-            }
-        }
-        return nil
+        coordinator.push(.quiz(day.quizID, dayID, weekID))
     }
 }
 

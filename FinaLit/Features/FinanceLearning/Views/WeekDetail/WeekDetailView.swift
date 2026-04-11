@@ -83,12 +83,8 @@ struct WeekDetailView: View {
         if day.isReflection {
             guard learnVM.isReflectionUnlocked(weekID: weekID) else { return }
             coordinator.push(.reflection(weekID, week?.title ?? ""))
-        } else if progress?.lessonRead == true && progress?.quizCompleted == false {
-            coordinator.push(.quiz(day.quizID, dayID, weekID))
-        } else if progress?.quizCompleted == true {
-            coordinator.push(.quizReview(dayID, weekID))
         } else {
-            coordinator.push(.lessonDetail(day.lessonID, dayID))
+            coordinator.push(.lessonDetail(day.lessonID, dayID, weekID))
         }
     }
 }
