@@ -16,19 +16,8 @@
 		08BF25952F492EEF0085D777 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 08BF25942F492EEF0085D777 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		7A1B2C3D4E5F60718293A407 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08C6F4D52F44F2F000741593 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 08C6F4DC2F44F2F000741593;
-			remoteInfo = FinaLit;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		08C6F4DD2F44F2F000741593 /* FinaLit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinaLit.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		7A1B2C3D4E5F60718293A401 /* FinaLitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinaLitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -50,11 +39,6 @@
 			path = FinaLit;
 			sourceTree = "<group>";
 		};
-		7A1B2C3D4E5F60718293A402 /* FinaLitTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FinaLitTests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,13 +56,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		7A1B2C3D4E5F60718293A403 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -86,7 +63,6 @@
 			isa = PBXGroup;
 			children = (
 				08C6F4DF2F44F2F000741593 /* FinaLit */,
-				7A1B2C3D4E5F60718293A402 /* FinaLitTests */,
 				08C6F4DE2F44F2F000741593 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -95,7 +71,6 @@
 			isa = PBXGroup;
 			children = (
 				08C6F4DD2F44F2F000741593 /* FinaLit.app */,
-				7A1B2C3D4E5F60718293A401 /* FinaLitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -132,28 +107,6 @@
 			productReference = 08C6F4DD2F44F2F000741593 /* FinaLit.app */;
 			productType = "com.apple.product-type.application";
 		};
-		7A1B2C3D4E5F60718293A406 /* FinaLitTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 7A1B2C3D4E5F60718293A409 /* Build configuration list for PBXNativeTarget "FinaLitTests" */;
-			buildPhases = (
-				7A1B2C3D4E5F60718293A404 /* Sources */,
-				7A1B2C3D4E5F60718293A403 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				7A1B2C3D4E5F60718293A408 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				7A1B2C3D4E5F60718293A402 /* FinaLitTests */,
-			);
-			name = FinaLitTests;
-			packageProductDependencies = (
-			);
-			productName = FinaLitTests;
-			productReference = 7A1B2C3D4E5F60718293A401 /* FinaLitTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -166,10 +119,6 @@
 				TargetAttributes = {
 					08C6F4DC2F44F2F000741593 = {
 						CreatedOnToolsVersion = 26.3;
-					};
-					7A1B2C3D4E5F60718293A406 = {
-						CreatedOnToolsVersion = 26.3;
-						TestTargetID = 08C6F4DC2F44F2F000741593;
 					};
 				};
 			};
@@ -192,7 +141,6 @@
 			projectRoot = "";
 			targets = (
 				08C6F4DC2F44F2F000741593 /* FinaLit */,
-				7A1B2C3D4E5F60718293A406 /* FinaLitTests */,
 			);
 		};
 /* End PBXProject section */
@@ -215,22 +163,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		7A1B2C3D4E5F60718293A404 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		7A1B2C3D4E5F60718293A408 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 08C6F4DC2F44F2F000741593 /* FinaLit */;
-			targetProxy = 7A1B2C3D4E5F60718293A407 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		08C6F4E62F44F2F100741593 /* Debug */ = {
@@ -430,56 +363,6 @@
 			};
 			name = Release;
 		};
-		7A1B2C3D4E5F60718293A40A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4NLRT8KSZR;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.2.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hakimAlyev.FinaLitTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FinaLit.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FinaLit";
-			};
-			name = Debug;
-		};
-		7A1B2C3D4E5F60718293A40B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4NLRT8KSZR;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.2.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hakimAlyev.FinaLitTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FinaLit.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FinaLit";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -497,15 +380,6 @@
 			buildConfigurations = (
 				08C6F4E92F44F2F100741593 /* Debug */,
 				08C6F4EA2F44F2F100741593 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		7A1B2C3D4E5F60718293A409 /* Build configuration list for PBXNativeTarget "FinaLitTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				7A1B2C3D4E5F60718293A40A /* Debug */,
-				7A1B2C3D4E5F60718293A40B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
