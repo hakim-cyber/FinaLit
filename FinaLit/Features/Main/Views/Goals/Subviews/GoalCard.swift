@@ -23,11 +23,11 @@ struct GoalCard: View {
 
     private var monthlyPaceText: String? {
         guard !isCompleted, remainingAmount > 0, let monthsUntilDeadline else { return nil }
-        guard monthsUntilDeadline >= 0 else { return "Deadline passed" }
+        guard monthsUntilDeadline >= 0 else { return String(localized: "main.deadlinePassed") }
 
         let monthWindow = max(monthsUntilDeadline, 1)
         let neededPerMonth = remainingAmount / Double(monthWindow)
-        return "Need \(formatDisplayCurrency(neededPerMonth))/month"
+        return "\(String(localized: "main.needPrefix")) \(formatDisplayCurrency(neededPerMonth))\(String(localized: "main.perMonth"))"
     }
 
     private var monthlyPaceColor: Color {
@@ -43,7 +43,7 @@ struct GoalCard: View {
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundStyle(AppTheme.textPrimary)
                     if let deadline = goal.deadline {
-                        Text("Due \(deadline.formatted(date: .abbreviated, time: .omitted))")
+                        Text(String(localized: "main.due") + " " + deadline.formatted(date: .abbreviated, time: .omitted))
                             .font(AppTheme.Typography.detail)
                             .foregroundStyle(AppTheme.textSecondary)
                     }
@@ -68,7 +68,7 @@ struct GoalCard: View {
                         .font(.system(size: 22, weight: .semibold, design: .rounded))
                         .foregroundStyle(AppTheme.textPrimary)
                         .monospacedDigit()
-                    Text("saved")
+                    Text(L10n.Main.saved)
                         .font(AppTheme.Typography.detail)
                         .foregroundStyle(AppTheme.textSecondary)
                 }
@@ -77,7 +77,7 @@ struct GoalCard: View {
                     Text(formatDisplayCurrency(goal.targetAmount))
                         .font(AppTheme.Typography.body)
                         .foregroundStyle(AppTheme.textSecondary)
-                    Text("target")
+                    Text(L10n.Main.target)
                         .font(AppTheme.Typography.detail)
                         .foregroundStyle(AppTheme.textSecondary)
                 }

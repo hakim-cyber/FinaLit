@@ -10,11 +10,11 @@ struct EmptyGoalsPreviewCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("No active goals yet")
+            Text(L10n.Main.noActiveGoalsYet)
                 .font(AppTheme.Typography.headline)
                 .foregroundStyle(AppTheme.textPrimary)
 
-            Text("Create your first goal and start tracking progress from your dashboard.")
+            Text(L10n.Main.createYourFirstGoalAndStartTrackingProgressFromYourDashboard)
                 .font(AppTheme.Typography.caption)
                 .foregroundStyle(AppTheme.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -22,7 +22,7 @@ struct EmptyGoalsPreviewCard: View {
             Button(action: onCreateGoal) {
                 HStack(spacing: 8) {
                     Image(systemName: "plus.circle.fill")
-                    Text("Create your first goal")
+                    Text(L10n.Main.createYourFirstGoal)
                 }
                 .font(AppTheme.Typography.bodySemibold)
                 .foregroundStyle(AppTheme.inverseText)

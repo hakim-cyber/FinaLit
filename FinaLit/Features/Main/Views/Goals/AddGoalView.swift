@@ -51,7 +51,7 @@ struct AddGoalView: View {
 
     private var templatesSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Templates")
+            Text(L10n.Main.templates)
                 .appFieldLabelStyle()
 
             ScrollView(.horizontal, showsIndicators: false) {
@@ -95,7 +95,7 @@ struct AddGoalView: View {
             HStack(spacing: 8) {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(AppTheme.success)
-                Text("Goal created")
+                Text(L10n.Main.goalCreated)
                     .font(AppTheme.Typography.bodySemibold)
                     .foregroundStyle(AppTheme.textPrimary)
             }
@@ -108,7 +108,7 @@ struct AddGoalView: View {
                 Button {
                     openCreatedGoal()
                 } label: {
-                    Text("View Goal")
+                    Text(L10n.Main.viewGoal)
                         .padding(.horizontal, 14)
                 }
                 .buttonStyle(AppFilledButtonStyle(tone: .accent, compact: true, fillsWidth: false))
@@ -116,7 +116,7 @@ struct AddGoalView: View {
                 Button {
                     coordinator.pop()
                 } label: {
-                    Text("Done")
+                    Text(L10n.Common.done)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 10)
                         .foregroundStyle(AppTheme.textSecondary)
@@ -175,20 +175,20 @@ struct AddGoalView: View {
                     templatesSection
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Goal name")
+                        Text(L10n.Main.goalName)
                             .appFieldLabelStyle()
-                        TextField("e.g. Emergency Fund", text: $title)
+                        TextField(L10n.Main.egEmergencyFund, text: $title)
                             .appInputStyle()
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Target amount")
+                        Text(L10n.Main.targetAmount)
                             .appFieldLabelStyle()
                         HStack(spacing: 4) {
                             Text(AppRegion.currencySymbol)
                                 .font(.system(size: 30, weight: .semibold, design: .rounded))
                                 .foregroundStyle(AppTheme.textSecondary)
-                            TextField("5,000", text: $targetAmount)
+                            TextField(L10n.Main.num5000, text: $targetAmount)
                                 .font(.system(size: 32, weight: .semibold, design: .rounded))
                                 .foregroundStyle(AppTheme.textPrimary)
                                 .keyboardType(.decimalPad)
@@ -199,7 +199,7 @@ struct AddGoalView: View {
 
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
-                            Text("Set deadline")
+                            Text(L10n.Main.setDeadline)
                                 .appFieldLabelStyle()
                             Spacer()
                             Toggle("", isOn: $hasDeadline)
@@ -238,7 +238,7 @@ struct AddGoalView: View {
                 createGoal()
             } label: {
                 HStack(spacing: 10) {
-                    Text("Create Goal")
+                    Text(L10n.Main.createGoal)
                     if mainVM.isSubmitting {
                         ProgressView()
                             .tint(AppTheme.inverseText)
@@ -253,7 +253,7 @@ struct AddGoalView: View {
             .padding(.bottom, 8)
             .background(AppTheme.background.opacity(0.94))
         }
-        .navigationTitle("New Goal")
+        .navigationTitle(L10n.Main.newGoal)
         .navigationBarTitleDisplayMode(.inline)
     }
 }

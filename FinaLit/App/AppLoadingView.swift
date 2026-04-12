@@ -33,10 +33,10 @@ struct AppLoadingView: View {
                 .frame(width: 120, height: 120)
 
                 VStack(spacing: 6) {
-                    Text("FinaLit")
+                    Text(L10n.Common.finalit)
                         .font(.system(size: 34, weight: .medium))
                         .foregroundStyle(AppTheme.textPrimary)
-                    Text("Restoring your workspace")
+                    Text(L10n.Common.restoringYourWorkspace)
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(AppTheme.textSecondary)
                 }

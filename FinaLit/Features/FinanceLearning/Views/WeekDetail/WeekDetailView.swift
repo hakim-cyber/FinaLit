@@ -51,7 +51,7 @@ struct WeekDetailView: View {
                                 await learnVM.loadWeek(weekID: weekID)
                             }
                         } else if learnVM.days(for: weekID).isEmpty {
-                            Text("Days coming soon...")
+                            Text(L10n.Common.daysComingSoon)
                                 .font(.system(size: 14))
                                 .foregroundStyle(AppTheme.textSecondary)
                                 .padding(40)

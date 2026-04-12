@@ -54,16 +54,16 @@ struct AddDebtSheet: View {
 
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Account name")
+                        Text(L10n.Main.accountName)
                             .appFieldLabelStyle()
-                        TextField("e.g. Credit Card", text: $accountName)
+                        TextField(L10n.Main.egCreditCard, text: $accountName)
                             .appInputStyle()
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Current balance")
+                        Text(L10n.Main.currentBalance)
                             .appFieldLabelStyle()
-                        TextField("0", text: $balance)
+                        TextField(L10n.Profile.zero, text: $balance)
                             .font(.system(size: 24, weight: .semibold, design: .rounded))
                             .foregroundStyle(AppTheme.textPrimary)
                             .keyboardType(.decimalPad)
@@ -74,9 +74,9 @@ struct AddDebtSheet: View {
 
                     HStack(spacing: 10) {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("APR % (optional)")
+                            Text(L10n.Main.aprOptional)
                                 .appFieldLabelStyle()
-                            TextField("e.g. 19.9", text: $annualInterestRate)
+                            TextField(L10n.Main.eg199, text: $annualInterestRate)
                                 .font(AppTheme.Typography.body)
                                 .foregroundStyle(AppTheme.textPrimary)
                                 .keyboardType(.decimalPad)
@@ -84,9 +84,9 @@ struct AddDebtSheet: View {
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Min payment (optional)")
+                            Text(L10n.Main.minPaymentOptional)
                                 .appFieldLabelStyle()
-                            TextField("e.g. 50", text: $minimumPayment)
+                            TextField(L10n.Main.eg50, text: $minimumPayment)
                                 .font(AppTheme.Typography.body)
                                 .foregroundStyle(AppTheme.textPrimary)
                                 .keyboardType(.decimalPad)
@@ -97,15 +97,15 @@ struct AddDebtSheet: View {
                 }
                 .padding(AppTheme.Spacing.screen)
             }
-            .navigationTitle("Add Debt Account")
+            .navigationTitle(L10n.Main.addDebtAccount)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") { dismiss() }
+                    Button(L10n.Profile.cancel) { dismiss() }
                         .foregroundStyle(Color.primary)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") { saveDebtAccount() }
+                    Button(L10n.Main.save) { saveDebtAccount() }
                         .foregroundStyle(Color.orange)
                         .bold()
                         .disabled(!isValid || mainVM.isSubmitting)

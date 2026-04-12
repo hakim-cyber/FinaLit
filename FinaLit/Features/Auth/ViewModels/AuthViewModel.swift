@@ -293,7 +293,7 @@ class AuthViewModel {
     // MARK: - Delete Account
     func deleteAccount() async {
         guard let uid = session.user?.id else {
-            errorMessage = localized("Session expired. Please log in again.")
+            errorMessage = String(localized: "profile.sessionExpired")
             return
         }
 

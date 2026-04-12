@@ -129,8 +129,8 @@ enum AppSurfaceStyle {
 }
 
 struct AppSectionHeader: View {
-    let title: String
-    var actionTitle: String?
+    let title: LocalizedStringKey
+    var actionTitle: LocalizedStringKey?
     var action: (() -> Void)?
 
     var body: some View {
@@ -151,7 +151,7 @@ struct AppSectionHeader: View {
 }
 
 struct AppToneBadge: View {
-    let title: String
+    let title: LocalizedStringKey
     let systemImage: String
     let tone: AppTone
 

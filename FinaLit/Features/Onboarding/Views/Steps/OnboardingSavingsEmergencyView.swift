@@ -18,7 +18,7 @@ struct OnboardingSavingsEmergencyView: View {
             subtitle: "A quick view of your safety net today.",
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
-            primaryTitle: "Continue",
+            primaryTitle: String(localized: "profile.continueAction"),
             isPrimaryEnabled: true,
             onPrimaryTap: {
                 Task {
@@ -30,7 +30,7 @@ struct OnboardingSavingsEmergencyView: View {
         ) {
             VStack(alignment: .leading, spacing: 18) {
                 MoneySlider(
-                    title: "Current savings",
+                    title: String(localized: "main.savings"),
                     value: $viewModel.currentSavings,
                     range: 0...200000,
                     step: 100,
@@ -38,11 +38,11 @@ struct OnboardingSavingsEmergencyView: View {
                 )
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Emergency fund")
+                    Text(L10n.Onboarding.emergencyFund)
                         .onboardingFieldLabelStyle()
 
                     HStack {
-                        Text("Months covered")
+                        Text(L10n.Onboarding.monthsCovered)
                             .foregroundStyle(OnboardingPalette.muted)
                         Spacer()
                         Stepper(value: $viewModel.emergencyFundMonths, in: 0...24) {

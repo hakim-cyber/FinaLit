@@ -22,7 +22,7 @@ struct OnboardingPersonalInfoView: View {
             subtitle: "We use this to personalize your financial assistant.",
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
-            primaryTitle: "Continue",
+            primaryTitle: String(localized: "profile.continueAction"),
             isPrimaryEnabled: viewModel.isStep1Valid,
             onPrimaryTap: {
                 Task {
@@ -34,16 +34,16 @@ struct OnboardingPersonalInfoView: View {
         ) {
             VStack(alignment: .leading, spacing: 16) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Name")
+                    Text(L10n.Auth.name)
                         .onboardingFieldLabelStyle()
-                    TextField("Your name", text: $viewModel.name)
+                    TextField(L10n.Profile.yourName, text: $viewModel.name)
                         .textInputAutocapitalization(.words)
                         .onboardingInputStyle()
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
-                        Text("Age")
+                        Text(L10n.Profile.age)
                             .onboardingFieldLabelStyle()
                         Spacer()
                         Text("\(Int(viewModel.age.rounded()))")
@@ -55,7 +55,7 @@ struct OnboardingPersonalInfoView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Country")
+                    Text(L10n.Profile.country)
                         .onboardingFieldLabelStyle()
 
                     AdaptiveChips(
@@ -67,7 +67,7 @@ struct OnboardingPersonalInfoView: View {
                         }
                     )
 
-                    TextField("Or enter your country", text: $viewModel.country)
+                    TextField(L10n.Onboarding.orEnterYourCountry, text: $viewModel.country)
                         .textInputAutocapitalization(.words)
                         .onboardingInputStyle()
                 }

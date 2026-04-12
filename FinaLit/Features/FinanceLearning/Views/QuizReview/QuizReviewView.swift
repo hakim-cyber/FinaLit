@@ -50,10 +50,10 @@ struct QuizReviewView: View {
                         VStack(spacing: 12) {
                             Text("🏆")
                                 .font(.system(size: 48))
-                            Text("Perfect score!")
+                            Text(L10n.Common.perfectScore)
                                 .font(.system(size: 22))
                                 .foregroundStyle(AppTheme.textPrimary)
-                            Text("You got every question right.")
+                            Text(L10n.Common.youGotEveryQuestionRight)
                                 .font(.system(size: 14))
                                 .foregroundStyle(AppTheme.textSecondary)
                         }
@@ -68,7 +68,7 @@ struct QuizReviewView: View {
                         .padding(.horizontal, 20)
                     } else {
                         VStack(alignment: .leading, spacing: 14) {
-                            Text("REVIEW YOUR MISTAKES")
+                            Text(L10n.Common.reviewYourMistakes)
                                 .font(.system(size: 11, weight: .semibold))
                                 .foregroundStyle(AppTheme.danger)
                                 .padding(.horizontal, 20)
@@ -85,7 +85,7 @@ struct QuizReviewView: View {
                     Button {
                         coordinator.popToRoot()
                     } label: {
-                        Text("Back to Lessons")
+                        Text(L10n.Common.backToLessons)
                             .font(.system(size: 16))
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 18)
@@ -104,7 +104,7 @@ struct QuizReviewView: View {
                 }
             }
         }
-        .navigationTitle("Quiz Results")
+        .navigationTitle(L10n.Common.quizResults)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar {

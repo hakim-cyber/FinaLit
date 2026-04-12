@@ -33,7 +33,7 @@ struct GoalDetailView: View {
                             .padding(.top, 8)
 
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("Add contribution")
+                            Text(L10n.Main.addContribution)
                                 .appFieldLabelStyle()
                                 .padding(.horizontal, AppTheme.Spacing.screen)
 
@@ -42,7 +42,7 @@ struct GoalDetailView: View {
                                     Text(AppRegion.currencySymbol)
                                         .font(AppTheme.Typography.body)
                                         .foregroundStyle(AppTheme.textSecondary)
-                                    TextField("Contribution", text: $newAmount)
+                                    TextField(L10n.Main.contribution, text: $newAmount)
                                         .font(AppTheme.Typography.body)
                                         .foregroundStyle(AppTheme.textPrimary)
                                         .keyboardType(.decimalPad)
@@ -50,7 +50,7 @@ struct GoalDetailView: View {
                                 }
                                 .appSurface(.primary, padding: 14, cornerRadius: AppTheme.CornerRadius.medium)
 
-                                Button("Add") {
+                                Button(L10n.Main.add) {
                                     if let amount = parsedContributionAmount {
                                         Task {
                                             let saved = await mainVM.contributeToGoal(goal: goal, amount: amount)
@@ -67,7 +67,7 @@ struct GoalDetailView: View {
                         let remaining = goal.targetAmount - goal.currentAmount
                         if remaining > 0 {
                             HStack {
-                                Text("Still needed:")
+                                Text(L10n.Main.stillNeeded)
                                     .font(AppTheme.Typography.caption)
                                     .foregroundStyle(AppTheme.textSecondary)
                                 Spacer()
@@ -84,7 +84,7 @@ struct GoalDetailView: View {
                         } label: {
                             HStack {
                                 Image(systemName: "trash")
-                                Text("Delete Goal")
+                                Text(L10n.Main.deleteGoal)
                             }
                             .font(AppTheme.Typography.bodySemibold)
                             .foregroundStyle(AppTheme.danger)
@@ -102,18 +102,18 @@ struct GoalDetailView: View {
         .onAppear {
             if goal != nil { newAmount = "" }
         }
-        .navigationTitle("Goal")
+        .navigationTitle(L10n.Main.goal)
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Delete Goal?", isPresented: $showDeleteAlert) {
-            Button("Delete", role: .destructive) {
+        .alert(L10n.Main.deleteGoal2, isPresented: $showDeleteAlert) {
+            Button(L10n.Main.delete, role: .destructive) {
                 Task {
                     if let goal { await mainVM.deleteGoal(goal) }
                     coordinator.pop()
                 }
             }
-            Button("Cancel", role: .cancel) {}
+            Button(L10n.Profile.cancel, role: .cancel) {}
         } message: {
-            Text("This cannot be undone.")
+            Text(L10n.Main.thisCannotBeUndone)
         }
     }
 }

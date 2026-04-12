@@ -1,0 +1,1173 @@
+{
+  "strings": {
+    "Track Finances": {
+      "category": "Common",
+      "key": "trackFinances",
+      "original": "Track Finances"
+    },
+    "Learn": {
+      "category": "Common",
+      "key": "learn",
+      "original": "Learn"
+    },
+    "AI Assistant": {
+      "category": "Common",
+      "key": "aiAssistant",
+      "original": "AI Assistant"
+    },
+    "Admin": {
+      "category": "Common",
+      "key": "admin",
+      "original": "Admin"
+    },
+    "Done": {
+      "category": "Common",
+      "key": "done",
+      "original": "Done"
+    },
+    "FinaLit": {
+      "category": "Common",
+      "key": "finalit",
+      "original": "FinaLit"
+    },
+    "Restoring your workspace": {
+      "category": "Common",
+      "key": "restoringYourWorkspace",
+      "original": "Restoring your workspace"
+    },
+    "Welcome back": {
+      "category": "Auth",
+      "key": "welcomeBack",
+      "original": "Welcome back"
+    },
+    "Sign in to FinaLit to track your budget, goals, and monthly progress.": {
+      "category": "Auth",
+      "key": "signInToFinalitToTrackYourBudgetGoalsAndMonthlyProgress",
+      "original": "Sign in to FinaLit to track your budget, goals, and monthly progress."
+    },
+    "Email": {
+      "category": "Auth",
+      "key": "email",
+      "original": "Email"
+    },
+    "Enter your email": {
+      "category": "Auth",
+      "key": "enterYourEmail",
+      "original": "Enter your email"
+    },
+    "Password": {
+      "category": "Auth",
+      "key": "password",
+      "original": "Password"
+    },
+    "Forgot password?": {
+      "category": "Auth",
+      "key": "forgotPassword",
+      "original": "Forgot password?"
+    },
+    "Don't have a FinaLit account? Sign up": {
+      "category": "Auth",
+      "key": "dontHaveAFinalitAccountSignUp",
+      "original": "Don't have a FinaLit account? Sign up"
+    },
+    "OK": {
+      "category": "Auth",
+      "key": "ok",
+      "original": "OK"
+    },
+    "Reset password": {
+      "category": "Auth",
+      "key": "resetPassword",
+      "original": "Reset password"
+    },
+    "We will send a reset link to your email.": {
+      "category": "Auth",
+      "key": "weWillSendAResetLinkToYourEmail",
+      "original": "We will send a reset link to your email."
+    },
+    "Back to Log In": {
+      "category": "Auth",
+      "key": "backToLogIn",
+      "original": "Back to Log In"
+    },
+    "Create your FinaLit account": {
+      "category": "Auth",
+      "key": "createYourFinalitAccount",
+      "original": "Create your FinaLit account"
+    },
+    "Start budgeting, build goals, and organize your financial life in one place.": {
+      "category": "Auth",
+      "key": "startBudgetingBuildGoalsAndOrganizeYourFinancialLifeInOnePlace",
+      "original": "Start budgeting, build goals, and organize your financial life in one place."
+    },
+    "Name": {
+      "category": "Auth",
+      "key": "name",
+      "original": "Name"
+    },
+    "Enter your name": {
+      "category": "Auth",
+      "key": "enterYourName",
+      "original": "Enter your name"
+    },
+    "Name cannot be only spaces.": {
+      "category": "Auth",
+      "key": "nameCannotBeOnlySpaces",
+      "original": "Name cannot be only spaces."
+    },
+    "Please enter a valid email address.": {
+      "category": "Auth",
+      "key": "pleaseEnterAValidEmailAddress",
+      "original": "Please enter a valid email address."
+    },
+    "Password must be at least 8 characters.": {
+      "category": "Auth",
+      "key": "passwordMustBeAtLeast8Characters",
+      "original": "Password must be at least 8 characters."
+    },
+    "Confirm password": {
+      "category": "Auth",
+      "key": "confirmPassword",
+      "original": "Confirm password"
+    },
+    "Passwords do not match.": {
+      "category": "Auth",
+      "key": "passwordsDoNotMatch",
+      "original": "Passwords do not match."
+    },
+    "Already have a FinaLit account? Login": {
+      "category": "Auth",
+      "key": "alreadyHaveAFinalitAccountLogin",
+      "original": "Already have a FinaLit account? Login"
+    },
+    "Multiple Choice": {
+      "category": "Admin",
+      "key": "multipleChoice",
+      "original": "Multiple Choice"
+    },
+    "Scenario": {
+      "category": "Admin",
+      "key": "scenario",
+      "original": "Scenario"
+    },
+    "\u25cf = correct answer": {
+      "category": "Admin",
+      "key": "correctAnswer",
+      "original": "\u25cf = correct answer"
+    },
+    "Remove": {
+      "category": "Admin",
+      "key": "remove",
+      "original": "Remove"
+    },
+    "KIND": {
+      "category": "Admin",
+      "key": "kind",
+      "original": "KIND"
+    },
+    "Load Existing Quiz": {
+      "category": "Admin",
+      "key": "loadExistingQuiz",
+      "original": "Load Existing Quiz"
+    },
+    "Add Question": {
+      "category": "Admin",
+      "key": "addQuestion",
+      "original": "Add Question"
+    },
+    "SELECT WEEK": {
+      "category": "Admin",
+      "key": "selectWeek",
+      "original": "SELECT WEEK"
+    },
+    "Choose a week": {
+      "category": "Admin",
+      "key": "chooseAWeek",
+      "original": "Choose a week"
+    },
+    "\ud83d\udca1 Create the lesson and quiz first, then paste their IDs here.": {
+      "category": "Admin",
+      "key": "createTheLessonAndQuizFirstThenPasteTheirIdsHere",
+      "original": "\ud83d\udca1 Create the lesson and quiz first, then paste their IDs here."
+    },
+    "Load Existing Lesson": {
+      "category": "Admin",
+      "key": "loadExistingLesson",
+      "original": "Load Existing Lesson"
+    },
+    "DIFFICULTY": {
+      "category": "Admin",
+      "key": "difficulty",
+      "original": "DIFFICULTY"
+    },
+    "CONTENT MODE": {
+      "category": "Admin",
+      "key": "contentMode",
+      "original": "CONTENT MODE"
+    },
+    "Article keeps the lesson as long-form text. Auto and hybrid can combine text with blocks. Sectioned focuses on divided content.": {
+      "category": "Admin",
+      "key": "articleKeepsTheLessonAsLongformTextAutoAndHybridCanCombineTextWithBlocksSectionedFocusesOnDividedContent",
+      "original": "Article keeps the lesson as long-form text. Auto and hybrid can combine text with blocks. Sectioned focuses on divided content."
+    },
+    "CONTENT BLOCKS": {
+      "category": "Admin",
+      "key": "contentBlocks",
+      "original": "CONTENT BLOCKS"
+    },
+    "Optional blocks for sectioned or hybrid lessons. Use these when you want guaranteed divided UI.": {
+      "category": "Admin",
+      "key": "optionalBlocksForSectionedOrHybridLessonsUseTheseWhenYouWantGuaranteedDividedUi",
+      "original": "Optional blocks for sectioned or hybrid lessons. Use these when you want guaranteed divided UI."
+    },
+    "Add Block": {
+      "category": "Admin",
+      "key": "addBlock",
+      "original": "Add Block"
+    },
+    "No blocks yet. Article mode only needs body text.": {
+      "category": "Admin",
+      "key": "noBlocksYetArticleModeOnlyNeedsBodyText",
+      "original": "No blocks yet. Article mode only needs body text."
+    },
+    "Copy the Lesson ID above and paste it when creating the Day.": {
+      "category": "Admin",
+      "key": "copyTheLessonIdAboveAndPasteItWhenCreatingTheDay",
+      "original": "Copy the Lesson ID above and paste it when creating the Day."
+    },
+    "PASTE AI JSON": {
+      "category": "Admin",
+      "key": "pasteAiJson",
+      "original": "PASTE AI JSON"
+    },
+    "Use one universal JSON payload to create weeks, lessons, quizzes, days, and tips in one action.": {
+      "category": "Admin",
+      "key": "useOneUniversalJsonPayloadToCreateWeeksLessonsQuizzesDaysAndTipsInOneAction",
+      "original": "Use one universal JSON payload to create weeks, lessons, quizzes, days, and tips in one action."
+    },
+    "Load Existing Week": {
+      "category": "Admin",
+      "key": "loadExistingWeek",
+      "original": "Load Existing Week"
+    },
+    "Draft weeks are not visible to users until published.": {
+      "category": "Admin",
+      "key": "draftWeeksAreNotVisibleToUsersUntilPublished",
+      "original": "Draft weeks are not visible to users until published."
+    },
+    "Load Existing Tip": {
+      "category": "Admin",
+      "key": "loadExistingTip",
+      "original": "Load Existing Tip"
+    },
+    "SHOW ON DATE": {
+      "category": "Admin",
+      "key": "showOnDate",
+      "original": "SHOW ON DATE"
+    },
+    "View Last Results": {
+      "category": "Common",
+      "key": "viewLastResults",
+      "original": "View Last Results"
+    },
+    "\u00b7": {
+      "category": "Common",
+      "key": "empty",
+      "original": "\u00b7"
+    },
+    "No lessons yet": {
+      "category": "Common",
+      "key": "noLessonsYet",
+      "original": "No lessons yet"
+    },
+    "Check back soon \u2014 content is being added.": {
+      "category": "Common",
+      "key": "checkBackSoonContentIsBeingAdded",
+      "original": "Check back soon \u2014 content is being added."
+    },
+    "TODAY'S INSIGHT": {
+      "category": "Common",
+      "key": "todaysInsight",
+      "original": "TODAY'S INSIGHT"
+    },
+    "Continue where you left off": {
+      "category": "Common",
+      "key": "continueWhereYouLeftOff",
+      "original": "Continue where you left off"
+    },
+    "Perfect score!": {
+      "category": "Common",
+      "key": "perfectScore",
+      "original": "Perfect score!"
+    },
+    "You got every question right.": {
+      "category": "Common",
+      "key": "youGotEveryQuestionRight",
+      "original": "You got every question right."
+    },
+    "REVIEW YOUR MISTAKES": {
+      "category": "Common",
+      "key": "reviewYourMistakes",
+      "original": "REVIEW YOUR MISTAKES"
+    },
+    "Back to Lessons": {
+      "category": "Common",
+      "key": "backToLessons",
+      "original": "Back to Lessons"
+    },
+    "Quiz Results": {
+      "category": "Common",
+      "key": "quizResults",
+      "original": "Quiz Results"
+    },
+    "Your Progress": {
+      "category": "Common",
+      "key": "yourProgress",
+      "original": "Your Progress"
+    },
+    "YOUR LEVEL": {
+      "category": "Common",
+      "key": "yourLevel",
+      "original": "YOUR LEVEL"
+    },
+    "In progress": {
+      "category": "Common",
+      "key": "inProgress",
+      "original": "In progress"
+    },
+    "Locked": {
+      "category": "Common",
+      "key": "locked",
+      "original": "Locked"
+    },
+    "Try again": {
+      "category": "Common",
+      "key": "tryAgain",
+      "original": "Try again"
+    },
+    "Days coming soon...": {
+      "category": "Common",
+      "key": "daysComingSoon",
+      "original": "Days coming soon..."
+    },
+    "Week Reflection": {
+      "category": "Common",
+      "key": "weekReflection",
+      "original": "Week Reflection"
+    },
+    "YOUR REFLECTION": {
+      "category": "Common",
+      "key": "yourReflection",
+      "original": "YOUR REFLECTION"
+    },
+    "\u2713 Ready to submit": {
+      "category": "Common",
+      "key": "readyToSubmit",
+      "original": "\u2713 Ready to submit"
+    },
+    "Submit Reflection": {
+      "category": "Common",
+      "key": "submitReflection",
+      "original": "Submit Reflection"
+    },
+    "Clear": {
+      "category": "AiChat",
+      "key": "clear",
+      "original": "Clear"
+    },
+    "Not now": {
+      "category": "AiChat",
+      "key": "notNow",
+      "original": "Not now"
+    },
+    "Allow & Send": {
+      "category": "AiChat",
+      "key": "allowSend",
+      "original": "Allow & Send"
+    },
+    "To answer questions, FinaLit sends your message and selected finance and money-management data to Google Gemini through Firebase AI Logic.": {
+      "category": "AiChat",
+      "key": "toAnswerQuestionsFinalitSendsYourMessageAndSelectedFinanceAndMoneymanagementDataToGoogleGeminiThroughFirebaseAiLogic",
+      "original": "To answer questions, FinaLit sends your message and selected finance and money-management data to Google Gemini through Firebase AI Logic."
+    },
+    "NOTICE": {
+      "category": "AiChat",
+      "key": "notice",
+      "original": "NOTICE"
+    },
+    "Educational guidance only. Not professional financial advice.": {
+      "category": "AiChat",
+      "key": "educationalGuidanceOnlyNotProfessionalFinancialAdvice",
+      "original": "Educational guidance only. Not professional financial advice."
+    },
+    "Ask about money decisions": {
+      "category": "AiChat",
+      "key": "askAboutMoneyDecisions",
+      "original": "Ask about money decisions"
+    },
+    "Ask about spending, budgets, debt, or goals...": {
+      "category": "AiChat",
+      "key": "askAboutSpendingBudgetsDebtOrGoals",
+      "original": "Ask about spending, budgets, debt, or goals..."
+    },
+    "ADVISOR": {
+      "category": "AiChat",
+      "key": "advisor",
+      "original": "ADVISOR"
+    },
+    "Profile Settings": {
+      "category": "Profile",
+      "key": "profileSettings",
+      "original": "Profile Settings"
+    },
+    "Sign Out": {
+      "category": "Profile",
+      "key": "signOut",
+      "original": "Sign Out"
+    },
+    "Cancel": {
+      "category": "Profile",
+      "key": "cancel",
+      "original": "Cancel"
+    },
+    "You can log back in anytime with your email and password.": {
+      "category": "Profile",
+      "key": "youCanLogBackInAnytimeWithYourEmailAndPassword",
+      "original": "You can log back in anytime with your email and password."
+    },
+    "Continue": {
+      "category": "Profile",
+      "key": "continue",
+      "original": "Continue"
+    },
+    "This action is permanent and cannot be undone.": {
+      "category": "Profile",
+      "key": "thisActionIsPermanentAndCannotBeUndone",
+      "original": "This action is permanent and cannot be undone."
+    },
+    "Delete Forever": {
+      "category": "Profile",
+      "key": "deleteForever",
+      "original": "Delete Forever"
+    },
+    "All account data will be permanently removed.": {
+      "category": "Profile",
+      "key": "allAccountDataWillBePermanentlyRemoved",
+      "original": "All account data will be permanently removed."
+    },
+    "For security, confirm your password to continue account deletion.": {
+      "category": "Profile",
+      "key": "forSecurityConfirmYourPasswordToContinueAccountDeletion",
+      "original": "For security, confirm your password to continue account deletion."
+    },
+    "Confirm Password": {
+      "category": "Profile",
+      "key": "confirmPassword",
+      "original": "Confirm Password"
+    },
+    "Income stability": {
+      "category": "Profile",
+      "key": "incomeStability",
+      "original": "Income stability"
+    },
+    "Do you currently have debt?": {
+      "category": "Profile",
+      "key": "doYouCurrentlyHaveDebt",
+      "original": "Do you currently have debt?"
+    },
+    "Risk tolerance": {
+      "category": "Profile",
+      "key": "riskTolerance",
+      "original": "Risk tolerance"
+    },
+    "Interested in investing?": {
+      "category": "Profile",
+      "key": "interestedInInvesting",
+      "original": "Interested in investing?"
+    },
+    "0": {
+      "category": "Profile",
+      "key": "0",
+      "original": "0"
+    },
+    "Short term goal": {
+      "category": "Profile",
+      "key": "shortTermGoal",
+      "original": "Short term goal"
+    },
+    "Type your short-term goal": {
+      "category": "Profile",
+      "key": "typeYourShorttermGoal",
+      "original": "Type your short-term goal"
+    },
+    "Long term goal": {
+      "category": "Profile",
+      "key": "longTermGoal",
+      "original": "Long term goal"
+    },
+    "Type your long-term goal": {
+      "category": "Profile",
+      "key": "typeYourLongtermGoal",
+      "original": "Type your long-term goal"
+    },
+    "Your name": {
+      "category": "Profile",
+      "key": "yourName",
+      "original": "Your name"
+    },
+    "Email (display only)": {
+      "category": "Profile",
+      "key": "emailDisplayOnly",
+      "original": "Email (display only)"
+    },
+    "Age": {
+      "category": "Profile",
+      "key": "age",
+      "original": "Age"
+    },
+    "Country": {
+      "category": "Profile",
+      "key": "country",
+      "original": "Country"
+    },
+    "Employment status": {
+      "category": "Profile",
+      "key": "employmentStatus",
+      "original": "Employment status"
+    },
+    "Save Transaction": {
+      "category": "Main",
+      "key": "saveTransaction",
+      "original": "Save Transaction"
+    },
+    "Amount": {
+      "category": "Main",
+      "key": "amount",
+      "original": "Amount"
+    },
+    "Category": {
+      "category": "Main",
+      "key": "category",
+      "original": "Category"
+    },
+    "Note (optional)": {
+      "category": "Main",
+      "key": "noteOptional",
+      "original": "Note (optional)"
+    },
+    "What was this for?": {
+      "category": "Main",
+      "key": "whatWasThisFor",
+      "original": "What was this for?"
+    },
+    "Date": {
+      "category": "Main",
+      "key": "date",
+      "original": "Date"
+    },
+    "Recurring monthly": {
+      "category": "Main",
+      "key": "recurringMonthly",
+      "original": "Recurring monthly"
+    },
+    "Mark rent, salary, subscriptions": {
+      "category": "Main",
+      "key": "markRentSalarySubscriptions",
+      "original": "Mark rent, salary, subscriptions"
+    },
+    "Add contribution": {
+      "category": "Main",
+      "key": "addContribution",
+      "original": "Add contribution"
+    },
+    "Contribution": {
+      "category": "Main",
+      "key": "contribution",
+      "original": "Contribution"
+    },
+    "Add": {
+      "category": "Main",
+      "key": "add",
+      "original": "Add"
+    },
+    "Still needed:": {
+      "category": "Main",
+      "key": "stillNeeded",
+      "original": "Still needed:"
+    },
+    "Delete Goal": {
+      "category": "Main",
+      "key": "deleteGoal",
+      "original": "Delete Goal"
+    },
+    "Goal": {
+      "category": "Main",
+      "key": "goal",
+      "original": "Goal"
+    },
+    "Delete": {
+      "category": "Main",
+      "key": "delete",
+      "original": "Delete"
+    },
+    "This cannot be undone.": {
+      "category": "Main",
+      "key": "thisCannotBeUndone",
+      "original": "This cannot be undone."
+    },
+    "New Goal": {
+      "category": "Main",
+      "key": "newGoal",
+      "original": "New Goal"
+    },
+    "Goals": {
+      "category": "Main",
+      "key": "goals",
+      "original": "Goals"
+    },
+    "Templates": {
+      "category": "Main",
+      "key": "templates",
+      "original": "Templates"
+    },
+    "Goal created": {
+      "category": "Main",
+      "key": "goalCreated",
+      "original": "Goal created"
+    },
+    "View Goal": {
+      "category": "Main",
+      "key": "viewGoal",
+      "original": "View Goal"
+    },
+    "Goal name": {
+      "category": "Main",
+      "key": "goalName",
+      "original": "Goal name"
+    },
+    "e.g. Emergency Fund": {
+      "category": "Main",
+      "key": "egEmergencyFund",
+      "original": "e.g. Emergency Fund"
+    },
+    "Target amount": {
+      "category": "Main",
+      "key": "targetAmount",
+      "original": "Target amount"
+    },
+    "5,000": {
+      "category": "Main",
+      "key": "5000",
+      "original": "5,000"
+    },
+    "Set deadline": {
+      "category": "Main",
+      "key": "setDeadline",
+      "original": "Set deadline"
+    },
+    "Create Goal": {
+      "category": "Main",
+      "key": "createGoal",
+      "original": "Create Goal"
+    },
+    "saved": {
+      "category": "Main",
+      "key": "saved",
+      "original": "saved"
+    },
+    "target": {
+      "category": "Main",
+      "key": "target",
+      "original": "target"
+    },
+    "No goals yet": {
+      "category": "Main",
+      "key": "noGoalsYet",
+      "original": "No goals yet"
+    },
+    "Set a financial goal to track your progress.": {
+      "category": "Main",
+      "key": "setAFinancialGoalToTrackYourProgress",
+      "original": "Set a financial goal to track your progress."
+    },
+    "Close Month & Rollover": {
+      "category": "Main",
+      "key": "closeMonthRollover",
+      "original": "Close Month & Rollover"
+    },
+    "This saves the monthly snapshot and creates next-month recurring transactions.": {
+      "category": "Main",
+      "key": "thisSavesTheMonthlySnapshotAndCreatesNextmonthRecurringTransactions",
+      "original": "This saves the monthly snapshot and creates next-month recurring transactions."
+    },
+    "Current balance": {
+      "category": "Main",
+      "key": "currentBalance",
+      "original": "Current balance"
+    },
+    "View all categories": {
+      "category": "Main",
+      "key": "viewAllCategories",
+      "original": "View all categories"
+    },
+    "Create a debt account first to record a payment.": {
+      "category": "Main",
+      "key": "createADebtAccountFirstToRecordAPayment",
+      "original": "Create a debt account first to record a payment."
+    },
+    "Debt payment": {
+      "category": "Main",
+      "key": "debtPayment",
+      "original": "Debt payment"
+    },
+    "Pay Debt": {
+      "category": "Main",
+      "key": "payDebt",
+      "original": "Pay Debt"
+    },
+    "Account": {
+      "category": "Main",
+      "key": "account",
+      "original": "Account"
+    },
+    "Select Debt Account": {
+      "category": "Main",
+      "key": "selectDebtAccount",
+      "original": "Select Debt Account"
+    },
+    "Create a goal first to add a contribution.": {
+      "category": "Main",
+      "key": "createAGoalFirstToAddAContribution",
+      "original": "Create a goal first to add a contribution."
+    },
+    "Add to Goal": {
+      "category": "Main",
+      "key": "addToGoal",
+      "original": "Add to Goal"
+    },
+    "Select Goal": {
+      "category": "Main",
+      "key": "selectGoal",
+      "original": "Select Goal"
+    },
+    "Account name": {
+      "category": "Main",
+      "key": "accountName",
+      "original": "Account name"
+    },
+    "e.g. Credit Card": {
+      "category": "Main",
+      "key": "egCreditCard",
+      "original": "e.g. Credit Card"
+    },
+    "APR % (optional)": {
+      "category": "Main",
+      "key": "aprOptional",
+      "original": "APR % (optional)"
+    },
+    "e.g. 19.9": {
+      "category": "Main",
+      "key": "eg199",
+      "original": "e.g. 19.9"
+    },
+    "Min payment (optional)": {
+      "category": "Main",
+      "key": "minPaymentOptional",
+      "original": "Min payment (optional)"
+    },
+    "e.g. 50": {
+      "category": "Main",
+      "key": "eg50",
+      "original": "e.g. 50"
+    },
+    "Add Debt Account": {
+      "category": "Main",
+      "key": "addDebtAccount",
+      "original": "Add Debt Account"
+    },
+    "Save": {
+      "category": "Main",
+      "key": "save",
+      "original": "Save"
+    },
+    "No active goals yet": {
+      "category": "Main",
+      "key": "noActiveGoalsYet",
+      "original": "No active goals yet"
+    },
+    "Create your first goal and start tracking progress from your dashboard.": {
+      "category": "Main",
+      "key": "createYourFirstGoalAndStartTrackingProgressFromYourDashboard",
+      "original": "Create your first goal and start tracking progress from your dashboard."
+    },
+    "Create your first goal": {
+      "category": "Main",
+      "key": "createYourFirstGoal",
+      "original": "Create your first goal"
+    },
+    "No transactions yet": {
+      "category": "Main",
+      "key": "noTransactionsYet",
+      "original": "No transactions yet"
+    },
+    "Tap + to add your first transaction": {
+      "category": "Main",
+      "key": "tapToAddYourFirstTransaction",
+      "original": "Tap + to add your first transaction"
+    },
+    "Transactions": {
+      "category": "Main",
+      "key": "transactions",
+      "original": "Transactions"
+    },
+    "Income": {
+      "category": "Main",
+      "key": "income",
+      "original": "Income"
+    },
+    "Expenses": {
+      "category": "Main",
+      "key": "expenses",
+      "original": "Expenses"
+    },
+    "Total": {
+      "category": "Main",
+      "key": "total",
+      "original": "Total"
+    },
+    "Delete Transaction": {
+      "category": "Main",
+      "key": "deleteTransaction",
+      "original": "Delete Transaction"
+    },
+    "Transaction not found": {
+      "category": "Main",
+      "key": "transactionNotFound",
+      "original": "Transaction not found"
+    },
+    "Transaction": {
+      "category": "Main",
+      "key": "transaction",
+      "original": "Transaction"
+    },
+    "Set monthly limits per category.": {
+      "category": "Main",
+      "key": "setMonthlyLimitsPerCategory",
+      "original": "Set monthly limits per category."
+    },
+    "Budget": {
+      "category": "Main",
+      "key": "budget",
+      "original": "Budget"
+    },
+    "Add transactions to see insights": {
+      "category": "Main",
+      "key": "addTransactionsToSeeInsights",
+      "original": "Add transactions to see insights"
+    },
+    "Insights": {
+      "category": "Main",
+      "key": "insights",
+      "original": "Insights"
+    },
+    "Total budget": {
+      "category": "Main",
+      "key": "totalBudget",
+      "original": "Total budget"
+    },
+    "Set limits above to track your total budget.": {
+      "category": "Main",
+      "key": "setLimitsAboveToTrackYourTotalBudget",
+      "original": "Set limits above to track your total budget."
+    },
+    "Limit": {
+      "category": "Main",
+      "key": "limit",
+      "original": "Limit"
+    },
+    "limit": {
+      "category": "Main",
+      "key": "limit2",
+      "original": "limit"
+    },
+    "No limit": {
+      "category": "Main",
+      "key": "noLimit",
+      "original": "No limit"
+    },
+    "Educational guidance, not financial advice.": {
+      "category": "Onboarding",
+      "key": "educationalGuidanceNotFinancialAdvice",
+      "original": "Educational guidance, not financial advice."
+    },
+    "Debt account name": {
+      "category": "Onboarding",
+      "key": "debtAccountName",
+      "original": "Debt account name"
+    },
+    "Debt amount": {
+      "category": "Onboarding",
+      "key": "debtAmount",
+      "original": "Debt amount"
+    },
+    "Add custom hobby": {
+      "category": "Onboarding",
+      "key": "addCustomHobby",
+      "original": "Add custom hobby"
+    },
+    "Debt accounts": {
+      "category": "Onboarding",
+      "key": "debtAccounts",
+      "original": "Debt accounts"
+    },
+    "Add another debt": {
+      "category": "Onboarding",
+      "key": "addAnotherDebt",
+      "original": "Add another debt"
+    },
+    "Total debt": {
+      "category": "Onboarding",
+      "key": "totalDebt",
+      "original": "Total debt"
+    },
+    "Emergency fund": {
+      "category": "Onboarding",
+      "key": "emergencyFund",
+      "original": "Emergency fund"
+    },
+    "Months covered": {
+      "category": "Onboarding",
+      "key": "monthsCovered",
+      "original": "Months covered"
+    },
+    "Or enter your country": {
+      "category": "Onboarding",
+      "key": "orEnterYourCountry",
+      "original": "Or enter your country"
+    },
+    "\u26a0\ufe0f": {
+      "category": "Common",
+      "key": "empty2",
+      "original": "\u26a0\ufe0f"
+    },
+    "Check your email": {
+      "category": "Auth",
+      "key": "checkYourEmail",
+      "original": "Check your email"
+    },
+    "Type": {
+      "category": "Admin",
+      "key": "type",
+      "original": "Type"
+    },
+    "Block Kind": {
+      "category": "Admin",
+      "key": "blockKind",
+      "original": "Block Kind"
+    },
+    "Week": {
+      "category": "Admin",
+      "key": "week",
+      "original": "Week"
+    },
+    "Difficulty": {
+      "category": "Admin",
+      "key": "difficulty2",
+      "original": "Difficulty"
+    },
+    "Content Mode": {
+      "category": "Admin",
+      "key": "contentMode2",
+      "original": "Content Mode"
+    },
+    "Success \u2713": {
+      "category": "Admin",
+      "key": "success",
+      "original": "Success \u2713"
+    },
+    "Error": {
+      "category": "Admin",
+      "key": "error",
+      "original": "Error"
+    },
+    "Allow AI data sharing?": {
+      "category": "AiChat",
+      "key": "allowAiDataSharing",
+      "original": "Allow AI data sharing?"
+    },
+    "Sign out?": {
+      "category": "Profile",
+      "key": "signOut2",
+      "original": "Sign out?"
+    },
+    "Delete account?": {
+      "category": "Profile",
+      "key": "deleteAccount",
+      "original": "Delete account?"
+    },
+    "Final confirmation": {
+      "category": "Profile",
+      "key": "finalConfirmation",
+      "original": "Final confirmation"
+    },
+    "Delete Goal?": {
+      "category": "Main",
+      "key": "deleteGoal2",
+      "original": "Delete Goal?"
+    },
+    "Select month": {
+      "category": "Main",
+      "key": "selectMonth",
+      "original": "Select month"
+    },
+    "Delete Transaction?": {
+      "category": "Main",
+      "key": "deleteTransaction2",
+      "original": "Delete Transaction?"
+    }
+  },
+  "files": {
+    "/Users/aplle/Desktop/swift learning/FinaLit/FinaLit/Features/Auth/Views/LoginView.swift": [
+      {
+        "original_match": "alert(\n            \"Check your email\"",
+        "component": "alert",
+        "string_val": "Check your email",
+        "replacement": "alert(L10n.Auth.checkYourEmail"
+      }
+    ],
+    "/Users/aplle/Desktop/swift learning/FinaLit/FinaLit/Features/Admin/Views/Forms/QuizQuestionDraftView.swift": [
+      {
+        "original_match": "Picker(\"Type\"",
+        "component": "Picker",
+        "string_val": "Type",
+        "replacement": "Picker(L10n.Admin.type"
+      }
+    ],
+    "/Users/aplle/Desktop/swift learning/FinaLit/FinaLit/Features/Admin/Views/Forms/LessonContentBlockDraftCard.swift": [
+      {
+        "original_match": "Picker(\"Block Kind\"",
+        "component": "Picker",
+        "string_val": "Block Kind",
+        "replacement": "Picker(L10n.Admin.blockKind"
+      }
+    ],
+    "/Users/aplle/Desktop/swift learning/FinaLit/FinaLit/Features/Admin/Views/Forms/AddDayView.swift": [
+      {
+        "original_match": "Picker(\"Week\"",
+        "component": "Picker",
+        "string_val": "Week",
+        "replacement": "Picker(L10n.Admin.week"
+      }
+    ],
+    "/Users/aplle/Desktop/swift learning/FinaLit/FinaLit/Features/Admin/Views/Forms/AddLessonView.swift": [
+      {
+        "original_match": "Picker(\"Difficulty\"",
+        "component": "Picker",
+        "string_val": "Difficulty",
+        "replacement": "Picker(L10n.Admin.difficulty2"
+      },
+      {
+        "original_match": "Picker(\"Content Mode\"",
+        "component": "Picker",
+        "string_val": "Content Mode",
+        "replacement": "Picker(L10n.Admin.contentMode2"
+      }
+    ],
+    "/Users/aplle/Desktop/swift learning/FinaLit/FinaLit/Features/Admin/Views/Shared/View+AdminFeedback.swift": [
+      {
+        "original_match": "alert(\"Success \u2713\"",
+        "component": "alert",
+        "string_val": "Success \u2713",
+        "replacement": "alert(L10n.Admin.success"
+      },
+      {
+        "original_match": "alert(\"Error\"",
+        "component": "alert",
+        "string_val": "Error",
+        "replacement": "alert(L10n.Admin.error"
+      }
+    ],
+    "/Users/aplle/Desktop/swift learning/FinaLit/FinaLit/Features/FinanceLearning/Views/Quiz/QuizView.swift": [
+      {
+        "original_match": "alert(\"Error\"",
+        "component": "alert",
+        "string_val": "Error",
+        "replacement": "alert(L10n.Admin.error"
+      }
+    ],
+    "/Users/aplle/Desktop/swift learning/FinaLit/FinaLit/Features/FinanceLearning/Views/Reflection/ReflectionView.swift": [
+      {
+        "original_match": "alert(\"Error\"",
+        "component": "alert",
+        "string_val": "Error",
+        "replacement": "alert(L10n.Admin.error"
+      }
+    ],
+    "/Users/aplle/Desktop/swift learning/FinaLit/FinaLit/Features/AiChat/Views/ChatView.swift": [
+      {
+        "original_match": "alert(\"Allow AI data sharing?\"",
+        "component": "alert",
+        "string_val": "Allow AI data sharing?",
+        "replacement": "alert(L10n.AiChat.allowAiDataSharing"
+      }
+    ],
+    "/Users/aplle/Desktop/swift learning/FinaLit/FinaLit/Features/ProfileSettings/Views/ProfileSettingsHomeView.swift": [
+      {
+        "original_match": "alert(\"Sign out?\"",
+        "component": "alert",
+        "string_val": "Sign out?",
+        "replacement": "alert(L10n.Profile.signOut2"
+      },
+      {
+        "original_match": "alert(\"Delete account?\"",
+        "component": "alert",
+        "string_val": "Delete account?",
+        "replacement": "alert(L10n.Profile.deleteAccount"
+      },
+      {
+        "original_match": "alert(\"Final confirmation\"",
+        "component": "alert",
+        "string_val": "Final confirmation",
+        "replacement": "alert(L10n.Profile.finalConfirmation"
+      }
+    ],
+    "/Users/aplle/Desktop/swift learning/FinaLit/FinaLit/Features/Main/Views/AddTransactionView.swift": [
+      {
+        "original_match": "alert(\"Error\"",
+        "component": "alert",
+        "string_val": "Error",
+        "replacement": "alert(L10n.Admin.error"
+      }
+    ],
+    "/Users/aplle/Desktop/swift learning/FinaLit/FinaLit/Features/Main/Views/Goals/GoalDetailView.swift": [
+      {
+        "original_match": "alert(\"Delete Goal?\"",
+        "component": "alert",
+        "string_val": "Delete Goal?",
+        "replacement": "alert(L10n.Main.deleteGoal2"
+      }
+    ],
+    "/Users/aplle/Desktop/swift learning/FinaLit/FinaLit/Features/Main/Views/Dashboard/DashboardView.swift": [
+      {
+        "original_match": "alert(\"Error\"",
+        "component": "alert",
+        "string_val": "Error",
+        "replacement": "alert(L10n.Admin.error"
+      },
+      {
+        "original_match": "Picker(\n            \"Select month\"",
+        "component": "Picker",
+        "string_val": "Select month",
+        "replacement": "Picker(L10n.Main.selectMonth"
+      }
+    ],
+    "/Users/aplle/Desktop/swift learning/FinaLit/FinaLit/Features/Main/Views/Transactions/TransactionDetailView.swift": [
+      {
+        "original_match": "alert(\"Delete Transaction?\"",
+        "component": "alert",
+        "string_val": "Delete Transaction?",
+        "replacement": "alert(L10n.Main.deleteTransaction2"
+      }
+    ]
+  }
+}

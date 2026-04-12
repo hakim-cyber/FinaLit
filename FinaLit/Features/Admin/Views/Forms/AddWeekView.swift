@@ -13,7 +13,7 @@ struct AddWeekView: View {
         var adminVM = Bindable(adminVM)
         AdminFormView(title: "Add Week", icon: "calendar.badge.plus") {
             AdminField(label: "DOCUMENT ID (OPTIONAL)", placeholder: "Reuse an existing week ID to update the same document", text: adminVM.weekDocumentID)
-            Button("Load Existing Week") {
+            Button(L10n.Admin.loadExistingWeek) {
                 Task { _ = await self.adminVM.loadWeekForEditing() }
             }
             .font(.system(size: 13, weight: .semibold))
@@ -35,7 +35,7 @@ struct AddWeekView: View {
             AdminToggle(label: "PUBLISH NOW", isOn: adminVM.isPublished)
 
             if !adminVM.isPublished.wrappedValue {
-                Text("Draft weeks are not visible to users until published.")
+                Text(L10n.Admin.draftWeeksAreNotVisibleToUsersUntilPublished)
                     .font(.system(size: 11))
                     .foregroundStyle(Color(hex: "4B5563"))
             }

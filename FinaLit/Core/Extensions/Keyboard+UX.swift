@@ -21,7 +21,7 @@ private struct KeyboardDoneToolbarModifier: ViewModifier {
         content.toolbar {
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
-                Button("Done") {
+                Button(L10n.Common.done) {
                     KeyboardUX.dismiss()
                 }
             }

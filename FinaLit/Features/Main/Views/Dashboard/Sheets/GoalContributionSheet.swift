@@ -52,15 +52,15 @@ struct GoalContributionSheet: View {
                     goalSection
 
                     if mainVM.activeGoals.isEmpty {
-                        Text("Create a goal first to add a contribution.")
+                        Text(L10n.Main.createAGoalFirstToAddAContribution)
                             .font(AppTheme.Typography.caption)
                             .foregroundStyle(AppTheme.textSecondary)
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Contribution")
+                        Text(L10n.Main.contribution)
                             .appFieldLabelStyle()
-                        TextField("0", text: $amount)
+                        TextField(L10n.Profile.zero, text: $amount)
                             .font(.system(size: 28, weight: .semibold, design: .rounded))
                             .foregroundStyle(AppTheme.textPrimary)
                             .keyboardType(.decimalPad)
@@ -80,15 +80,15 @@ struct GoalContributionSheet: View {
                 }
                 .padding(AppTheme.Spacing.screen)
             }
-            .navigationTitle("Add to Goal")
+            .navigationTitle(L10n.Main.addToGoal)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") { dismiss() }
+                    Button(L10n.Profile.cancel) { dismiss() }
                         .foregroundStyle(Color.primary)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Add") { submitContribution() }
+                    Button(L10n.Main.add) { submitContribution() }
                         .bold()
                         .disabled(!isValid || mainVM.isSubmitting)
                 }
@@ -103,7 +103,7 @@ struct GoalContributionSheet: View {
 
     private var goalSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Goal")
+            Text(L10n.Main.goal)
                 .appFieldLabelStyle()
 
             HStack(spacing: 10) {
@@ -164,7 +164,7 @@ struct GoalContributionSheet: View {
     private var goalPickerPopover: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Select Goal")
+                Text(L10n.Main.selectGoal)
                     .font(AppTheme.Typography.bodySemibold)
                     .foregroundStyle(AppTheme.textPrimary)
 

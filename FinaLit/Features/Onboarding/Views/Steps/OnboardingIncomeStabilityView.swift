@@ -14,11 +14,11 @@ struct OnboardingIncomeStabilityView: View {
 
         OnboardingStepScaffold(
             page: .incomeAndStability,
-            title: "Income and stability",
-            subtitle: "Set your monthly income and tell us how consistent it is.",
+            title: String(localized: "onboarding.incomeStabilityHeader"),
+            subtitle: String(localized: "onboarding.setMonthlyIncome"),
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
-            primaryTitle: "Continue",
+            primaryTitle: String(localized: "profile.continueAction"),
             isPrimaryEnabled: viewModel.isStep3Valid,
             onPrimaryTap: {
                 Task {
@@ -30,7 +30,7 @@ struct OnboardingIncomeStabilityView: View {
         ) {
             VStack(alignment: .leading, spacing: 18) {
                 MoneySlider(
-                    title: "Monthly income",
+                    title: String(localized: "onboarding.monthlyIncome"),
                     value: $viewModel.monthlyIncome,
                     range: 0...20000,
                     step: 50,
@@ -38,12 +38,12 @@ struct OnboardingIncomeStabilityView: View {
                 )
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Income stability")
+                    Text(L10n.Profile.incomeStability)
                         .onboardingFieldLabelStyle()
 
                     HStack(spacing: 10) {
                         TogglePill(
-                            title: "Stable",
+                            title: String(localized: "main.stabilityStable"),
                             isSelected: viewModel.incomeStability == .stable,
                             tint: OnboardingPalette.accent
                         ) {
@@ -52,7 +52,7 @@ struct OnboardingIncomeStabilityView: View {
                         }
 
                         TogglePill(
-                            title: "Variable",
+                            title: String(localized: "onboarding.variable"),
                             isSelected: viewModel.incomeStability == .variable,
                             tint: .orange
                         ) {

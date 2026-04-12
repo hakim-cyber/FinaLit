@@ -31,10 +31,10 @@ struct BudgetCategoryCard: View {
                     .frame(width: 20)
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(category.rawValue)
+                    Text(category.localizedName)
                         .font(AppTheme.Typography.bodySemibold)
                         .foregroundStyle(AppTheme.textPrimary)
-                    Text("Spent: \(formatDisplayCurrency(spent))")
+                    Text(String(localized: "main.spentPrefix") + " " + formatDisplayCurrency(spent))
                         .font(AppTheme.Typography.detail)
                         .foregroundStyle(AppTheme.textSecondary)
                 }
@@ -46,7 +46,7 @@ struct BudgetCategoryCard: View {
                         Text(AppRegion.currencySymbol)
                             .font(AppTheme.Typography.body)
                             .foregroundStyle(AppTheme.textSecondary)
-                        TextField("Limit", text: $editingText)
+                        TextField(L10n.Main.limit, text: $editingText)
                             .font(AppTheme.Typography.body)
                             .foregroundStyle(AppTheme.textPrimary)
                             .keyboardType(.decimalPad)
@@ -58,12 +58,12 @@ struct BudgetCategoryCard: View {
                         Text(formatDisplayCurrency(limit))
                             .font(AppTheme.Typography.bodySemibold)
                             .foregroundStyle(isOver ? AppTheme.danger : AppTheme.textPrimary)
-                        Text("limit")
+                        Text(L10n.Main.limit2)
                             .font(AppTheme.Typography.detail)
                             .foregroundStyle(AppTheme.textSecondary)
                     }
                 } else {
-                    Text("No limit")
+                    Text(L10n.Main.noLimit)
                         .font(AppTheme.Typography.detail)
                         .foregroundStyle(AppTheme.textSecondary)
                 }

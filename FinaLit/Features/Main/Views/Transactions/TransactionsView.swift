@@ -92,9 +92,9 @@ struct TransactionsView: View {
                 .padding(.top, 8)
             }
         }
-        .navigationTitle("Transactions")
+        .navigationTitle(L10n.Main.transactions)
         .navigationBarTitleDisplayMode(.inline)
-        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search transactions")
+        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: Text(L10n.Main.searchTransactions))
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
@@ -107,13 +107,13 @@ struct TransactionsView: View {
                     Button {
                         filterType = .expense
                     } label: {
-                        filterMenuLabel(title: "Expense", isSelected: filterType == .expense)
+                        filterMenuLabel(title: String(localized: "main.expense"), isSelected: filterType == .expense)
                     }
 
                     Button {
                         filterType = .income
                     } label: {
-                        filterMenuLabel(title: "Income", isSelected: filterType == .income)
+                        filterMenuLabel(title: String(localized: "main.income"), isSelected: filterType == .income)
                     }
                 } label: {
                     Image(systemName: filterType == nil ? "line.3.horizontal.decrease.circle" : "line.3.horizontal.decrease.circle.fill")
@@ -143,7 +143,7 @@ struct TransactionsView: View {
                         .font(.system(size: 17, weight: .semibold, design: .rounded))
                         .foregroundStyle(AppTheme.success)
                         .monospacedDigit()
-                    Text("Income")
+                    Text(L10n.Main.income)
                         .font(AppTheme.Typography.detail)
                         .foregroundStyle(AppTheme.textSecondary)
                 }
@@ -156,7 +156,7 @@ struct TransactionsView: View {
                         .font(.system(size: 17, weight: .semibold, design: .rounded))
                         .foregroundStyle(AppTheme.danger)
                         .monospacedDigit()
-                    Text("Expenses")
+                    Text(L10n.Main.expenses)
                         .font(AppTheme.Typography.detail)
                         .foregroundStyle(AppTheme.textSecondary)
                 }
@@ -168,7 +168,7 @@ struct TransactionsView: View {
                     Text("\(mainVM.currentMonthTransactions.count)")
                         .font(.system(size: 17, weight: .semibold, design: .rounded))
                         .foregroundStyle(AppTheme.textPrimary)
-                    Text("Total")
+                    Text(L10n.Main.total)
                         .font(AppTheme.Typography.detail)
                         .foregroundStyle(AppTheme.textSecondary)
                 }

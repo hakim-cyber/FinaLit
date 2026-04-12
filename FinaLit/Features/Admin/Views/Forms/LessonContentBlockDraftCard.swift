@@ -61,17 +61,17 @@ struct LessonContentBlockDraftCard: View {
                     Button(role: .destructive) {
                         adminVM.removeLessonBlock(at: index)
                     } label: {
-                        Label("Remove", systemImage: "trash")
+                        Label(L10n.Admin.remove, systemImage: "trash")
                             .font(.system(size: 12))
                             .foregroundStyle(Color(hex: "F87171"))
                     }
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("KIND")
+                    Text(L10n.Admin.kind)
                         .font(.system(size: 10, weight: .semibold))
                         .foregroundStyle(Color(hex: "4B5563"))
-                    Picker("Block Kind", selection: kindBinding) {
+                    Picker(L10n.Admin.blockKind, selection: kindBinding) {
                         ForEach(LessonContentBlockKind.allCases) {
                             Text($0.label).tag($0)
                         }

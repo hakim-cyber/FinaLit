@@ -31,7 +31,7 @@ struct LevelBadge: View {
             Text(levelEmoji)
                 .font(.system(size: 36))
             VStack(alignment: .leading, spacing: 4) {
-                Text("YOUR LEVEL")
+                Text(L10n.Common.yourLevel)
                     .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(AppTheme.textSecondary)
                 Text(level.rawValue)

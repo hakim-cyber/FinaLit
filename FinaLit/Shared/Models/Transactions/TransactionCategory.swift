@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum TransactionCategory: String, Codable, CaseIterable, Identifiable {
     case rent = "Rent"
@@ -19,6 +20,24 @@ enum TransactionCategory: String, Codable, CaseIterable, Identifiable {
     case investment = "Investment Return"
     case gift = "Gift"
     case otherIncome = "Other Income"
+
+    var localizedName: LocalizedStringKey {
+        switch self {
+        case .rent: return L10n.Main.categoryRent
+        case .food: return L10n.Main.categoryFood
+        case .transport: return L10n.Main.categoryTransport
+        case .education: return L10n.Main.categoryEducation
+        case .health: return L10n.Main.categoryHealth
+        case .entertainment: return L10n.Main.categoryEntertainment
+        case .shopping: return L10n.Main.categoryShopping
+        case .other: return L10n.Main.categoryOther
+        case .salary: return L10n.Main.categorySalary
+        case .freelance: return L10n.Main.categoryFreelance
+        case .investment: return L10n.Main.categoryInvestment
+        case .gift: return L10n.Main.categoryGift
+        case .otherIncome: return L10n.Main.categoryOtherIncome
+        }
+    }
 
     var id: String { rawValue }
 

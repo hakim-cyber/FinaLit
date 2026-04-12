@@ -4,11 +4,20 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum FinancialStability: String {
     case stable = "Stable"
     case moderate = "Moderate"
     case risky = "Risky"
+
+    var localizedName: LocalizedStringKey {
+        switch self {
+        case .stable: return L10n.Main.stabilityStable
+        case .moderate: return L10n.Main.stabilityModerate
+        case .risky: return L10n.Main.stabilityRisky
+        }
+    }
 
     var tone: AppTone {
         switch self {

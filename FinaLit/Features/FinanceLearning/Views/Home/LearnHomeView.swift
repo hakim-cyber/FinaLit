@@ -42,10 +42,10 @@ struct LearnHomeView: View {
                             VStack(spacing: 12) {
                                 Text("📚")
                                     .font(.system(size: 48))
-                                Text("No lessons yet")
+                                Text(L10n.Common.noLessonsYet)
                                     .font(.system(size: 20))
                                     .foregroundStyle(AppTheme.textPrimary)
-                                Text("Check back soon — content is being added.")
+                                Text(L10n.Common.checkBackSoonContentIsBeingAdded)
                                     .font(AppTheme.Typography.caption)
                                     .foregroundStyle(AppTheme.textSecondary)
                                     .multilineTextAlignment(.center)

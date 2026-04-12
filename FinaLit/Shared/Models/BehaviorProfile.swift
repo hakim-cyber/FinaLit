@@ -11,6 +11,7 @@
 // Filled during Onboarding Step 4 — Lifestyle & Behavior
 
 import Foundation
+import SwiftUI
 
 struct BehaviorProfile: Codable {
     var topHobbies: [String]                  // max 3, free text or from picker
@@ -29,6 +30,21 @@ enum SpendingCategory: String, Codable, CaseIterable, Identifiable {
     case clothes       = "Clothes"
     case travel        = "Travel"
     case other         = "Other"
+    
+    var localizedName: LocalizedStringKey {
+        switch self {
+        case .food:          return L10n.Main.categoryFood
+        case .transport:     return L10n.Main.categoryTransport
+        case .rent:          return L10n.Main.categoryRent
+        case .entertainment: return L10n.Main.categoryEntertainment
+        case .education:     return L10n.Main.categoryEducation
+        case .health:        return L10n.Main.categoryHealth
+        case .tech:          return L10n.Main.categoryTech
+        case .clothes:       return L10n.Main.categoryClothes
+        case .travel:        return L10n.Main.categoryTravel
+        case .other:         return L10n.Main.categoryOther
+        }
+    }
     
     var id: String { rawValue }
     

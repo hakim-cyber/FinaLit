@@ -26,7 +26,7 @@ struct OnboardingLongTermGoalView: View {
             subtitle: "This guides strategic recommendations over time.",
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
-            primaryTitle: "Continue",
+            primaryTitle: String(localized: "profile.continueAction"),
             isPrimaryEnabled: viewModel.isStep9Valid,
             onPrimaryTap: {
                 Task {
@@ -42,7 +42,7 @@ struct OnboardingLongTermGoalView: View {
                     viewModel.clearError()
                 }
 
-                TextField("Type your long-term goal", text: $viewModel.longTermGoal, axis: .vertical)
+                TextField(L10n.Profile.typeYourLongtermGoal, text: $viewModel.longTermGoal, axis: .vertical)
                     .lineLimit(2...4)
                     .onboardingTextAreaStyle()
                     .onChange(of: viewModel.longTermGoal) { _, _ in viewModel.clearError() }

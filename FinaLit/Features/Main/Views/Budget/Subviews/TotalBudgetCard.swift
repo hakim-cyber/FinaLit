@@ -17,7 +17,7 @@ struct TotalBudgetCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Total budget")
+                Text(L10n.Main.totalBudget)
                     .font(AppTheme.Typography.formLabel)
                     .foregroundStyle(AppTheme.textSecondary)
                 Spacer()
@@ -30,7 +30,7 @@ struct TotalBudgetCard: View {
             if totalLimit > 0 {
                 AppThinProgressBar(progress: usage, tone: spent > totalLimit ? .danger : .accent)
             } else {
-                Text("Set limits above to track your total budget.")
+                Text(L10n.Main.setLimitsAboveToTrackYourTotalBudget)
                     .font(AppTheme.Typography.caption)
                     .foregroundStyle(AppTheme.textSecondary)
             }

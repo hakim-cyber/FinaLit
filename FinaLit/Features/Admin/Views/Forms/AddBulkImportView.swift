@@ -17,10 +17,10 @@ struct AddBulkImportView: View {
         var adminVM = Bindable(adminVM)
         AdminFormView(title: "Bulk JSON Import", icon: "doc.text.fill") {
             VStack(alignment: .leading, spacing: 8) {
-                Text("PASTE AI JSON")
+                Text(L10n.Admin.pasteAiJson)
                     .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
-                Text("Use one universal JSON payload to create weeks, lessons, quizzes, days, and tips in one action.")
+                Text(L10n.Admin.useOneUniversalJsonPayloadToCreateWeeksLessonsQuizzesDaysAndTipsInOneAction)
                     .font(.system(size: 12))
                     .foregroundStyle(Color(hex: "9CA3AF"))
             }

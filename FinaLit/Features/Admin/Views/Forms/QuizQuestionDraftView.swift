@@ -36,12 +36,12 @@ struct QuizQuestionDraftView: View {
                 )
             )
 
-            Picker("Type", selection: Binding(
+            Picker(L10n.Admin.type, selection: Binding(
                 get: { adminVM.questions[safe: index]?.type ?? .multipleChoice },
                 set: { adminVM.questions[index].type = $0 }
             )) {
-                Text("Multiple Choice").tag(QuizQuestionType.multipleChoice)
-                Text("Scenario").tag(QuizQuestionType.scenario)
+                Text(L10n.Admin.multipleChoice).tag(QuizQuestionType.multipleChoice)
+                Text(L10n.Admin.scenario).tag(QuizQuestionType.scenario)
             }
             .pickerStyle(.segmented)
             .tint(Color(hex: "6366F1"))
@@ -72,7 +72,7 @@ struct QuizQuestionDraftView: View {
             .background(Color(hex: "0D0D14"))
             .clipShape(RoundedRectangle(cornerRadius: 10))
 
-            Text("● = correct answer")
+            Text(L10n.Admin.correctAnswer)
                 .font(.system(size: 10))
                 .foregroundStyle(Color(hex: "4B5563"))
 

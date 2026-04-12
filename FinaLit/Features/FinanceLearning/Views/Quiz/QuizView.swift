@@ -152,11 +152,11 @@ struct QuizView: View {
             }
         }
         .task { await learnVM.loadQuiz(quizID: quizID) }
-        .alert("Error", isPresented: isShowingErrorAlert) {
-            Button("Try again") {
+        .alert(L10n.Admin.error, isPresented: isShowingErrorAlert) {
+            Button(L10n.Common.tryAgain) {
                 Task { await learnVM.loadQuiz(quizID: quizID) }
             }
-            Button("OK") { learnVM.clearError() }
+            Button(L10n.Auth.ok) { learnVM.clearError() }
         } message: {
             Text(learnVM.errorMessage ?? "")
         }

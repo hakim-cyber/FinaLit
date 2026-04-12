@@ -16,10 +16,17 @@ struct TransactionRow: View {
                 .foregroundStyle(AppTheme.tint(for: transaction.category.tone))
                 .frame(width: 20)
             VStack(alignment: .leading, spacing: 2) {
-                Text(transaction.note.isEmpty ? transaction.category.rawValue : transaction.note)
-                    .font(AppTheme.Typography.bodySemibold)
-                    .foregroundStyle(AppTheme.textPrimary)
-                    .lineLimit(1)
+                if transaction.note.isEmpty {
+                    Text(transaction.category.localizedName)
+                        .font(AppTheme.Typography.bodySemibold)
+                        .foregroundStyle(AppTheme.textPrimary)
+                        .lineLimit(1)
+                } else {
+                    Text(transaction.note)
+                        .font(AppTheme.Typography.bodySemibold)
+                        .foregroundStyle(AppTheme.textPrimary)
+                        .lineLimit(1)
+                }
                 Text(transaction.date.formatted(date: .abbreviated, time: .omitted))
                     .font(AppTheme.Typography.detail)
                     .foregroundStyle(AppTheme.textSecondary)

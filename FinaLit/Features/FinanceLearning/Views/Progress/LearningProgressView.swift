@@ -74,7 +74,7 @@ struct LearningProgressView: View {
                 .padding(.top, 16)
             }
         }
-        .navigationTitle("Your Progress")
+        .navigationTitle(L10n.Common.yourProgress)
         .navigationBarTitleDisplayMode(.inline)
         .task { await learnVM.loadReflections() }
     }

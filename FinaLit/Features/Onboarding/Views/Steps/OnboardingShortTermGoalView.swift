@@ -26,7 +26,7 @@ struct OnboardingShortTermGoalView: View {
             subtitle: "Pick one quickly or write your own.",
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
-            primaryTitle: "Continue",
+            primaryTitle: String(localized: "profile.continueAction"),
             isPrimaryEnabled: viewModel.isStep8Valid,
             onPrimaryTap: {
                 Task {
@@ -42,7 +42,7 @@ struct OnboardingShortTermGoalView: View {
                     viewModel.clearError()
                 }
 
-                TextField("Type your short-term goal", text: $viewModel.shortTermGoal, axis: .vertical)
+                TextField(L10n.Profile.typeYourShorttermGoal, text: $viewModel.shortTermGoal, axis: .vertical)
                     .lineLimit(2...4)
                     .onboardingTextAreaStyle()
                     .onChange(of: viewModel.shortTermGoal) { _, _ in viewModel.clearError() }

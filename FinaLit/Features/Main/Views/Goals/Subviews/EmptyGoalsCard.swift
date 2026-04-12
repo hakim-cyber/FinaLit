@@ -10,10 +10,10 @@ struct EmptyGoalsCard: View {
         VStack(spacing: 14) {
             Text("🎯")
                 .font(.system(size: 40))
-            Text("No goals yet")
+            Text(L10n.Main.noGoalsYet)
                 .font(.system(size: 18))
                 .foregroundStyle(AppTheme.textPrimary)
-            Text("Set a financial goal to track your progress.")
+            Text(L10n.Main.setAFinancialGoalToTrackYourProgress)
                 .font(.system(size: 13))
                 .foregroundStyle(AppTheme.textSecondary)
                 .multilineTextAlignment(.center)

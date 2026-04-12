@@ -18,7 +18,7 @@ struct OnboardingRiskInterestView: View {
             subtitle: "We'll keep recommendations aligned with your comfort level.",
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
-            primaryTitle: "Continue",
+            primaryTitle: String(localized: "profile.continueAction"),
             isPrimaryEnabled: true,
             onPrimaryTap: {
                 Task {
@@ -29,7 +29,7 @@ struct OnboardingRiskInterestView: View {
             }
         ) {
             VStack(alignment: .leading, spacing: 14) {
-                Text("Risk tolerance")
+                Text(L10n.Profile.riskTolerance)
                     .onboardingFieldLabelStyle()
 
                 VStack(spacing: 10) {
@@ -65,15 +65,15 @@ struct OnboardingRiskInterestView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Interested in investing?")
+                    Text(L10n.Profile.interestedInInvesting)
                         .onboardingFieldLabelStyle()
 
                     HStack(spacing: 10) {
-                        TogglePill(title: "Yes", isSelected: viewModel.interestedInInvesting, tint: OnboardingPalette.accent) {
+                        TogglePill(title: String(localized: "common.yes"), isSelected: viewModel.interestedInInvesting, tint: OnboardingPalette.accent) {
                             viewModel.interestedInInvesting = true
                             viewModel.clearError()
                         }
-                        TogglePill(title: "Not now", isSelected: !viewModel.interestedInInvesting, tint: OnboardingPalette.muted) {
+                        TogglePill(title: String(localized: "aichat.notNow"), isSelected: !viewModel.interestedInInvesting, tint: OnboardingPalette.muted) {
                             viewModel.interestedInInvesting = false
                             viewModel.clearError()
                         }

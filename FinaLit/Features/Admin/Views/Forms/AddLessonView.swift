@@ -14,7 +14,7 @@ struct AddLessonView: View {
         var adminVM = Bindable(adminVM)
         AdminFormView(title: "Add Lesson", icon: "book.fill") {
             AdminField(label: "DOCUMENT ID (OPTIONAL)", placeholder: "Reuse an existing lesson ID to update the same document", text: adminVM.lessonDocumentID)
-            Button("Load Existing Lesson") {
+            Button(L10n.Admin.loadExistingLesson) {
                 Task { _ = await self.adminVM.loadLessonForEditing() }
             }
             .font(.system(size: 13, weight: .semibold))
@@ -51,10 +51,10 @@ struct AddLessonView: View {
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("DIFFICULTY")
+                Text(L10n.Admin.difficulty)
                     .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
-                Picker("Difficulty", selection: adminVM.difficultyLevel) {
+                Picker(L10n.Admin.difficulty2, selection: adminVM.difficultyLevel) {
                     ForEach([DifficultyLevel.beginner, .intermediate, .advanced], id: \.self) {
                         Text($0.rawValue).tag($0)
                     }
@@ -63,17 +63,17 @@ struct AddLessonView: View {
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("CONTENT MODE")
+                Text(L10n.Admin.contentMode)
                     .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
-                Picker("Content Mode", selection: adminVM.lessonContentMode) {
+                Picker(L10n.Admin.contentMode2, selection: adminVM.lessonContentMode) {
                     ForEach(LessonContentMode.allCases) {
                         Text($0.label).tag($0)
                     }
                 }
                 .pickerStyle(.segmented)
 
-                Text("Article keeps the lesson as long-form text. Auto and hybrid can combine text with blocks. Sectioned focuses on divided content.")
+                Text(L10n.Admin.articleKeepsTheLessonAsLongformTextAutoAndHybridCanCombineTextWithBlocksSectionedFocusesOnDividedContent)
                     .font(.system(size: 11))
                     .foregroundStyle(Color(hex: "4B5563"))
             }
@@ -88,10 +88,10 @@ struct AddLessonView: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("CONTENT BLOCKS")
+                        Text(L10n.Admin.contentBlocks)
                             .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(Color(hex: "4B5563"))
-                        Text("Optional blocks for sectioned or hybrid lessons. Use these when you want guaranteed divided UI.")
+                        Text(L10n.Admin.optionalBlocksForSectionedOrHybridLessonsUseTheseWhenYouWantGuaranteedDividedUi)
                             .font(.system(size: 11))
                             .foregroundStyle(Color(hex: "4B5563"))
                     }
@@ -99,14 +99,14 @@ struct AddLessonView: View {
                     Button {
                         self.adminVM.addLessonBlock()
                     } label: {
-                        Label("Add Block", systemImage: "plus.circle")
+                        Label(L10n.Admin.addBlock, systemImage: "plus.circle")
                             .font(.system(size: 13))
                             .foregroundStyle(Color(hex: "6366F1"))
                     }
                 }
 
                 if self.adminVM.lessonBlocks.isEmpty {
-                    Text("No blocks yet. Article mode only needs body text.")
+                    Text(L10n.Admin.noBlocksYetArticleModeOnlyNeedsBodyText)
                         .font(.system(size: 12))
                         .foregroundStyle(Color(hex: "374151"))
                         .padding(14)
@@ -138,7 +138,7 @@ struct AddLessonView: View {
                     Text(success)
                         .font(.system(size: 13))
                         .foregroundStyle(Color(hex: "10B981"))
-                    Text("Copy the Lesson ID above and paste it when creating the Day.")
+                    Text(L10n.Admin.copyTheLessonIdAboveAndPasteItWhenCreatingTheDay)
                         .font(.system(size: 11))
                         .foregroundStyle(Color(hex: "4B5563"))
                 }

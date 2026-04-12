@@ -53,15 +53,15 @@ struct PayDebtSheet: View {
                     debtAccountSection
 
                     if mainVM.activeDebtAccounts.isEmpty {
-                        Text("Create a debt account first to record a payment.")
+                        Text(L10n.Main.createADebtAccountFirstToRecordAPayment)
                             .font(AppTheme.Typography.caption)
                             .foregroundStyle(AppTheme.textSecondary)
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Amount")
+                        Text(L10n.Main.amount)
                             .appFieldLabelStyle()
-                        TextField("0", text: $amount)
+                        TextField(L10n.Profile.zero, text: $amount)
                             .font(.system(size: 28, weight: .semibold, design: .rounded))
                             .foregroundStyle(AppTheme.textPrimary)
                             .keyboardType(.decimalPad)
@@ -71,9 +71,9 @@ struct PayDebtSheet: View {
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Note (optional)")
+                        Text(L10n.Main.noteOptional)
                             .appFieldLabelStyle()
-                        TextField("Debt payment", text: $note)
+                        TextField(L10n.Main.debtPayment, text: $note)
                             .appInputStyle()
                     }
 
@@ -81,15 +81,15 @@ struct PayDebtSheet: View {
                 }
                 .padding(AppTheme.Spacing.screen)
             }
-            .navigationTitle("Pay Debt")
+            .navigationTitle(L10n.Main.payDebt)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") { dismiss() }
+                    Button(L10n.Profile.cancel) { dismiss() }
                         .foregroundStyle(Color.primary)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Add") { submitPayment() }
+                    Button(L10n.Main.add) { submitPayment() }
                         .foregroundStyle(Color.orange)
                         .bold()
                         .disabled(!isValid || mainVM.isSubmitting)
@@ -105,7 +105,7 @@ struct PayDebtSheet: View {
 
     private var debtAccountSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Account")
+            Text(L10n.Main.account)
                 .appFieldLabelStyle()
 
             HStack(spacing: 10) {
@@ -161,7 +161,7 @@ struct PayDebtSheet: View {
     private var debtAccountPickerPopover: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Select Debt Account")
+                Text(L10n.Main.selectDebtAccount)
                     .font(AppTheme.Typography.bodySemibold)
                     .foregroundStyle(AppTheme.textPrimary)
 

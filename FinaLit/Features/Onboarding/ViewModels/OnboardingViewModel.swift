@@ -313,7 +313,7 @@ class OnboardingViewModel {
         }
 
         guard let uid = session.user?.id else {
-            errorMessage = localized("Session expired. Please log in again.")
+            errorMessage = String(localized: "profile.sessionExpired")
             return false
         }
 
@@ -356,7 +356,7 @@ class OnboardingViewModel {
     // MARK: - Private Saves
     private func saveUserProfileProgress() async -> Bool {
         guard let uid = session.user?.id else {
-            errorMessage = localized("Session expired. Please log in again.")
+            errorMessage = String(localized: "profile.sessionExpired")
             return false
         }
 
@@ -386,7 +386,7 @@ class OnboardingViewModel {
 
     private func saveFinancialProfileProgress() async -> Bool {
         guard let uid = session.user?.id else {
-            errorMessage = localized("Session expired. Please log in again.")
+            errorMessage = String(localized: "profile.sessionExpired")
             return false
         }
 

@@ -13,7 +13,7 @@ struct AddDailyTipView: View {
         var adminVM = Bindable(adminVM)
         AdminFormView(title: "Add Daily Tip", icon: "lightbulb.fill") {
             AdminField(label: "DOCUMENT ID (OPTIONAL)", placeholder: "Reuse an existing tip ID to update the same document", text: adminVM.tipDocumentID)
-            Button("Load Existing Tip") {
+            Button(L10n.Admin.loadExistingTip) {
                 Task { _ = await self.adminVM.loadDailyTipForEditing() }
             }
             .font(.system(size: 13, weight: .semibold))
@@ -34,7 +34,7 @@ struct AddDailyTipView: View {
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("SHOW ON DATE")
+                Text(L10n.Admin.showOnDate)
                     .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(Color(hex: "4B5563"))
                 DatePicker("", selection: adminVM.tipDate, displayedComponents: .date)

@@ -48,7 +48,7 @@ struct AddTransactionView: View {
                 }
             } label: {
                 HStack(spacing: 10) {
-                    Text("Save Transaction")
+                    Text(L10n.Main.saveTransaction)
                     if mainVM.isSubmitting {
                         ProgressView()
                             .tint(AppTheme.inverseText)
@@ -65,8 +65,8 @@ struct AddTransactionView: View {
         }
         .onDisappear { mainVM.clearForm() }
         .onAppear { mainVM.prepareTransactionFormForSelectedMonth() }
-        .alert("Error", isPresented: isShowingErrorAlert) {
-            Button("OK") { mainVM.clearError() }
+        .alert(L10n.Admin.error, isPresented: isShowingErrorAlert) {
+            Button(L10n.Auth.ok) { mainVM.clearError() }
         } message: { Text(mainVM.errorMessage ?? "") }
             .presentationDragIndicator(.visible)
     }
@@ -91,7 +91,7 @@ struct AddTransactionView: View {
                         mainVM.setFormType(type)
                     }
                 } label: {
-                    Text(type == .expense ? "Expense" : "Income")
+                    Text(type == .expense ? L10n.Main.expense : L10n.Main.income)
                         .font(AppTheme.Typography.bodySemibold)
                         .foregroundStyle(mainVM.formType == type ? AppTheme.textPrimary : AppTheme.textSecondary)
                         .frame(maxWidth: .infinity)
@@ -114,14 +114,14 @@ struct AddTransactionView: View {
         @Bindable var mainVM = mainVM
 
         return VStack(alignment: .leading, spacing: 8) {
-            Text("Amount")
+            Text(L10n.Main.amount)
                 .appFieldLabelStyle()
 
             HStack(alignment: .center, spacing: 4) {
                 Text(AppRegion.currencySymbol)
                     .font(.system(size: 32, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppTheme.textSecondary)
-                TextField("0", text: $mainVM.formAmount)
+                TextField(L10n.Profile.zero, text: $mainVM.formAmount)
                     .font(.system(size: 34, weight: .semibold, design: .rounded))
                     .foregroundStyle(AppTheme.textPrimary)
                     .keyboardType(.decimalPad)
@@ -136,7 +136,7 @@ struct AddTransactionView: View {
     // MARK: - Category Grid
     private var categoryGrid: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Category")
+            Text(L10n.Main.category)
                 .appFieldLabelStyle()
 
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 4), spacing: 8) {
@@ -157,9 +157,9 @@ struct AddTransactionView: View {
         @Bindable var mainVM = mainVM
 
         return VStack(alignment: .leading, spacing: 8) {
-            Text("Note (optional)")
+            Text(L10n.Main.noteOptional)
                 .appFieldLabelStyle()
-            TextField("What was this for?", text: $mainVM.formNote)
+            TextField(L10n.Main.whatWasThisFor, text: $mainVM.formNote)
                 .appInputStyle()
         }
     }
@@ -169,7 +169,7 @@ struct AddTransactionView: View {
         @Bindable var mainVM = mainVM
 
         return VStack(alignment: .leading, spacing: 8) {
-            Text("Date")
+            Text(L10n.Main.date)
                 .appFieldLabelStyle()
             DatePicker("", selection: $mainVM.formDate, displayedComponents: .date)
                 .datePickerStyle(.compact)
@@ -190,9 +190,9 @@ struct AddTransactionView: View {
 
         return HStack {
             VStack(alignment: .leading, spacing: 3) {
-                Text("Recurring monthly")
+                Text(L10n.Main.recurringMonthly)
                     .appFieldLabelStyle()
-                Text("Mark rent, salary, subscriptions")
+                Text(L10n.Main.markRentSalarySubscriptions)
                     .font(AppTheme.Typography.caption)
                     .foregroundStyle(AppTheme.textSecondary)
             }
@@ -215,7 +215,7 @@ struct CategoryChip: View {
                 Image(systemName: category.icon)
                     .font(.system(size: 16))
                     .foregroundStyle(isSelected ? AppTheme.tint(for: category.tone) : AppTheme.textSecondary)
-                Text(category.rawValue.components(separatedBy: " ").first ?? category.rawValue)
+                Text(category.localizedName )
                     .font(.system(size: 9))
                     .foregroundStyle(isSelected ? AppTheme.tint(for: category.tone) : AppTheme.textSecondary)
                     .lineLimit(1)

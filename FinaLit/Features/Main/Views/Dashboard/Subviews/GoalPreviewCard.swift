@@ -22,10 +22,10 @@ struct GoalPreviewCard: View {
 
     private var monthlyPaceText: String? {
         guard remainingAmount > 0, let monthsUntilDeadline else { return nil }
-        guard monthsUntilDeadline >= 0 else { return "Deadline passed" }
+        guard monthsUntilDeadline >= 0 else { return String(localized: "main.deadlinePassed") }
 
         let neededPerMonth = remainingAmount / Double(max(monthsUntilDeadline, 1))
-        return "Need \(formatDisplayCurrency(neededPerMonth))/month"
+        return "\(String(localized: "main.needPrefix")) \(formatDisplayCurrency(neededPerMonth))\(String(localized: "main.perMonth"))"
     }
 
     private var monthlyPaceColor: Color {

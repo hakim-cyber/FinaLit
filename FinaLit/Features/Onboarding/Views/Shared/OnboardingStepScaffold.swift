@@ -88,7 +88,7 @@ struct OnboardingStepScaffold<Content: View>: View {
                         .buttonStyle(AppFilledButtonStyle(tone: .accent))
                         .disabled(!isPrimaryEnabled || isLoading)
 
-                        Text("Educational guidance, not financial advice.")
+                        Text(L10n.Onboarding.educationalGuidanceNotFinancialAdvice)
                             .font(.system(size: 11))
                             .foregroundStyle(OnboardingPalette.muted)
                             .frame(maxWidth: .infinity, alignment: .center)

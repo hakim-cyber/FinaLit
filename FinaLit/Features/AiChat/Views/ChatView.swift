@@ -87,7 +87,7 @@ struct ChatView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Clear") {
+                Button(L10n.AiChat.clear) {
                     viewModel.clearChat(context: modelContext)
                 }
                 .disabled(viewModel.messages.isEmpty || viewModel.isSending)
@@ -114,25 +114,25 @@ struct ChatView: View {
         .onChange(of: mainVM.assistantContext?.changeToken) { _, _ in
             viewModel.updateAssistantContext(mainVM.assistantContext)
         }
-        .alert("Allow AI data sharing?", isPresented: $showConsentPrompt) {
-            Button("Not now", role: .cancel) {}
-            Button("Allow & Send") {
+        .alert(L10n.AiChat.allowAiDataSharing, isPresented: $showConsentPrompt) {
+            Button(L10n.AiChat.notNow, role: .cancel) {}
+            Button(L10n.AiChat.allowSend) {
                 viewModel.setAIDataSharingConsent(true)
                 Task { await sendMessageNow() }
             }
         } message: {
-            Text("To answer questions, FinaLit sends your message and selected finance and money-management data to Google Gemini through Firebase AI Logic.")
+            Text(L10n.AiChat.toAnswerQuestionsFinalitSendsYourMessageAndSelectedFinanceAndMoneymanagementDataToGoogleGeminiThroughFirebaseAiLogic)
         }
     }
 
     private var disclaimerCard: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .top, spacing: 8) {
-                Text("NOTICE")
+                Text(L10n.AiChat.notice)
                     .font(AppTheme.Typography.badge)
                     .foregroundStyle(ChatPalette.warning)
 
-                Text("Educational guidance only. Not professional financial advice.")
+                Text(L10n.AiChat.educationalGuidanceOnlyNotProfessionalFinancialAdvice)
                     .font(AppTheme.Typography.detail)
                     .foregroundStyle(ChatPalette.warningText)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -164,7 +164,7 @@ struct ChatView: View {
 
     private var emptyState: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Ask about money decisions")
+            Text(L10n.AiChat.askAboutMoneyDecisions)
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(AppTheme.textPrimary)
 
@@ -184,8 +184,7 @@ struct ChatView: View {
         let hasDraft = !trimmedDraft.isEmpty
 
         return HStack(alignment: .bottom, spacing: 12) {
-            TextField(
-                "Ask about spending, budgets, debt, or goals...",
+            TextField(L10n.AiChat.askAboutSpendingBudgetsDebtOrGoals,
                 text: $viewModel.draft,
                 axis: .vertical
             )
@@ -271,7 +270,7 @@ struct ChatView: View {
 
       return  HStack {
             VStack(alignment: .leading, spacing: 8) {
-                Text("ADVISOR")
+                Text(L10n.AiChat.advisor)
                     .font(AppTheme.Typography.badge)
                     .foregroundStyle(ChatPalette.accent)
 

@@ -17,7 +17,7 @@ struct DailyTipCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("TODAY'S INSIGHT")
+                Text(L10n.Common.todaysInsight)
                     .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(AppTheme.success)
                 Spacer()

@@ -14,7 +14,7 @@ struct AddQuizView: View {
         var adminVM = Bindable(adminVM)
         AdminFormView(title: "Add Quiz", icon: "questionmark.circle.fill") {
             AdminField(label: "DOCUMENT ID (OPTIONAL)", placeholder: "Reuse an existing quiz ID to update the same document", text: adminVM.quizDocumentID)
-            Button("Load Existing Quiz") {
+            Button(L10n.Admin.loadExistingQuiz) {
                 Task { _ = await self.adminVM.loadQuizForEditing() }
             }
             .font(.system(size: 13, weight: .semibold))
@@ -36,7 +36,7 @@ struct AddQuizView: View {
             } label: {
                 HStack {
                     Image(systemName: "plus.circle")
-                    Text("Add Question")
+                    Text(L10n.Admin.addQuestion)
                 }
                 .font(.system(size: 14))
                 .foregroundStyle(Color(hex: "6366F1"))

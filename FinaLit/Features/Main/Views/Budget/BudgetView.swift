@@ -30,11 +30,11 @@ struct BudgetView: View {
                     .padding(.top, 8)
 
                     HStack {
-                        Text("Set monthly limits per category.")
+                        Text(L10n.Main.setMonthlyLimitsPerCategory)
                             .font(AppTheme.Typography.caption)
                             .foregroundStyle(AppTheme.textSecondary)
                         Spacer()
-                        Button(isEditing ? "Save" : "Edit") {
+                        Button(isEditing ? String(localized: "main.save") : String(localized: "main.edit")) {
                             if isEditing {
                                 saveLimits()
                             } else {
@@ -79,7 +79,7 @@ struct BudgetView: View {
                 .padding(.horizontal, AppTheme.Spacing.screen)
             }
         }
-        .navigationTitle("Budget")
+        .navigationTitle(L10n.Main.budget)
         .navigationBarTitleDisplayMode(.inline)
     }
 

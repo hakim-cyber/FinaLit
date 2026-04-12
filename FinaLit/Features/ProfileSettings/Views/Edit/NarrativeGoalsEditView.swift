@@ -34,23 +34,23 @@ struct NarrativeGoalsEditView: View {
             errorMessage: errorMessage,
             successMessage: successMessage,
             isLoading: isSaving,
-            primaryTitle: "Save Changes",
+            primaryTitle: String(localized: "profile.saveChanges"),
             isPrimaryEnabled: canSave,
             onPrimaryTap: save
         ) {
             VStack(alignment: .leading, spacing: 14) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Short term goal")
+                    Text(L10n.Profile.shortTermGoal)
                         .settingsFieldLabelStyle()
-                    TextField("Type your short-term goal", text: $shortTermGoal, axis: .vertical)
+                    TextField(L10n.Profile.typeYourShorttermGoal, text: $shortTermGoal, axis: .vertical)
                         .lineLimit(2...4)
                         .settingsTextAreaStyle()
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Long term goal")
+                    Text(L10n.Profile.longTermGoal)
                         .settingsFieldLabelStyle()
-                    TextField("Type your long-term goal", text: $longTermGoal, axis: .vertical)
+                    TextField(L10n.Profile.typeYourLongtermGoal, text: $longTermGoal, axis: .vertical)
                         .lineLimit(2...4)
                         .settingsTextAreaStyle()
                 }
@@ -70,7 +70,7 @@ struct NarrativeGoalsEditView: View {
 
     private func save() {
         guard let uid = session.user?.id else {
-            errorMessage = localized("Session expired. Please log in again.")
+            errorMessage = String(localized: "profile.sessionExpired")
             return
         }
 

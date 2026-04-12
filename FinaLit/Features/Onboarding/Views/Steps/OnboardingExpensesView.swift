@@ -14,11 +14,11 @@ struct OnboardingExpensesView: View {
 
         OnboardingStepScaffold(
             page: .monthlyExpenses,
-            title: "Monthly expenses",
-            subtitle: "Split your recurring and flexible spending.",
+            title: String(localized: "onboarding.monthlyExpenses"),
+            subtitle: String(localized: "onboarding.splitRecurringFlexible"),
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
-            primaryTitle: "Continue",
+            primaryTitle: String(localized: "profile.continueAction"),
             isPrimaryEnabled: viewModel.isStep4Valid,
             onPrimaryTap: {
                 Task {
@@ -30,7 +30,7 @@ struct OnboardingExpensesView: View {
         ) {
             VStack(alignment: .leading, spacing: 16) {
                 MoneySlider(
-                    title: "Fixed expenses",
+                    title: String(localized: "onboarding.fixedExpenses"),
                     value: $viewModel.monthlyFixedExpenses,
                     range: 0...10000,
                     step: 25,
@@ -38,7 +38,7 @@ struct OnboardingExpensesView: View {
                 )
 
                 MoneySlider(
-                    title: "Variable expenses",
+                    title: String(localized: "onboarding.variableExpenses"),
                     value: $viewModel.monthlyVariableExpenses,
                     range: 0...10000,
                     step: 25,

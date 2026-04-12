@@ -11,13 +11,13 @@ struct LearnErrorView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("⚠️")
+            Text(L10n.Common.empty2)
                 .font(.system(size: 36))
             Text(message)
                 .font(.system(size: 14))
                 .foregroundStyle(Color(hex: "F87171"))
                 .multilineTextAlignment(.center)
-            Button("Try again") {
+            Button(L10n.Common.tryAgain) {
                 Task { await retry() }
             }
             .font(.system(size: 14))

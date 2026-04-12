@@ -16,33 +16,33 @@ struct InsightsView: View {
                 VStack(alignment: .leading, spacing: AppTheme.Spacing.section) {
                     if let summary = mainVM.summary {
                         VStack(alignment: .leading, spacing: 10) {
-                            AppSectionHeader(title: "Monthly overview")
+                            AppSectionHeader(title: L10n.Main.monthlyOverview)
 
                             LazyVGrid(
                                 columns: [GridItem(.flexible()), GridItem(.flexible())],
                                 spacing: 10
                             ) {
                                 InsightStatCard(
-                                    label: "Daily Average",
+                                    label: String(localized: "main.dailyAverage"),
                                     value: formatDisplayCurrency(summary.dailyAverage),
                                     icon: "calendar",
                                     tone: .accent
                                 )
                                 InsightStatCard(
-                                    label: "Net Balance",
+                                    label: String(localized: "main.netBalance"),
                                     value: formatSignedDisplayCurrency(summary.monthlyNet),
                                     icon: "equal.circle.fill",
                                     tone: summary.monthlyNet >= 0 ? .success : .danger
                                 )
                                 InsightStatCard(
-                                    label: "Discretionary",
+                                    label: String(localized: "main.discretionary"),
                                     value: "\(String(format: "%.0f", summary.discretionaryRatio * 100))%",
                                     icon: "bag.fill",
                                     tone: summary.discretionaryRatio > 0.3 ? .warning : .success
                                 )
                                 if let growth = summary.expenseGrowthRate {
                                     InsightStatCard(
-                                        label: "vs Last Month",
+                                        label: String(localized: "main.vsLastMonth"),
                                         value: "\(growth >= 0 ? "+" : "")\(String(format: "%.0f", growth))%",
                                         icon: growth >= 0 ? "arrow.up.right" : "arrow.down.right",
                                         tone: growth > 10 ? .danger : growth < -5 ? .success : .slate
@@ -53,13 +53,13 @@ struct InsightsView: View {
                     }
 
                     VStack(alignment: .leading, spacing: 10) {
-                        AppSectionHeader(title: "Smart insights")
+                        AppSectionHeader(title: L10n.Main.smartInsights)
 
                         if mainVM.insights.isEmpty {
                             VStack(spacing: 12) {
                                 Text("✨")
                                     .font(.system(size: 36))
-                                Text("Add transactions to see insights")
+                                Text(L10n.Main.addTransactionsToSeeInsights)
                                     .font(AppTheme.Typography.body)
                                     .foregroundStyle(AppTheme.textSecondary)
                             }
@@ -77,7 +77,7 @@ struct InsightsView: View {
 
                     if !mainVM.recentSnapshots.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
-                            AppSectionHeader(title: "Spending history")
+                            AppSectionHeader(title: L10n.Main.spendingHistory)
 
                             SpendingHistoryChart(snapshots: mainVM.recentSnapshots)
                         }
@@ -89,7 +89,7 @@ struct InsightsView: View {
                 .padding(.top, 16)
             }
         }
-        .navigationTitle("Insights")
+        .navigationTitle(L10n.Main.insights)
         .navigationBarTitleDisplayMode(.inline)
     }
 }

@@ -23,10 +23,10 @@ struct LoginView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 28) {
                     VStack(spacing: 10) {
-                        Text("Welcome back")
+                        Text(L10n.Auth.welcomeBack)
                             .font(.system(size: 32, weight: .semibold))
                             .foregroundStyle(AppTheme.textPrimary)
-                        Text("Sign in to FinaLit to track your budget, goals, and monthly progress.")
+                        Text(L10n.Auth.signInToFinalitToTrackYourBudgetGoalsAndMonthlyProgress)
                             .font(AppTheme.Typography.body)
                             .foregroundStyle(AuthPalette.muted)
                             .multilineTextAlignment(.center)
@@ -43,9 +43,9 @@ struct LoginView: View {
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Email")
+                            Text(L10n.Auth.email)
                                 .appFieldLabelStyle()
-                            TextField("Enter your email", text: $viewModel.email)
+                            TextField(L10n.Auth.enterYourEmail, text: $viewModel.email)
                                 .textInputAutocapitalization(.never)
                                 .keyboardType(.emailAddress)
                                 .autocorrectionDisabled()
@@ -53,7 +53,7 @@ struct LoginView: View {
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Password")
+                            Text(L10n.Auth.password)
                                 .appFieldLabelStyle()
                             SecureField("Enter your password", text: $viewModel.password)
                                 .textInputAutocapitalization(.never)
@@ -63,7 +63,7 @@ struct LoginView: View {
 
                         HStack(alignment: .center) {
                             Spacer(minLength: 0)
-                            Button("Forgot password?") {
+                            Button(L10n.Auth.forgotPassword) {
                                 coordinator.push(.forgotPassword)
                             }
                             .font(.system(size: 12, weight: .semibold))
@@ -116,7 +116,7 @@ struct LoginView: View {
                     VStack(spacing: 14) {
                         AuthLegalLinksRow()
 
-                        Button("Don't have a FinaLit account? Sign up") {
+                        Button(L10n.Auth.dontHaveAFinalitAccountSignUp) {
                             coordinator.push(.register)
                         }
                         .font(.system(size: 13, weight: .semibold))
@@ -132,8 +132,7 @@ struct LoginView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
-        .alert(
-            "Check your email",
+        .alert(L10n.Auth.checkYourEmail,
             isPresented: Binding(
                 get: { viewModel.postRegistrationVerificationAlert != nil },
                 set: { isPresented in
@@ -143,7 +142,7 @@ struct LoginView: View {
                 }
             )
         ) {
-            Button("OK", role: .cancel) {
+            Button(L10n.Auth.ok, role: .cancel) {
                 viewModel.dismissPostRegistrationVerificationAlert()
             }
         } message: {
@@ -180,10 +179,10 @@ struct ForgotPasswordView: View {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Reset password")
+                        Text(L10n.Auth.resetPassword)
                             .font(.system(size: 34, weight: .medium))
                             .foregroundStyle(AppTheme.textPrimary)
-                        Text("We will send a reset link to your email.")
+                        Text(L10n.Auth.weWillSendAResetLinkToYourEmail)
                             .font(AppTheme.Typography.caption)
                             .foregroundStyle(AuthPalette.muted)
                     }
@@ -198,9 +197,9 @@ struct ForgotPasswordView: View {
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Email")
+                            Text(L10n.Auth.email)
                                 .appFieldLabelStyle()
-                            TextField("Enter your email", text: $viewModel.email)
+                            TextField(L10n.Auth.enterYourEmail, text: $viewModel.email)
                                 .textInputAutocapitalization(.never)
                                 .keyboardType(.emailAddress)
                                 .autocorrectionDisabled()
@@ -224,7 +223,7 @@ struct ForgotPasswordView: View {
                         .buttonStyle(AppFilledButtonStyle(tone: .accent))
                         .disabled(!canSubmit)
 
-                        Button("Back to Log In") {
+                        Button(L10n.Auth.backToLogIn) {
                             coordinator.pop()
                         }
                         .font(.system(size: 13, weight: .semibold))

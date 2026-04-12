@@ -28,7 +28,7 @@ struct ContinueBanner: View {
         } label: {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Continue where you left off")
+                    Text(L10n.Common.continueWhereYouLeftOff)
                         .font(AppTheme.Typography.detail.weight(.semibold))
                         .foregroundStyle(AppTheme.accent)
                     Text("Day \(dayNumber)")

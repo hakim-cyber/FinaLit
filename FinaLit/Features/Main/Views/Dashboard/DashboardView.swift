@@ -134,15 +134,15 @@ struct DashboardView: View {
             .presentationDragIndicator(.visible)
         }
         .confirmationDialog("Close this month?", isPresented: $showCloseMonthDialog, titleVisibility: .visible) {
-            Button("Close Month & Rollover") {
+            Button(L10n.Main.closeMonthRollover) {
                 handleMonthClose()
             }
-            Button("Cancel", role: .cancel) {}
+            Button(L10n.Profile.cancel, role: .cancel) {}
         } message: {
-            Text("This saves the monthly snapshot and creates next-month recurring transactions.")
+            Text(L10n.Main.thisSavesTheMonthlySnapshotAndCreatesNextmonthRecurringTransactions)
         }
-        .alert("Error", isPresented: isShowingErrorAlert) {
-            Button("OK") { mainVM.clearError() }
+        .alert(L10n.Admin.error, isPresented: isShowingErrorAlert) {
+            Button(L10n.Auth.ok) { mainVM.clearError() }
         } message: {
             Text(mainVM.errorMessage ?? "")
         }
@@ -152,8 +152,7 @@ struct DashboardView: View {
     }
 
     private var monthPickerPopover: some View {
-        DatePicker(
-            "Select month",
+        DatePicker(L10n.Main.selectMonth,
             selection: Binding(
                 get: { monthPickerDate },
                 set: { newValue in
@@ -220,7 +219,7 @@ struct DashboardView: View {
 
     private var debtQuickActionSubtitle: String {
         if mainVM.activeDebtAccounts.isEmpty {
-            return mainVM.debtAccounts.isEmpty ? "Create first debt" : "Add another debt"
+            return mainVM.debtAccounts.isEmpty ? String(localized: "main.createFirstDebt") : String(localized: "main.addAnotherDebt")
         }
         return "\(formatDisplayCurrency(mainVM.totalDebtBalance)) remaining"
     }
@@ -228,7 +227,7 @@ struct DashboardView: View {
     private var balanceHeroCard: some View {
         VStack(alignment: .leading, spacing: 20) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("Current balance")
+                Text(L10n.Main.currentBalance)
                     .font(AppTheme.Typography.heroLabel)
                     .foregroundStyle(AppTheme.textSecondary)
 
@@ -249,7 +248,7 @@ struct DashboardView: View {
 
             if let summary = mainVM.summary {
                 AppToneBadge(
-                    title: summary.financialStability.rawValue,
+                    title: summary.financialStability.localizedName,
                     systemImage: summary.financialStability.icon,
                     tone: summary.financialStability.tone
                 )
@@ -262,19 +261,19 @@ struct DashboardView: View {
     private var statsRow: some View {
         HStack(spacing: 10) {
             StatMiniCard(
-                label: "Income",
+                label: String(localized: "main.income"),
                 value: mainVM.summary.map { formatDisplayCurrency($0.monthlyIncome) } ?? "—",
                 icon: "arrow.up.circle.fill",
                 tone: .success
             )
             StatMiniCard(
-                label: "Expenses",
+                label: String(localized: "main.expense"),
                 value: mainVM.summary.map { formatDisplayCurrency($0.monthlyExpenses) } ?? "—",
                 icon: "arrow.down.circle.fill",
                 tone: .danger
             )
             StatMiniCard(
-                label: "Savings",
+                label: String(localized: "main.savings"),
                 value: mainVM.summary.map { "\(formatAmount($0.savingsRate))%" } ?? "—",
                 icon: "chart.line.uptrend.xyaxis",
                 tone: mainVM.summary.map { $0.savingsRate >= 20 ? .success : .warning } ?? .slate
@@ -284,11 +283,11 @@ struct DashboardView: View {
 
     private var quickActions: some View {
         VStack(alignment: .leading, spacing: 12) {
-            AppSectionHeader(title: "Actions")
+            AppSectionHeader(title: L10n.Main.actions)
 
             HStack(spacing: 10) {
                 QuickActionCard(
-                    title: mainVM.activeDebtAccounts.isEmpty ? "Add Debt" : "Pay Debt",
+                    title: mainVM.activeDebtAccounts.isEmpty ? String(localized: "main.addDebt") : String(localized: "main.payDebt"),
                     subtitle: debtQuickActionSubtitle,
                     icon: "creditcard.fill",
                     tone: .orange,
@@ -302,8 +301,8 @@ struct DashboardView: View {
                 }
 
                 QuickActionCard(
-                    title: "Add to Goal",
-                    subtitle: mainVM.activeGoals.isEmpty ? "Create first goal" : "Contribute now",
+                    title: String(localized: "main.addToGoal"),
+                    subtitle: mainVM.activeGoals.isEmpty ? String(localized: "main.createFirstGoal") : String(localized: "main.contributeNow"),
                     icon: "target",
                     tone: .accent,
                     isDisabled: mainVM.isSubmitting
@@ -316,7 +315,7 @@ struct DashboardView: View {
                 }
 
                 QuickActionCard(
-                    title: "Close Month",
+                    title: String(localized: "main.closeMonth"),
                     subtitle: mainVM.selectedMonthDisplay,
                     icon: "calendar.badge.checkmark",
                     tone: .blue,
@@ -332,7 +331,7 @@ struct DashboardView: View {
         Group {
             if !mainVM.insights.isEmpty {
                 VStack(alignment: .leading, spacing: 12) {
-                    AppSectionHeader(title: "Insights", actionTitle: "See all") {
+                    AppSectionHeader(title: L10n.Main.insights, actionTitle: L10n.Main.seeAll) {
                         coordinator.push(.insights)
                     }
 
@@ -354,7 +353,7 @@ struct DashboardView: View {
         Group {
             if let summary = mainVM.summary, !summary.byCategory.isEmpty {
                 VStack(alignment: .leading, spacing: 14) {
-                    AppSectionHeader(title: "This month", actionTitle: "Budget") {
+                    AppSectionHeader(title: L10n.Main.thisMonth, actionTitle: L10n.Main.budget) {
                         coordinator.push(.budget)
                     }
 
@@ -375,7 +374,7 @@ struct DashboardView: View {
                     .appSurface(.primary, padding: 14, cornerRadius: AppTheme.CornerRadius.large)
 
                     if summary.byCategory.count > 3 {
-                        Button("View all categories") {
+                        Button(L10n.Main.viewAllCategories) {
                             coordinator.push(.budget)
                         }
                         .font(AppTheme.Typography.caption)
@@ -388,7 +387,7 @@ struct DashboardView: View {
 
     private var goalsPreview: some View {
         VStack(alignment: .leading, spacing: 12) {
-            AppSectionHeader(title: "Goals", actionTitle: mainVM.activeGoals.isEmpty ? "New goal" : "See all") {
+            AppSectionHeader(title: "Goals", actionTitle: mainVM.activeGoals.isEmpty ? L10n.Main.newGoal : L10n.Main.seeAll) {
                 coordinator.push(mainVM.activeGoals.isEmpty ? .addGoal : .goals)
             }
 
@@ -409,7 +408,7 @@ struct DashboardView: View {
 
     private var recentTransactions: some View {
         VStack(alignment: .leading, spacing: 12) {
-            AppSectionHeader(title: "Recent transactions", actionTitle: "All transactions") {
+            AppSectionHeader(title: L10n.Main.recentTransactions, actionTitle: L10n.Main.allTransactions) {
                 coordinator.push(.transactions)
             }
 

@@ -25,21 +25,21 @@ struct RootTabView: View {
             CoordinatorStack(MainPages.dashboard) { coordinator in
                 appCoordinator.register(coordinator)    // hand coordinator to AppCoordinator
             }
-            .tabItem { Label("Track Finances", systemImage: "chart.pie.fill") }
+            .tabItem { Label(L10n.Common.trackFinances, systemImage: "chart.pie.fill") }
             .tag(AppTab.main)
             
            
             CoordinatorStack(LearnPages.home) { coordinator in
                 appCoordinator.register(coordinator)
             }
-            .tabItem { Label("Learn", systemImage: "book.fill") }
+            .tabItem { Label(L10n.Common.learn, systemImage: "book.fill") }
             .tag(AppTab.learn)
           
             
             CoordinatorStack(ChatPages.chat) { coordinator in
                 appCoordinator.register(coordinator)
             }
-            .tabItem { Label("AI Assistant", systemImage: "brain.head.profile") }
+            .tabItem { Label(L10n.Common.aiAssistant, systemImage: "brain.head.profile") }
             .tag(AppTab.chat)
 
          
@@ -48,7 +48,7 @@ struct RootTabView: View {
             // RootTabView.swift
             if session.user?.isAdmin == true {
                 CoordinatorStack(AdminPages.home)
-                    .tabItem { Label("Admin", systemImage: "gearshape.fill") }
+                    .tabItem { Label(L10n.Common.admin, systemImage: "gearshape.fill") }
                     .tag(AppTab.admin)
             }
         }

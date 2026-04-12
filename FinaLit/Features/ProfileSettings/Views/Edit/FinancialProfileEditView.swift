@@ -34,25 +34,25 @@ struct FinancialProfileEditView: View {
 
     var body: some View {
         ProfileSettingsFormScaffold(
-            title: "Financial Profile",
-            subtitle: "Update your real-world numbers to keep advice relevant.",
+            title: String(localized: "profile.financialProfile"),
+            subtitle: String(localized: "profile.updateRealWorldNumbers"),
             errorMessage: errorMessage,
             successMessage: successMessage,
             isLoading: isSaving,
-            primaryTitle: "Save Changes",
+            primaryTitle: String(localized: "profile.saveChanges"),
             isPrimaryEnabled: canSave,
             onPrimaryTap: save
         ) {
             VStack(alignment: .leading, spacing: 16) {
-                settingsMoneyField(title: "Monthly income", text: $monthlyIncome)
+                settingsMoneyField(title: String(localized: "onboarding.monthlyIncome"), text: $monthlyIncome)
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Income stability")
+                    Text(L10n.Profile.incomeStability)
                         .settingsFieldLabelStyle()
 
                     HStack(spacing: 10) {
                         ProfileSettingsTogglePill(
-                            title: "Stable",
+                            title: String(localized: "main.stabilityStable"),
                             isSelected: incomeStability == .stable,
                             tint: ProfileSettingsPalette.accent
                         ) {
@@ -61,7 +61,7 @@ struct FinancialProfileEditView: View {
                         }
 
                         ProfileSettingsTogglePill(
-                            title: "Variable",
+                            title: String(localized: "onboarding.variable"),
                             isSelected: incomeStability == .variable,
                             tint: .orange
                         ) {
@@ -71,17 +71,17 @@ struct FinancialProfileEditView: View {
                     }
                 }
 
-                settingsMoneyField(title: "Fixed expenses", text: $fixedExpenses)
-                settingsMoneyField(title: "Variable expenses", text: $variableExpenses)
-                settingsMoneyField(title: "Current savings", text: $currentSavings)
+                settingsMoneyField(title: String(localized: "onboarding.fixedExpenses"), text: $fixedExpenses)
+                settingsMoneyField(title: String(localized: "onboarding.variableExpenses"), text: $variableExpenses)
+                settingsMoneyField(title: String(localized: "main.savings"), text: $currentSavings)
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Do you currently have debt?")
+                    Text(L10n.Profile.doYouCurrentlyHaveDebt)
                         .settingsFieldLabelStyle()
 
                     HStack(spacing: 10) {
                         ProfileSettingsTogglePill(
-                            title: "No debt",
+                            title: String(localized: "profile.noDebt"),
                             isSelected: !hasDebt,
                             tint: .green
                         ) {
@@ -91,7 +91,7 @@ struct FinancialProfileEditView: View {
                         }
 
                         ProfileSettingsTogglePill(
-                            title: "I have debt",
+                            title: String(localized: "profile.haveDebt"),
                             isSelected: hasDebt,
                             tint: .red
                         ) {
@@ -102,11 +102,11 @@ struct FinancialProfileEditView: View {
                 }
 
                 if hasDebt {
-                    settingsMoneyField(title: "Debt amount", text: $debtAmount)
+                    settingsMoneyField(title: String(localized: "profile.debtAmountField"), text: $debtAmount)
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Risk tolerance")
+                    Text(L10n.Profile.riskTolerance)
                         .settingsFieldLabelStyle()
 
                     ForEach(RiskTolerance.allCases) { option in
@@ -123,12 +123,12 @@ struct FinancialProfileEditView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Interested in investing?")
+                    Text(L10n.Profile.interestedInInvesting)
                         .settingsFieldLabelStyle()
 
                     HStack(spacing: 10) {
                         ProfileSettingsTogglePill(
-                            title: "Yes",
+                            title: String(localized: "common.yes"),
                             isSelected: interestedInInvesting,
                             tint: ProfileSettingsPalette.accent
                         ) {
@@ -137,7 +137,7 @@ struct FinancialProfileEditView: View {
                         }
 
                         ProfileSettingsTogglePill(
-                            title: "Not now",
+                            title: String(localized: "aichat.notNow"),
                             isSelected: !interestedInInvesting,
                             tint: ProfileSettingsPalette.muted
                         ) {
@@ -176,7 +176,7 @@ struct FinancialProfileEditView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .settingsFieldLabelStyle()
-            TextField("0", text: text)
+            TextField(L10n.Profile.zero, text: text)
                 .keyboardType(.decimalPad)
                 .settingsInputStyle()
         }
@@ -184,12 +184,12 @@ struct FinancialProfileEditView: View {
 
     private func save() {
         guard let uid = session.user?.id else {
-            errorMessage = localized("Session expired. Please log in again.")
+            errorMessage = String(localized: "profile.sessionExpired")
             return
         }
 
         guard let parsedMonthlyIncome = parseMonetaryInput(monthlyIncome), parsedMonthlyIncome > 0 else {
-            errorMessage = localized("Monthly income must be greater than 0.")
+            errorMessage = String(localized: "profile.incomeGreaterThanZero")
             return
         }
 
@@ -200,7 +200,7 @@ struct FinancialProfileEditView: View {
         var parsedDebtAmount: Double?
         if hasDebt {
             guard let value = parseMonetaryInput(debtAmount), value > 0 else {
-                errorMessage = localized("Debt amount must be greater than 0 when debt is enabled.")
+                errorMessage = String(localized: "profile.debtGreaterThanZero")
                 return
             }
             parsedDebtAmount = value
@@ -241,7 +241,7 @@ struct FinancialProfileEditView: View {
                 try dbService.saveFinancialProfile(updatedFinancial, uid: uid)
                 session.updateProfile(updatedProfile)
                 session.updateFinancialProfile(updatedFinancial)
-                successMessage = localized("Financial profile updated.")
+                successMessage = String(localized: "profile.financialProfileUpdated")
             } catch {
                 errorMessage = error.localizedDescription
             }

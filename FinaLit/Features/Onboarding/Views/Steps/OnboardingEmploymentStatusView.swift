@@ -18,7 +18,7 @@ struct OnboardingEmploymentStatusView: View {
             subtitle: "This helps us estimate realistic monthly cash flow.",
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
-            primaryTitle: "Continue",
+            primaryTitle: String(localized: "profile.continueAction"),
             isPrimaryEnabled: true,
             onPrimaryTap: {
                 Task {

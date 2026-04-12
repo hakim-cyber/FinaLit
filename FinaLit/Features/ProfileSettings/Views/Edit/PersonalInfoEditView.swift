@@ -37,21 +37,21 @@ struct PersonalInfoEditView: View {
             errorMessage: errorMessage,
             successMessage: successMessage,
             isLoading: isSaving,
-            primaryTitle: "Save Changes",
+            primaryTitle: String(localized: "profile.saveChanges"),
             isPrimaryEnabled: canSave,
             onPrimaryTap: save
         ) {
             VStack(alignment: .leading, spacing: 16) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Name")
+                    Text(L10n.Auth.name)
                         .settingsFieldLabelStyle()
-                    TextField("Your name", text: $name)
+                    TextField(L10n.Profile.yourName, text: $name)
                         .textInputAutocapitalization(.words)
                         .settingsInputStyle()
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Email (display only)")
+                    Text(L10n.Profile.emailDisplayOnly)
                         .settingsFieldLabelStyle()
                     Text(session.user?.email ?? "No email")
                         .font(.system(size: 15))
@@ -68,7 +68,7 @@ struct PersonalInfoEditView: View {
 
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
-                        Text("Age")
+                        Text(L10n.Profile.age)
                             .settingsFieldLabelStyle()
                         Spacer()
                         Text("\(Int(age.rounded()))")
@@ -80,15 +80,15 @@ struct PersonalInfoEditView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Country")
+                    Text(L10n.Profile.country)
                         .settingsFieldLabelStyle()
-                    TextField("Country", text: $country)
+                    TextField(L10n.Profile.country, text: $country)
                         .textInputAutocapitalization(.words)
                         .settingsInputStyle()
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Employment status")
+                    Text(L10n.Profile.employmentStatus)
                         .settingsFieldLabelStyle()
 
                     ForEach(EmploymentStatus.allCases) { status in
@@ -122,7 +122,7 @@ struct PersonalInfoEditView: View {
 
     private func save() {
         guard let uid = session.user?.id else {
-            errorMessage = localized("Session expired. Please log in again.")
+            errorMessage = String(localized: "profile.sessionExpired")
             return
         }
 

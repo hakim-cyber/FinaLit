@@ -16,7 +16,7 @@ struct OnboardingDebtView: View {
             subtitle: "We use this to balance payoff strategy with savings goals.",
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
-            primaryTitle: "Continue",
+            primaryTitle: String(localized: "profile.continueAction"),
             isPrimaryEnabled: viewModel.isStep6Valid,
             onPrimaryTap: {
                 Task {
@@ -28,18 +28,18 @@ struct OnboardingDebtView: View {
         ) {
             VStack(alignment: .leading, spacing: 14) {
                 HStack(spacing: 10) {
-                    TogglePill(title: "No debt", isSelected: !viewModel.hasDebt, tint: .green) {
+                    TogglePill(title: String(localized: "profile.noDebt"), isSelected: !viewModel.hasDebt, tint: .green) {
                         viewModel.setHasDebt(false)
                     }
 
-                    TogglePill(title: "I have debt", isSelected: viewModel.hasDebt, tint: .red) {
+                    TogglePill(title: String(localized: "profile.haveDebt"), isSelected: viewModel.hasDebt, tint: .red) {
                         viewModel.setHasDebt(true)
                     }
                 }
 
                 if viewModel.hasDebt {
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Debt accounts")
+                        Text(L10n.Onboarding.debtAccounts)
                             .onboardingFieldLabelStyle()
 
                         ForEach(viewModel.debtEntries) { debtEntry in
@@ -62,7 +62,7 @@ struct OnboardingDebtView: View {
                         } label: {
                             HStack(spacing: 8) {
                                 Image(systemName: "plus.circle.fill")
-                                Text("Add another debt")
+                                Text(L10n.Onboarding.addAnotherDebt)
                             }
                             .font(.system(size: 13, weight: .semibold))
                             .foregroundStyle(AppTheme.danger)
@@ -74,7 +74,7 @@ struct OnboardingDebtView: View {
                         .buttonStyle(.plain)
 
                         HStack {
-                            Text("Total debt")
+                            Text(L10n.Onboarding.totalDebt)
                                 .onboardingFieldLabelStyle()
                             Spacer()
                             Text(currency(viewModel.totalDebtAmount))

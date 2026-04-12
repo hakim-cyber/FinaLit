@@ -20,7 +20,7 @@ struct GoalsView: View {
                             .padding(.top, 8)
                     } else {
                         VStack(alignment: .leading, spacing: 10) {
-                            AppSectionHeader(title: "Active goals")
+                            AppSectionHeader(title: L10n.Main.activeGoals)
 
                             ForEach(mainVM.activeGoals) { goal in
                                 GoalCard(goal: goal)
@@ -33,7 +33,7 @@ struct GoalsView: View {
 
                     if !mainVM.completedGoals.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
-                            AppSectionHeader(title: "Completed")
+                            AppSectionHeader(title: L10n.Main.completed)
 
                             ForEach(mainVM.completedGoals) { goal in
                                 GoalCard(goal: goal, isCompleted: true)
@@ -54,7 +54,7 @@ struct GoalsView: View {
                 HStack(spacing: 8) {
                     Image(systemName: "plus")
                         .font(AppTheme.Typography.compactRowIcon)
-                    Text("New Goal")
+                    Text(L10n.Main.newGoal)
                 }
                 .padding(.horizontal, 18)
             }
@@ -62,7 +62,7 @@ struct GoalsView: View {
             .padding(.trailing, AppTheme.Spacing.screen)
             .padding(.bottom, 24)
         }
-        .navigationTitle("Goals")
+        .navigationTitle(L10n.Main.goals)
         .navigationBarTitleDisplayMode(.inline)
     }
 }

@@ -33,7 +33,7 @@ struct ReflectionView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("📝")
                             .font(.system(size: 36))
-                        Text("Week Reflection")
+                        Text(L10n.Common.weekReflection)
                             .font(.system(size: 30, weight: .medium))
                             .foregroundStyle(AppTheme.textPrimary)
                         Text(weekTitle)
@@ -48,7 +48,7 @@ struct ReflectionView: View {
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("YOUR REFLECTION")
+                        Text(L10n.Common.yourReflection)
                             .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(AppTheme.textSecondary)
 
@@ -86,7 +86,7 @@ struct ReflectionView: View {
                                     .font(.system(size: 11))
                                     .foregroundStyle(AppTheme.danger)
                             } else if canSubmit {
-                                Text("✓ Ready to submit")
+                                Text(L10n.Common.readyToSubmit)
                                     .font(.system(size: 11))
                                     .foregroundStyle(AppTheme.success)
                             }
@@ -125,7 +125,7 @@ struct ReflectionView: View {
                     }
                 } label: {
                     HStack {
-                        Text("Submit Reflection")
+                        Text(L10n.Common.submitReflection)
                             .font(.system(size: 16))
                         if learnVM.isSubmitting {
                             ProgressView()
@@ -158,8 +158,8 @@ struct ReflectionView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Error", isPresented: isShowingErrorAlert) {
-            Button("Try again") {
+        .alert(L10n.Admin.error, isPresented: isShowingErrorAlert) {
+            Button(L10n.Common.tryAgain) {
                 Task {
                     let success = await learnVM.submitReflection(
                         weekID: weekID,
@@ -171,7 +171,7 @@ struct ReflectionView: View {
                     }
                 }
             }
-            Button("OK") { learnVM.clearError() }
+            Button(L10n.Auth.ok) { learnVM.clearError() }
         } message: {
             Text(learnVM.errorMessage ?? "")
         }

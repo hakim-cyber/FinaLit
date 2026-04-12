@@ -39,7 +39,7 @@ struct TransactionDetailView: View {
                                 .monospacedDigit()
                                 .padding(.horizontal, AppTheme.Spacing.screen)
 
-                            Text(transaction.type == .income ? "Income" : "Expense")
+                            Text(transaction.type == .income ? L10n.Main.income : L10n.Main.expense)
                                 .font(AppTheme.Typography.caption)
                                 .foregroundStyle(AppTheme.textSecondary)
                         }
@@ -47,12 +47,12 @@ struct TransactionDetailView: View {
                         .padding(.top, 20)
 
                         VStack(spacing: 1) {
-                            DetailRow(label: "Category", value: transaction.category.rawValue)
-                            DetailRow(label: "Date", value: transaction.date.formatted(date: .long, time: .omitted))
+                            DetailRow(label: String(localized: "main.category"), value: String(localized: LocalizedStringResource(stringLiteral: "main.category\(transaction.category.rawValue)"))) 
+                            DetailRow(label: String(localized: "main.date"), value: transaction.date.formatted(date: .long, time: .omitted))
                             if !transaction.note.isEmpty {
-                                DetailRow(label: "Note", value: transaction.note)
+                                DetailRow(label: String(localized: "main.note"), value: transaction.note)
                             }
-                            DetailRow(label: "Recurring", value: transaction.isRecurring ? "Yes" : "No")
+                            DetailRow(label: String(localized: "main.recurring"), value: transaction.isRecurring ? String(localized: "common.yes") : String(localized: "common.no"))
                         }
                         .appSurface(.primary, padding: 0, cornerRadius: AppTheme.CornerRadius.large)
                         .padding(.horizontal, AppTheme.Spacing.screen)
@@ -62,7 +62,7 @@ struct TransactionDetailView: View {
                         } label: {
                             HStack {
                                 Image(systemName: "trash")
-                                Text("Delete Transaction")
+                                Text(L10n.Main.deleteTransaction)
                             }
                             .font(AppTheme.Typography.bodySemibold)
                             .foregroundStyle(AppTheme.danger)
@@ -75,15 +75,15 @@ struct TransactionDetailView: View {
                     }
                 }
             } else {
-                Text("Transaction not found")
+                Text(L10n.Main.transactionNotFound)
                     .font(AppTheme.Typography.body)
                     .foregroundStyle(AppTheme.textSecondary)
             }
         }
-        .navigationTitle("Transaction")
+        .navigationTitle(L10n.Main.transaction)
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Delete Transaction?", isPresented: $showDeleteAlert) {
-            Button("Delete", role: .destructive) {
+        .alert(L10n.Main.deleteTransaction2, isPresented: $showDeleteAlert) {
+            Button(L10n.Main.delete, role: .destructive) {
                 Task {
                     if let transaction {
                         await mainVM.deleteTransaction(transaction)
@@ -91,9 +91,9 @@ struct TransactionDetailView: View {
                     }
                 }
             }
-            Button("Cancel", role: .cancel) {}
+            Button(L10n.Profile.cancel, role: .cancel) {}
         } message: {
-            Text("This cannot be undone.")
+            Text(L10n.Main.thisCannotBeUndone)
         }
     }
 }

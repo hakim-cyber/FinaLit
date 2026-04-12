@@ -24,7 +24,7 @@ struct OnboardingHobbiesView: View {
             subtitle: "Choose up to \(viewModel.maxHobbySelections), or add your own.",
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
-            primaryTitle: "Continue",
+            primaryTitle: String(localized: "profile.continueAction"),
             isPrimaryEnabled: viewModel.isStep11Valid,
             onPrimaryTap: {
                 if viewModel.validateStep11Hobbies() {
@@ -64,7 +64,7 @@ struct OnboardingHobbiesView: View {
                 }
 
                 if viewModel.isOtherHobbySelected {
-                    TextField("Add custom hobby", text: $viewModel.customHobby)
+                    TextField(L10n.Onboarding.addCustomHobby, text: $viewModel.customHobby)
                         .textInputAutocapitalization(.words)
                         .onboardingInputStyle()
                         .onChange(of: viewModel.customHobby) { _, _ in

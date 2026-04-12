@@ -27,11 +27,11 @@ struct WeekTimelineRow: View {
                         .font(.system(size: 11))
                         .foregroundStyle(AppTheme.textSecondary)
                 } else if weekProgress.isUnlocked {
-                    Text("In progress")
+                    Text(L10n.Common.inProgress)
                         .font(.system(size: 11))
                         .foregroundStyle(AppTheme.accent)
                 } else {
-                    Text("Locked")
+                    Text(L10n.Common.locked)
                         .font(.system(size: 11))
                         .foregroundStyle(AppTheme.textTertiary)
                 }

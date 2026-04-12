@@ -84,7 +84,7 @@ struct LessonDetailView: View {
                         Button {
                             coordinator.push(.quizReview(dayID, weekID))
                         } label: {
-                            Text("View Last Results")
+                            Text(L10n.Common.viewLastResults)
                                 .font(.system(size: 15, weight: .medium))
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 14)
@@ -299,7 +299,7 @@ struct LessonDetailView: View {
                 Label(lesson.category, systemImage: "tag")
                     .font(.system(size: 12))
                     .foregroundStyle(AppTheme.textSecondary)
-                Text("·")
+                Text(L10n.Common.empty)
                     .foregroundStyle(AppTheme.textTertiary)
                 Label("Day \(lesson.dayNumber)", systemImage: "calendar")
                     .font(.system(size: 12))

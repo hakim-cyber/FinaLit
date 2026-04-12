@@ -684,8 +684,8 @@ final class MainViewModel {
         if s.isOverspending {
             result.append(SmartInsight(
                 type:    .danger,
-                title:   "You're overspending",
-                message: "Your expenses (\(formatCurrency(s.monthlyExpenses))) exceed your income (\(formatCurrency(s.monthlyIncome))) this month.",
+                title:   String(localized: "main.insightOverspending"),
+                message: "\(String(localized: "main.expense")) (\(formatCurrency(s.monthlyExpenses))) \(String(localized: "main.insightOverspending")) (\(formatCurrency(s.monthlyIncome))) \(String(localized: "main.thisMonth")).",
                 icon:    "exclamationmark.triangle.fill",
                 tone:    .danger
             ))
@@ -694,8 +694,8 @@ final class MainViewModel {
         if s.financialStability == .risky {
             result.append(SmartInsight(
                 type:    .danger,
-                title:   "Low emergency fund",
-                message: "Your savings cover less than 1 month of expenses. Aim for at least 3 months.",
+                title:   String(localized: "main.insightLowEmergency"),
+                message: String(localized: "main.insightSavingsCover"),
                 icon:    "exclamationmark.shield.fill",
                 tone:    .danger
             ))
@@ -705,8 +705,8 @@ final class MainViewModel {
         if s.savingsRate < 10 && s.monthlyIncome > 0 {
             result.append(SmartInsight(
                 type:    .warning,
-                title:   "Low savings rate",
-                message: "You're saving \(formatted(s.savingsRate))% of your income. The recommended minimum is 20%.",
+                title:   String(localized: "main.insightLowSavings"),
+                message: "\(String(localized: "main.insightSavingPrefix")) \(formatted(s.savingsRate))% \(String(localized: "main.insightSavingSuffix"))",
                 icon:    "arrow.down.circle.fill",
                 tone:    .warning
             ))
@@ -715,8 +715,8 @@ final class MainViewModel {
         if s.percentage(for: .food) > 35 {
             result.append(SmartInsight(
                 type:    .warning,
-                title:   "High food spending",
-                message: "Food is \(formatted(s.percentage(for: .food)))% of your expenses this month — above the 35% threshold.",
+                title:   String(localized: "main.insightHighFood"),
+                message: "\(String(localized: "main.insightFoodPrefix")) \(formatted(s.percentage(for: .food)))% \(String(localized: "main.insightFoodSuffix"))",
                 icon:    "fork.knife",
                 tone:    .warning
             ))
@@ -725,8 +725,8 @@ final class MainViewModel {
         if s.discretionaryRatio > 0.3 && s.monthlyIncome > 0 {
             result.append(SmartInsight(
                 type:    .warning,
-                title:   "High discretionary spending",
-                message: "Entertainment and shopping account for \(formatted(s.discretionaryRatio * 100))% of your income.",
+                title:   String(localized: "main.insightHighDiscretionary"),
+                message: "\(String(localized: "main.insightEntertainmentPrefix")) \(formatted(s.discretionaryRatio * 100))% \(String(localized: "main.insightEntertainmentSuffix"))",
                 icon:    "bag.fill",
                 tone:    .warning
             ))
@@ -735,8 +735,8 @@ final class MainViewModel {
         if let growth = s.expenseGrowthRate, growth > 20 {
             result.append(SmartInsight(
                 type:    .warning,
-                title:   "Expenses increased",
-                message: "Your spending is up \(formatted(growth))% compared to last month.",
+                title:   String(localized: "main.insightExpensesIncreased"),
+                message: "\(String(localized: "main.insightSpendingUpPrefix")) \(formatted(growth))% \(String(localized: "main.insightSpendingUpSuffix"))",
                 icon:    "arrow.up.right.circle.fill",
                 tone:    .orange
             ))
@@ -748,8 +748,8 @@ final class MainViewModel {
                 let spent = s.amount(for: limit.category)
                 result.append(SmartInsight(
                     type:    .warning,
-                    title:   "\(limit.category.rawValue) budget exceeded",
-                    message: "You spent \(formatCurrency(spent)) — \(formatCurrency(spent - limit.limit)) over your \(formatCurrency(limit.limit)) budget.",
+                    title:   String(localized: .init(stringLiteral: "main.category\(limit.category.rawValue)")) + " " + String(localized: "budget exceeded"),
+                    message: String(format: NSLocalizedString("main.insightOverBudget", comment: ""), formatCurrency(spent), formatCurrency(spent - limit.limit), formatCurrency(limit.limit)),
                     icon:    limit.category.icon,
                     tone:    .orange
                 ))
@@ -760,8 +760,8 @@ final class MainViewModel {
         if s.savingsRate >= 20 {
             result.append(SmartInsight(
                 type:    .positive,
-                title:   "Great savings rate",
-                message: "You're saving \(formatted(s.savingsRate))% of your income — above the recommended 20%. Keep it up.",
+                title:   String(localized: "main.insightGreatSavings"),
+                message: "\(String(localized: "main.insightSavingPrefix")) \(formatted(s.savingsRate))% \(String(localized: "main.insightGreatSavingSuffix"))",
                 icon:    "star.fill",
                 tone:    .success
             ))
@@ -770,8 +770,8 @@ final class MainViewModel {
         if s.financialStability == .stable {
             result.append(SmartInsight(
                 type:    .positive,
-                title:   "Solid emergency fund",
-                message: "Your savings cover more than 3 months of expenses. You're financially stable.",
+                title:   String(localized: "main.insightSolidEmergency"),
+                message: String(localized: "main.insightSolidEmergencyMessage"),
                 icon:    "shield.fill",
                 tone:    .success
             ))
@@ -780,8 +780,8 @@ final class MainViewModel {
         if let growth = s.expenseGrowthRate, growth < -10 {
             result.append(SmartInsight(
                 type:    .positive,
-                title:   "Spending decreased",
-                message: "Your expenses dropped \(formatted(abs(growth)))% from last month. Good discipline.",
+                title:   String(localized: "main.insightSpendingDecreased"),
+                message: "\(String(localized: "main.insightSpendingDropPrefix")) \(formatted(abs(growth)))% \(String(localized: "main.insightSpendingDropSuffix"))",
                 icon:    "arrow.down.right.circle.fill",
                 tone:    .success
             ))
@@ -791,8 +791,8 @@ final class MainViewModel {
         if s.monthlyIncome == 0 && isCurrentMonth {
             result.append(SmartInsight(
                 type:    .info,
-                title:   "No income logged",
-                message: "Add your income transactions to get accurate savings rate and insights.",
+                title:   String(localized: "main.insightNoIncome"),
+                message: String(localized: "main.insightNoIncomeDesc"),
                 icon:    "plus.circle.fill",
                 tone:    .info
             ))
@@ -801,8 +801,8 @@ final class MainViewModel {
         if transactions.isEmpty {
             result.append(SmartInsight(
                 type:    .info,
-                title:   "Start tracking",
-                message: "Add your first transaction to see your financial picture.",
+                title:   String(localized: "main.insightStartTracking"),
+                message: String(localized: "main.insightStartTrackingDesc"),
                 icon:    "plus.circle.fill",
                 tone:    .info
             ))

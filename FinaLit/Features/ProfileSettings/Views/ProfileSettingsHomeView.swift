@@ -58,7 +58,7 @@ struct ProfileSettingsHomeView: View {
                             .overlay(ProfileSettingsPalette.border)
 
                         SettingsActionRow(
-                            title: "Financial Profile",
+                            title: String(localized: "profile.financialProfile"),
                             subtitle: "Income, expenses, savings, debt, risk",
                             icon: "chart.line.uptrend.xyaxis",
                             action: { coordinator.push(.financialProfile) }
@@ -155,43 +155,43 @@ struct ProfileSettingsHomeView: View {
                 .padding(.bottom, 36)
             }
         }
-        .navigationTitle("Profile Settings")
+        .navigationTitle(L10n.Profile.profileSettings)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Done") {
+                Button(L10n.Common.done) {
                     dismiss()
                 }
                 .font(.system(size: 13, weight: .semibold))
             }
         }
-        .alert("Sign out?", isPresented: $showSignOutConfirmation) {
-            Button("Sign Out", role: .destructive) {
+        .alert(L10n.Profile.signOut2, isPresented: $showSignOutConfirmation) {
+            Button(L10n.Profile.signOut, role: .destructive) {
                 authViewModel.signOut()
                 dismiss()
             }
-            Button("Cancel", role: .cancel) {}
+            Button(L10n.Profile.cancel, role: .cancel) {}
         } message: {
-            Text("You can log back in anytime with your email and password.")
+            Text(L10n.Profile.youCanLogBackInAnytimeWithYourEmailAndPassword)
         }
-        .alert("Delete account?", isPresented: $showDeleteConfirmation) {
-            Button("Continue", role: .destructive) {
+        .alert(L10n.Profile.deleteAccount, isPresented: $showDeleteConfirmation) {
+            Button(L10n.Profile.continueAction, role: .destructive) {
                 showDeleteFinalConfirmation = true
             }
-            Button("Cancel", role: .cancel) {}
+            Button(L10n.Profile.cancel, role: .cancel) {}
         } message: {
-            Text("This action is permanent and cannot be undone.")
+            Text(L10n.Profile.thisActionIsPermanentAndCannotBeUndone)
         }
-        .alert("Final confirmation", isPresented: $showDeleteFinalConfirmation) {
-            Button("Delete Forever", role: .destructive) {
+        .alert(L10n.Profile.finalConfirmation, isPresented: $showDeleteFinalConfirmation) {
+            Button(L10n.Profile.deleteForever, role: .destructive) {
                 deleteAccount()
             }
-            Button("Cancel", role: .cancel) {}
+            Button(L10n.Profile.cancel, role: .cancel) {}
         } message: {
-            Text("All account data will be permanently removed.")
+            Text(L10n.Profile.allAccountDataWillBePermanentlyRemoved)
         }
         .alert(feedbackTitle, isPresented: $showFeedback) {
-            Button("OK", role: .cancel) {
+            Button(L10n.Auth.ok, role: .cancel) {
                 authViewModel.clearMessages()
             }
         } message: {
@@ -312,7 +312,7 @@ struct ProfileSettingsHomeView: View {
                 ProfileSettingsPalette.background.ignoresSafeArea()
 
                 VStack(alignment: .leading, spacing: 14) {
-                    Text("For security, confirm your password to continue account deletion.")
+                    Text(L10n.Profile.forSecurityConfirmYourPasswordToContinueAccountDeletion)
                         .font(.system(size: 13))
                         .foregroundStyle(ProfileSettingsPalette.muted)
 
@@ -336,11 +336,11 @@ struct ProfileSettingsHomeView: View {
                 }
                 .padding(20)
             }
-            .navigationTitle("Confirm Password")
+            .navigationTitle(L10n.Profile.confirmPassword)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") {
+                    Button(L10n.Profile.cancel) {
                         showReauthSheet = false
                         reauthPassword = ""
                     }

@@ -42,10 +42,10 @@ struct RegisterView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 28) {
                     VStack(spacing: 10) {
-                        Text("Create your FinaLit account")
+                        Text(L10n.Auth.createYourFinalitAccount)
                             .font(.system(size: 32, weight: .semibold))
                             .foregroundStyle(AppTheme.textPrimary)
-                        Text("Start budgeting, build goals, and organize your financial life in one place.")
+                        Text(L10n.Auth.startBudgetingBuildGoalsAndOrganizeYourFinancialLifeInOnePlace)
                             .font(AppTheme.Typography.body)
                             .foregroundStyle(AuthPalette.muted)
                             .multilineTextAlignment(.center)
@@ -62,36 +62,36 @@ struct RegisterView: View {
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Name")
+                            Text(L10n.Auth.name)
                                 .appFieldLabelStyle()
-                            TextField("Enter your name", text: $viewModel.name)
+                            TextField(L10n.Auth.enterYourName, text: $viewModel.name)
                                 .authInputStyle()
 
                             if viewModel.name.isEmpty == false && trimmedName.isEmpty {
-                                Text("Name cannot be only spaces.")
+                                Text(L10n.Auth.nameCannotBeOnlySpaces)
                                     .font(AppTheme.Typography.detail)
                                     .foregroundStyle(AppTheme.danger)
                             }
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Email")
+                            Text(L10n.Auth.email)
                                 .appFieldLabelStyle()
-                            TextField("Enter your email", text: $viewModel.email)
+                            TextField(L10n.Auth.enterYourEmail, text: $viewModel.email)
                                 .textInputAutocapitalization(.never)
                                 .keyboardType(.emailAddress)
                                 .autocorrectionDisabled()
                                 .authInputStyle()
 
                             if !trimmedEmail.isEmpty && !isEmailValid {
-                                Text("Please enter a valid email address.")
+                                Text(L10n.Auth.pleaseEnterAValidEmailAddress)
                                     .font(AppTheme.Typography.detail)
                                     .foregroundStyle(AppTheme.danger)
                             }
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Password")
+                            Text(L10n.Auth.password)
                                 .appFieldLabelStyle()
                             SecureField("Enter your password", text: $viewModel.password)
                                 .textInputAutocapitalization(.never)
@@ -99,14 +99,14 @@ struct RegisterView: View {
                                 .authInputStyle()
 
                             if !viewModel.password.isEmpty && !isPasswordValid {
-                                Text("Password must be at least 8 characters.")
+                                Text(L10n.Auth.passwordMustBeAtLeast8Characters)
                                     .font(AppTheme.Typography.detail)
                                     .foregroundStyle(AppTheme.danger)
                             }
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Confirm password")
+                            Text(L10n.Auth.confirmPassword)
                                 .appFieldLabelStyle()
                             SecureField("Confirm your password", text: $viewModel.confirmPassword)
                                 .textInputAutocapitalization(.never)
@@ -114,7 +114,7 @@ struct RegisterView: View {
                                 .authInputStyle()
 
                             if !viewModel.confirmPassword.isEmpty && !doPasswordsMatch {
-                                Text("Passwords do not match.")
+                                Text(L10n.Auth.passwordsDoNotMatch)
                                     .font(AppTheme.Typography.detail)
                                     .foregroundStyle(AppTheme.danger)
                             }
@@ -166,7 +166,7 @@ struct RegisterView: View {
                     VStack(spacing: 14) {
                         AuthLegalLinksRow()
 
-                        Button("Already have a FinaLit account? Login") {
+                        Button(L10n.Auth.alreadyHaveAFinalitAccountLogin) {
                             coordinator.pop()
                         }
                         .font(.system(size: 13, weight: .semibold))

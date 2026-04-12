@@ -16,7 +16,7 @@ struct OnboardingSpendingWeaknessesView: View {
             subtitle: "Pick up to \(viewModel.maxWeaknessSelections).",
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
-            primaryTitle: "Continue",
+            primaryTitle: String(localized: "profile.continueAction"),
             isPrimaryEnabled: viewModel.isStep10Valid,
             onPrimaryTap: {
                 if viewModel.validateStep10Weaknesses() {

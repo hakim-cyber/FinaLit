@@ -14,7 +14,7 @@ struct OnboardingDebtEntryCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 10) {
-                TextField("Debt account name", text: $accountName)
+                TextField(L10n.Onboarding.debtAccountName, text: $accountName)
                     .textInputAutocapitalization(.words)
                     .onboardingInputStyle()
 
@@ -34,7 +34,7 @@ struct OnboardingDebtEntryCard: View {
                 }
             }
 
-            TextField("Debt amount", text: $amountText)
+            TextField(L10n.Onboarding.debtAmount, text: $amountText)
                 .keyboardType(.decimalPad)
                 .onboardingInputStyle()
         }

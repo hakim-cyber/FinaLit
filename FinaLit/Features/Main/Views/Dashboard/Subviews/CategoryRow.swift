@@ -29,7 +29,7 @@ struct CategoryRow: View {
                         .font(AppTheme.Typography.compactRowIcon)
                         .foregroundStyle(AppTheme.tint(for: category.tone))
                         .frame(width: 20)
-                    Text(category.rawValue)
+                    Text(category.localizedName)
                         .font(AppTheme.Typography.body)
                         .foregroundStyle(AppTheme.textPrimary)
                 }
