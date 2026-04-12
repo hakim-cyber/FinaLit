@@ -103,7 +103,6 @@
 "aichat.educationalGuidanceOnlyNotProfessionalFinancialAdvice" = "Yalnız təhsil məqsədlidir. Peşəkar maliyyə məsləhəti deyil.";
 "aichat.askAboutMoneyDecisions" = "Pul qərarları ilə bağlı soruş";
 "aichat.askAboutSpendingBudgetsDebtOrGoals" = "Xərclər, büdcə, borc və ya hədəflər barədə soruş...";
-"aichat.advisor" = "MƏSLƏHƏTÇİ";
 "aichat.allowAiDataSharing" = "Süni intellektə icazə verilsin?";
 
 /* --- Profile --- */
@@ -369,3 +368,23 @@
 "learning.quizzesDone" = "Həll Edilmiş Sınaqlar";
 "learning.dayStreak" = "Ardıcıl Günlər";
 "learning.avgQuizScore" = "Ortalama Sınaq Nəticəsi";
+
+"aichat.dataSharingEnabled" = "AI məlumat paylaşımı: Açıq";
+"aichat.dataSharingOff" = "AI məlumat paylaşımı: Bağlı";
+"aichat.turnOff" = "Bağla";
+"aichat.review" = "Gözdən keçir";
+"aichat.tryExample" = "Yoxlayın: \"Niyə bu ay büdcəmi aşıram?\"";
+"aichat.orExample" = "Və ya: \"Hansı hədəfə öncəlik verməliyəm?\"";
+"aichat.you" = "SİZ";
+"aichat.advisor" = "MƏSLƏHƏTÇİ";
+"aichat.thinking" = "Düşünür...";
+"aichat.errorMissingData" = "İstifadəçi məlumatları yoxdur. Hesabdan çıxıb yenidən daxil olun.";
+"aichat.errorNeedConsent" = "Mesajlaşmaq üçün AI təhlilinə icazə verin.";
+
+"main.deleteGoal2" = "Hədəfi sil";
+"main.delete" = "Sil";
+
+"main.deleteTransaction2" = "Tranzaksiyanı sil";
+"main.deleteTransaction" = "Tranzaksiyanı sil";
+
+"profile.deleteAccount" = "Hesabı sil";

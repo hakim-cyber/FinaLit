@@ -54,7 +54,7 @@ final class ChatViewModel {
         syncConsentStateForCurrentUser()
 
         guard let uid = session.user?.id else {
-            errorMessage = localized("User data is missing. Please log out and log in again.")
+            errorMessage = localized(String(localized: "aichat.errorMissingData"))
             return
         }
 
@@ -91,7 +91,7 @@ final class ChatViewModel {
         let analysis = contextBuilder.analyzeMessage(text, preferredLanguage: responseLanguage)
 
         guard !analysis.requiresRemoteReply || hasAIDataSharingConsent else {
-            errorMessage = localized("Allow AI data sharing before sending messages.")
+            errorMessage = localized(String(localized: "aichat.errorNeedConsent"))
             return
         }
 
@@ -241,7 +241,7 @@ final class ChatViewModel {
         consentOwnerUID = uid
         UserDefaults.standard.set(hasConsent, forKey: consentKey(uid: uid))
 
-        if hasConsent && errorMessage == localized("Allow AI data sharing before sending messages.") {
+        if hasConsent && errorMessage == localized(String(localized: "aichat.errorNeedConsent")) {
             errorMessage = nil
         }
     }
@@ -420,7 +420,7 @@ enum ChatViewModelError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .userMissing:
-            return "User data is missing. Please log out and log in again."
+            return String(localized: "aichat.errorMissingData")
         }
     }
 }

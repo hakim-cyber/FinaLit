@@ -142,13 +142,13 @@ struct ChatView: View {
                 .overlay(AppTheme.softBorder(for: .warning))
 
             HStack(spacing: 10) {
-                Text(viewModel.hasAIDataSharingConsent ? "AI data sharing: Enabled" : "AI data sharing: Off")
+                Text(viewModel.hasAIDataSharingConsent ? String(localized: "aichat.dataSharingEnabled") : String(localized: "aichat.dataSharingOff"))
                     .font(AppTheme.Typography.badge)
                     .foregroundStyle(ChatPalette.warningText)
 
                 Spacer()
 
-                Button(viewModel.hasAIDataSharingConsent ? "Turn Off" : "Review") {
+                Button(viewModel.hasAIDataSharingConsent ? String(localized: "aichat.turnOff") : String(localized: "aichat.review")) {
                     if viewModel.hasAIDataSharingConsent {
                         viewModel.setAIDataSharingConsent(false)
                     } else {
@@ -168,11 +168,11 @@ struct ChatView: View {
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(AppTheme.textPrimary)
 
-            Text("Try: \"Why am I overspending this month?\"")
+            Text(String(localized: "aichat.tryExample"))
                 .font(AppTheme.Typography.caption)
                 .foregroundStyle(ChatPalette.muted)
 
-            Text("Or: \"Which goal should I focus on first?\"")
+            Text(String(localized: "aichat.orExample"))
                 .font(AppTheme.Typography.caption)
                 .foregroundStyle(ChatPalette.muted)
         }
@@ -241,7 +241,7 @@ struct ChatView: View {
             if isUser { Spacer(minLength: 36) }
 
             VStack(alignment: .leading, spacing: 8) {
-                Text(isUser ? "YOU" : "ADVISOR")
+                Text(isUser ? String(localized: "aichat.you") : String(localized: "aichat.advisor"))
                     .font(AppTheme.Typography.badge)
                     .foregroundStyle(isUser ? AppTheme.inverseText.opacity(0.9) : ChatPalette.accent)
 
@@ -274,7 +274,7 @@ struct ChatView: View {
                     .font(AppTheme.Typography.badge)
                     .foregroundStyle(ChatPalette.accent)
 
-                Text(hasText ? (displayText ?? "") : "Thinking...")
+                Text(hasText ? (displayText ?? "") : String(localized: "aichat.thinking"))
                     .font(.system(size: hasText ? 15 : 14))
                     .foregroundStyle(hasText ? ChatPalette.messageText : ChatPalette.muted)
                     .lineSpacing(4)

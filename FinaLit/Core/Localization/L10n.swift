@@ -98,6 +98,17 @@ public enum L10n {
     }
 
     public enum AiChat {
+        public static let dataSharingEnabled: LocalizedStringKey = "aichat.dataSharingEnabled"
+        public static let dataSharingOff: LocalizedStringKey = "aichat.dataSharingOff"
+        public static let turnOff: LocalizedStringKey = "aichat.turnOff"
+        public static let review: LocalizedStringKey = "aichat.review"
+        public static let tryExample: LocalizedStringKey = "aichat.tryExample"
+        public static let orExample: LocalizedStringKey = "aichat.orExample"
+        public static let you: LocalizedStringKey = "aichat.you"
+        public static let advisor: LocalizedStringKey = "aichat.advisor"
+        public static let thinking: LocalizedStringKey = "aichat.thinking"
+        public static let errorMissingData: LocalizedStringKey = "aichat.errorMissingData"
+        public static let errorNeedConsent: LocalizedStringKey = "aichat.errorNeedConsent"
         public static let clear: LocalizedStringKey = "aichat.clear"
         public static let notNow: LocalizedStringKey = "aichat.notNow"
         public static let allowSend: LocalizedStringKey = "aichat.allowSend"
@@ -106,11 +117,11 @@ public enum L10n {
         public static let educationalGuidanceOnlyNotProfessionalFinancialAdvice: LocalizedStringKey = "aichat.educationalGuidanceOnlyNotProfessionalFinancialAdvice"
         public static let askAboutMoneyDecisions: LocalizedStringKey = "aichat.askAboutMoneyDecisions"
         public static let askAboutSpendingBudgetsDebtOrGoals: LocalizedStringKey = "aichat.askAboutSpendingBudgetsDebtOrGoals"
-        public static let advisor: LocalizedStringKey = "aichat.advisor"
         public static let allowAiDataSharing: LocalizedStringKey = "aichat.allowAiDataSharing"
     }
 
     public enum Profile {
+        public static let deleteAccount: LocalizedStringKey = "profile.deleteAccount"
         public static let financialProfile: LocalizedStringKey = "profile.financialProfile"
         public static let updateRealWorldNumbers: LocalizedStringKey = "profile.updateRealWorldNumbers"
         public static let saveChanges: LocalizedStringKey = "profile.saveChanges"
@@ -146,11 +157,14 @@ public enum L10n {
         public static let country: LocalizedStringKey = "profile.country"
         public static let employmentStatus: LocalizedStringKey = "profile.employmentStatus"
         public static let signOut2: LocalizedStringKey = "profile.signOut2"
-        public static let deleteAccount: LocalizedStringKey = "profile.deleteAccount"
         public static let finalConfirmation: LocalizedStringKey = "profile.finalConfirmation"
     }
 
     public enum Main {
+        public static let deleteTransaction2: LocalizedStringKey = "main.deleteTransaction2"
+        public static let deleteTransaction: LocalizedStringKey = "main.deleteTransaction"
+        public static let deleteGoal2: LocalizedStringKey = "main.deleteGoal2"
+        public static let delete: LocalizedStringKey = "main.delete"
         public static let insightGreatSavingSuffix: LocalizedStringKey = "main.insightGreatSavingSuffix"
         public static let insightOverBudget: LocalizedStringKey = "main.insightOverBudget"
         public static let insightSolidEmergencyMessage: LocalizedStringKey = "main.insightSolidEmergencyMessage"
@@ -245,7 +259,6 @@ public enum L10n {
         public static let stillNeeded: LocalizedStringKey = "main.stillNeeded"
         public static let deleteGoal: LocalizedStringKey = "main.deleteGoal"
         public static let goal: LocalizedStringKey = "main.goal"
-        public static let delete: LocalizedStringKey = "main.delete"
         public static let thisCannotBeUndone: LocalizedStringKey = "main.thisCannotBeUndone"
         public static let newGoal: LocalizedStringKey = "main.newGoal"
         public static let goals: LocalizedStringKey = "main.goals"
@@ -291,7 +304,6 @@ public enum L10n {
         public static let income: LocalizedStringKey = "main.income"
         public static let expenses: LocalizedStringKey = "main.expenses"
         public static let total: LocalizedStringKey = "main.total"
-        public static let deleteTransaction: LocalizedStringKey = "main.deleteTransaction"
         public static let transactionNotFound: LocalizedStringKey = "main.transactionNotFound"
         public static let transaction: LocalizedStringKey = "main.transaction"
         public static let setMonthlyLimitsPerCategory: LocalizedStringKey = "main.setMonthlyLimitsPerCategory"
@@ -303,9 +315,7 @@ public enum L10n {
         public static let limit: LocalizedStringKey = "main.limit"
         public static let limit2: LocalizedStringKey = "main.limit2"
         public static let noLimit: LocalizedStringKey = "main.noLimit"
-        public static let deleteGoal2: LocalizedStringKey = "main.deleteGoal2"
         public static let selectMonth: LocalizedStringKey = "main.selectMonth"
-        public static let deleteTransaction2: LocalizedStringKey = "main.deleteTransaction2"
     }
 
     public enum Onboarding {

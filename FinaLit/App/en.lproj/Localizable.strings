@@ -102,7 +102,6 @@
 "aichat.educationalGuidanceOnlyNotProfessionalFinancialAdvice" = "Educational guidance only. Not professional financial advice.";
 "aichat.askAboutMoneyDecisions" = "Ask about money decisions";
 "aichat.askAboutSpendingBudgetsDebtOrGoals" = "Ask about spending, budgets, debt, or goals...";
-"aichat.advisor" = "ADVISOR";
 "aichat.allowAiDataSharing" = "Allow AI data sharing?";
 
 /* --- Profile --- */
@@ -369,3 +368,23 @@
 "learning.quizzesDone" = "Quizzes Done";
 "learning.dayStreak" = "Day Streak";
 "learning.avgQuizScore" = "Avg Quiz Score";
+
+"aichat.dataSharingEnabled" = "AI data sharing: Enabled";
+"aichat.dataSharingOff" = "AI data sharing: Off";
+"aichat.turnOff" = "Turn Off";
+"aichat.review" = "Review";
+"aichat.tryExample" = "Try: \"Why am I overspending this month?\"";
+"aichat.orExample" = "Or: \"Which goal should I focus on first?\"";
+"aichat.you" = "YOU";
+"aichat.advisor" = "ADVISOR";
+"aichat.thinking" = "Thinking...";
+"aichat.errorMissingData" = "User data is missing. Please log out and log in again.";
+"aichat.errorNeedConsent" = "Allow AI data sharing before sending messages.";
+
+"main.deleteGoal2" = "Delete Goal";
+"main.delete" = "Delete";
+
+"main.deleteTransaction2" = "Delete Transaction";
+"main.deleteTransaction" = "Delete Transaction";
+
+"profile.deleteAccount" = "Delete Account";
