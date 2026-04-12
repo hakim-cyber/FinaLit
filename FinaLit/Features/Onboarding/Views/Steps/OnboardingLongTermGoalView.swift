@@ -10,11 +10,11 @@ struct OnboardingLongTermGoalView: View {
     @Environment(Coordinator<OnboardingPages>.self) private var coordinator
 
     private let suggestions = [
-        "Buy a home",
-        "Reach financial independence",
-        "Build a 6-figure portfolio",
-        "Start a business",
-        "Retire early"
+        String(localized: "onboarding.goalBuyHome"),
+        String(localized: "onboarding.goalFinancialIndependence"),
+        String(localized: "onboarding.goalPortfolio"),
+        String(localized: "onboarding.goalStartBusiness"),
+        String(localized: "onboarding.goalRetireEarly")
     ]
 
     var body: some View {
@@ -22,8 +22,8 @@ struct OnboardingLongTermGoalView: View {
 
         OnboardingStepScaffold(
             page: .longTermGoal,
-            title: "Your long-term goal",
-            subtitle: "This guides strategic recommendations over time.",
+            title: String(localized: "onboarding.longTermGoal"),
+            subtitle: String(localized: "onboarding.longTermSubtitle"),
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
             primaryTitle: String(localized: "profile.continueAction"),

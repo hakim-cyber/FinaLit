@@ -10,9 +10,9 @@ struct OnboardingHobbiesView: View {
     @Environment(Coordinator<OnboardingPages>.self) private var coordinator
 
     private let hobbies = [
-        "Gaming 🎮", "Music 🎵", "Cooking 🍳", "Fitness 💪",
-        "Reading 📚", "Travel ✈️", "Photography 📷", "Fashion 👗",
-        "Movies 🎬", "Sports ⚽", "Art 🎨", "Other ✏️"
+        String(localized: "onboarding.hobbyGaming"), String(localized: "onboarding.hobbyMusic"), String(localized: "onboarding.hobbyCooking"), String(localized: "onboarding.hobbyFitness"),
+        String(localized: "onboarding.hobbyReading"), String(localized: "onboarding.hobbyTravel"), String(localized: "onboarding.hobbyPhotography"), String(localized: "onboarding.hobbyFashion"),
+        String(localized: "onboarding.hobbyMovies"), String(localized: "onboarding.hobbySports"), String(localized: "onboarding.hobbyArt"), String(localized: "onboarding.hobbyOther")
     ]
 
     var body: some View {
@@ -20,8 +20,8 @@ struct OnboardingHobbiesView: View {
 
         OnboardingStepScaffold(
             page: .hobbies,
-            title: "What do you enjoy outside money?",
-            subtitle: "Choose up to \(viewModel.maxHobbySelections), or add your own.",
+            title: String(localized: "onboarding.whatDoYouEnjoy"),
+            subtitle: String(format: NSLocalizedString("onboarding.pickUpToHobbies", comment: ""), viewModel.maxHobbySelections),
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
             primaryTitle: String(localized: "profile.continueAction"),
@@ -33,13 +33,13 @@ struct OnboardingHobbiesView: View {
             }
         ) {
             VStack(alignment: .leading, spacing: 12) {
-                Text("\(viewModel.normalizedHobbies.count)/\(viewModel.maxHobbySelections) selected")
+                Text(String(format: NSLocalizedString("onboarding.selectedCount", comment: ""), viewModel.normalizedHobbies.count, viewModel.maxHobbySelections))
                     .font(.system(size: 11))
                     .foregroundStyle(OnboardingPalette.muted)
 
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 130), spacing: 10)], spacing: 10) {
                     ForEach(hobbies, id: \.self) { hobby in
-                        if hobby == "Other ✏️" {
+                        if hobby == String(localized: "onboarding.hobbyOther") {
                             ChipButton(
                                 title: hobby,
                                 icon: "",

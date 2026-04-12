@@ -445,3 +445,74 @@
 "profile.riskLowDesc" = "Gəlirdənsə riskin az olmağına üstünlük verirəm";
 "profile.riskMediumDesc" = "Daha çox gəlir üçün biraz risk almaq olar";
 "profile.riskHighDesc" = "Yüksək risklərlə böyük gəlir hədəfləyirəm";
+
+"onboarding.haveDebt" = "Hazırda borcunuz var mı?";
+"onboarding.whatIsEmploymentStatus" = "Məşğulluq statusunuz nədir?";
+"onboarding.hobbyOther" = "Digər ✏️";
+"onboarding.hobbyFitness" = "İdman 💪";
+"onboarding.hobbyFashion" = "Moda 👗";
+"onboarding.hobbyCooking" = "Aşpazlıq 🍳";
+"onboarding.hobbyMovies" = "Filmlər 🎬";
+"onboarding.hobbyMusic" = "Musiqi 🎵";
+"onboarding.hobbyTravel" = "Səyahət ✈️";
+"onboarding.whatDoYouEnjoy" = "Puldan əlavə nədən zövq alırsınız?";
+"onboarding.hobbySports" = "İdman ⚽";
+"onboarding.hobbyReading" = "Mütaliə 📚";
+"onboarding.hobbyArt" = "İncəsənət 🎨";
+"onboarding.hobbyGaming" = "Oyunlar 🎮";
+"onboarding.hobbyPhotography" = "Fotoqrafiya 📷";
+"onboarding.rateKnowledge" = "Maliyyə biliyinizi necə qiymətləndirirsiniz?";
+"onboarding.knowledgeBeginner" = "Başlanğıc";
+"onboarding.knowledgeBeginnerDesc" = "Sadə və praktik addımlar";
+"onboarding.knowledgeIntermediate" = "Orta";
+"onboarding.knowledgeIntermediateDesc" = "Daha ətraflı və balanslı təhlil";
+"onboarding.knowledgeAdvanced" = "İrəli";
+"onboarding.knowledgeAdvancedDesc" = "Daha detallı və analitik yanaşma";
+"onboarding.finishSetup" = "Quraşdırmanı Bitir";
+"onboarding.longTermGoal" = "Uzunmüddətli məqsədiniz";
+"onboarding.goalRetireEarly" = "Erkən təqaüd";
+"onboarding.goalFinancialIndependence" = "Maliyyə müstəqilliyinə çatmaq";
+"onboarding.goalStartBusiness" = "Biznesə başlamaq";
+"onboarding.goalPortfolio" = "Böyük portfel yaratmaq";
+"onboarding.goalBuyHome" = "Ev almaq";
+"onboarding.tellUsAboutYou" = "Özünüz haqqında məlumat verin";
+"onboarding.countryGermany" = "Almaniya";
+"onboarding.countryAzerbaijan" = "Azərbaycan";
+"onboarding.countryUS" = "Amerika Birləşmiş Ştatları";
+"onboarding.countryUK" = "Birləşmiş Krallıq";
+"onboarding.countryCanada" = "Kanada";
+"onboarding.countryTurkey" = "Türkiyə";
+"onboarding.riskInterest" = "Risk və İnvestisiya marağı";
+"onboarding.onboardingRiskLow" = "Aşağı";
+"onboarding.onboardingRiskMedium" = "Orta";
+"onboarding.onboardingRiskHigh" = "Yüksək";
+"onboarding.onboardingRiskLowDesc" = "Təhlükəsizlik ön planda, sabit irəliləyiş";
+"onboarding.onboardingRiskMediumDesc" = "Balanslaşdırılmış risk və böyümə";
+"onboarding.onboardingRiskHighDesc" = "Yüksək potensial üçün yüksək dəyişkənlik";
+"onboarding.savingsEmergency" = "Yığım və fövqəladə hal fondu";
+"onboarding.overspendMost" = "Ən çox hara xərcləyirsiniz?";
+"onboarding.creditCard" = "Kredit Kartı";
+
+"onboarding.debtSubtitle" = "Ödəniş strategiyasını yığım hədəfləri ilə balanslaşdırmaq üçün bundan istifadə edirik.";
+"onboarding.personalInfoSubtitle" = "Bunu maliyyə köməkçinizi fərdiləşdirmək üçün istifadə edirik.";
+
+"onboarding.stepTracker" = "ADDIM %1$d / %2$d";
+
+"onboarding.employmentSubtitle" = "Bu bizə realist aylıq nağd pul dövriyyəsini təxmin etməyə kömək edir.";
+
+"onboarding.savingsSubtitle" = "Bu günkü təhlükəsizlik yastığınızın qısa xülasəsi.";
+"onboarding.emergencyMonths" = "%1$d ay";
+"onboarding.knowledgeSubtitle" = "Məsləhətlərin dərinliyini və dilini buna uyğun tənzimləyəcəyik.";
+"onboarding.shortTermGoal" = "Qısa müddətli məqsədiniz";
+"onboarding.shortTermSubtitle" = "Tez birini seçin və ya özünüz yazın.";
+"onboarding.suggestionEmergencyFund" = "%1$@1.000 fövqəladə hal fondu yaratmaq";
+"onboarding.suggestionPayOffCreditCard" = "Kredit kartını ödəmək";
+"onboarding.suggestionSaveLaptop" = "Yeni noutbuk üçün pul yığmaq";
+"onboarding.suggestionSaveTrip" = "Səyahət üçün pul yığmaq";
+"onboarding.suggestionReduceOverspending" = "Aylıq həddindən artıq xərcləməni azaltmaq";
+"onboarding.longTermSubtitle" = "Bu, zamanla strateji tövsiyələri yönləndirir.";
+"onboarding.pickUpToWeakness" = "Maksimum %1$d dənə seçin.";
+"onboarding.pickUpToHobbies" = "Maksimum %1$d dənə seçin və ya özünüz əlavə edin.";
+"onboarding.selectedCount" = "%1$d/%2$d seçildi";
+
+"onboarding.riskSubtitle" = "Tövsiyələri sizin risk səviyyənizə uyğunlaşdıracağıq.";

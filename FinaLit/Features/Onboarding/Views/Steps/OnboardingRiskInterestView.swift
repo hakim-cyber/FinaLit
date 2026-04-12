@@ -14,8 +14,8 @@ struct OnboardingRiskInterestView: View {
 
         OnboardingStepScaffold(
             page: .riskAndInvesting,
-            title: "Risk and investing interest",
-            subtitle: "We'll keep recommendations aligned with your comfort level.",
+            title: String(localized: "onboarding.riskInterest"),
+            subtitle: String(localized: "onboarding.riskSubtitle"),
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
             primaryTitle: String(localized: "profile.continueAction"),
@@ -34,8 +34,8 @@ struct OnboardingRiskInterestView: View {
 
                 VStack(spacing: 10) {
                     RiskSelectionCard(
-                        title: "Low",
-                        subtitle: "Safety first, steady progress",
+                        title: String(localized: "onboarding.onboardingRiskLow"),
+                        subtitle: String(localized: "onboarding.onboardingRiskLowDesc"),
                         isSelected: viewModel.riskTolerance == .low,
                         tint: .green
                     ) {
@@ -44,8 +44,8 @@ struct OnboardingRiskInterestView: View {
                     }
 
                     RiskSelectionCard(
-                        title: "Medium",
-                        subtitle: "Balanced risk and growth",
+                        title: String(localized: "onboarding.onboardingRiskMedium"),
+                        subtitle: String(localized: "onboarding.onboardingRiskMediumDesc"),
                         isSelected: viewModel.riskTolerance == .medium,
                         tint: .orange
                     ) {
@@ -54,8 +54,8 @@ struct OnboardingRiskInterestView: View {
                     }
 
                     RiskSelectionCard(
-                        title: "High",
-                        subtitle: "Higher volatility for higher potential",
+                        title: String(localized: "onboarding.onboardingRiskHigh"),
+                        subtitle: String(localized: "onboarding.onboardingRiskHighDesc"),
                         isSelected: viewModel.riskTolerance == .high,
                         tint: .red
                     ) {

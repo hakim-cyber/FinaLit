@@ -27,31 +27,12 @@ struct OnboardingStepScaffold<Content: View>: View {
                     VStack(alignment: .leading, spacing: 20) {
                         VStack(spacing: 14) {
                             ZStack {
-                                Text("STEP \(page.stepNumber) OF \(OnboardingPages.totalSteps)")
+                                Text(String(format: NSLocalizedString("onboarding.stepTracker", comment: ""), page.stepNumber, OnboardingPages.totalSteps))
                                     .font(AppTheme.Typography.badge)
                                     .foregroundStyle(OnboardingPalette.muted)
                                     .frame(maxWidth: .infinity)
 
-                                HStack {
-                                    if page.stepNumber > 1 {
-                                        Button {
-                                            coordinator.pop()
-                                        } label: {
-                                            Image(systemName: "chevron.left")
-                                                .font(.system(size: 13, weight: .semibold))
-                                                .foregroundStyle(AppTheme.textPrimary)
-                                                .frame(width: 34, height: 34)
-                                                .background(OnboardingPalette.surface, in: RoundedRectangle(cornerRadius: 10))
-                                                .overlay(
-                                                    RoundedRectangle(cornerRadius: 10)
-                                                        .stroke(OnboardingPalette.border, lineWidth: 1)
-                                                )
-                                        }
-                                        .buttonStyle(.plain)
-                                    }
-
-                                    Spacer()
-                                }
+                                
                             }
 
                             ProgressView(value: Double(page.stepNumber), total: Double(OnboardingPages.totalSteps))

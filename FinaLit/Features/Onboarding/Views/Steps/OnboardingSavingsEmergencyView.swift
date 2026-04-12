@@ -14,8 +14,8 @@ struct OnboardingSavingsEmergencyView: View {
 
         OnboardingStepScaffold(
             page: .savingsAndEmergencyFund,
-            title: "Savings and emergency buffer",
-            subtitle: "A quick view of your safety net today.",
+            title: String(localized: "onboarding.savingsEmergency"),
+            subtitle: String(localized: "onboarding.savingsSubtitle"),
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
             primaryTitle: String(localized: "profile.continueAction"),
@@ -46,7 +46,7 @@ struct OnboardingSavingsEmergencyView: View {
                             .foregroundStyle(OnboardingPalette.muted)
                         Spacer()
                         Stepper(value: $viewModel.emergencyFundMonths, in: 0...24) {
-                            Text("\(viewModel.emergencyFundMonths) months")
+                            Text(String(format: NSLocalizedString("onboarding.emergencyMonths", comment: ""), viewModel.emergencyFundMonths))
                                 .font(.system(size: 13, weight: .semibold))
                                 .foregroundStyle(AppTheme.textPrimary)
                         }

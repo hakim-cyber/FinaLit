@@ -12,8 +12,8 @@ struct OnboardingDebtView: View {
     var body: some View {
         OnboardingStepScaffold(
             page: .debt,
-            title: "Do you currently have debt?",
-            subtitle: "We use this to balance payoff strategy with savings goals.",
+            title: String(localized: "onboarding.haveDebt"),
+            subtitle: String(localized: "onboarding.debtSubtitle"),
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
             primaryTitle: String(localized: "profile.continueAction"),

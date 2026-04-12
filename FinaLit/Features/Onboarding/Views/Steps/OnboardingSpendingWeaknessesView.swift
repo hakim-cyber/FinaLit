@@ -12,8 +12,8 @@ struct OnboardingSpendingWeaknessesView: View {
     var body: some View {
         OnboardingStepScaffold(
             page: .spendingWeaknesses,
-            title: "Where do you overspend most?",
-            subtitle: "Pick up to \(viewModel.maxWeaknessSelections).",
+            title: String(localized: "onboarding.overspendMost"),
+            subtitle: String(format: NSLocalizedString("onboarding.pickUpToWeakness", comment: ""), viewModel.maxWeaknessSelections),
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
             primaryTitle: String(localized: "profile.continueAction"),
@@ -25,7 +25,7 @@ struct OnboardingSpendingWeaknessesView: View {
             }
         ) {
             VStack(alignment: .leading, spacing: 10) {
-                Text("\(viewModel.spendingWeaknesses.count)/\(viewModel.maxWeaknessSelections) selected")
+                Text(String(format: NSLocalizedString("onboarding.selectedCount", comment: ""), viewModel.spendingWeaknesses.count, viewModel.maxWeaknessSelections))
                     .font(.system(size: 11))
                     .foregroundStyle(OnboardingPalette.muted)
 

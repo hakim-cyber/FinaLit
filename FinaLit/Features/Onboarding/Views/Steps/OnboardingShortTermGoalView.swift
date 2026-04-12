@@ -10,11 +10,11 @@ struct OnboardingShortTermGoalView: View {
     @Environment(Coordinator<OnboardingPages>.self) private var coordinator
 
     private let suggestions = [
-        "Build a \(AppRegion.currencySymbol)1,000 emergency fund",
-        "Pay off a credit card",
-        "Save for a new laptop",
-        "Save for a trip",
-        "Reduce monthly overspending"
+        String(format: NSLocalizedString("onboarding.suggestionEmergencyFund", comment: ""), AppRegion.currencySymbol),
+        String(localized: "onboarding.suggestionPayOffCreditCard"),
+        String(localized: "onboarding.suggestionSaveLaptop"),
+        String(localized: "onboarding.suggestionSaveTrip"),
+        String(localized: "onboarding.suggestionReduceOverspending")
     ]
 
     var body: some View {
@@ -22,8 +22,8 @@ struct OnboardingShortTermGoalView: View {
 
         OnboardingStepScaffold(
             page: .shortTermGoal,
-            title: "Your short-term goal",
-            subtitle: "Pick one quickly or write your own.",
+            title: String(localized: "onboarding.shortTermGoal"),
+            subtitle: String(localized: "onboarding.shortTermSubtitle"),
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
             primaryTitle: String(localized: "profile.continueAction"),

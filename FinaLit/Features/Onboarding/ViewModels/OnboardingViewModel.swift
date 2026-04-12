@@ -184,7 +184,7 @@ class OnboardingViewModel {
         hasDebt = enabled
         if enabled {
             if debtEntries.isEmpty {
-                debtEntries = [DebtEntry(name: "Credit Card")]
+                debtEntries = [DebtEntry(name: String(localized: "onboarding.creditCard"))]
             }
         } else {
             debtEntries = []

@@ -445,3 +445,74 @@
 "profile.riskLowDesc" = "I prefer safety over growth";
 "profile.riskMediumDesc" = "I'm okay with some risk for better returns";
 "profile.riskHighDesc" = "I chase high returns and accept losses";
+
+"onboarding.haveDebt" = "Do you currently have debt?";
+"onboarding.whatIsEmploymentStatus" = "What's your employment status?";
+"onboarding.hobbyOther" = "Other ✏️";
+"onboarding.hobbyFitness" = "Fitness 💪";
+"onboarding.hobbyFashion" = "Fashion 👗";
+"onboarding.hobbyCooking" = "Cooking 🍳";
+"onboarding.hobbyMovies" = "Movies 🎬";
+"onboarding.hobbyMusic" = "Music 🎵";
+"onboarding.hobbyTravel" = "Travel ✈️";
+"onboarding.whatDoYouEnjoy" = "What do you enjoy outside money?";
+"onboarding.hobbySports" = "Sports ⚽";
+"onboarding.hobbyReading" = "Reading 📚";
+"onboarding.hobbyArt" = "Art 🎨";
+"onboarding.hobbyGaming" = "Gaming 🎮";
+"onboarding.hobbyPhotography" = "Photography 📷";
+"onboarding.rateKnowledge" = "How would you rate your financial knowledge?";
+"onboarding.knowledgeBeginner" = "Beginner";
+"onboarding.knowledgeBeginnerDesc" = "Simple, practical next steps";
+"onboarding.knowledgeIntermediate" = "Intermediate";
+"onboarding.knowledgeIntermediateDesc" = "Balanced insights with more detail";
+"onboarding.knowledgeAdvanced" = "Advanced";
+"onboarding.knowledgeAdvancedDesc" = "Higher detail and analytical trade-offs";
+"onboarding.finishSetup" = "Finish Setup";
+"onboarding.longTermGoal" = "Your long-term goal";
+"onboarding.goalRetireEarly" = "Retire early";
+"onboarding.goalFinancialIndependence" = "Reach financial independence";
+"onboarding.goalStartBusiness" = "Start a business";
+"onboarding.goalPortfolio" = "Build a 6-figure portfolio";
+"onboarding.goalBuyHome" = "Buy a home";
+"onboarding.tellUsAboutYou" = "Tell us about you";
+"onboarding.countryGermany" = "Germany";
+"onboarding.countryAzerbaijan" = "Azerbaijan";
+"onboarding.countryUS" = "United States";
+"onboarding.countryUK" = "United Kingdom";
+"onboarding.countryCanada" = "Canada";
+"onboarding.countryTurkey" = "Turkey";
+"onboarding.riskInterest" = "Risk and investing interest";
+"onboarding.onboardingRiskLow" = "Low";
+"onboarding.onboardingRiskMedium" = "Medium";
+"onboarding.onboardingRiskHigh" = "High";
+"onboarding.onboardingRiskLowDesc" = "Safety first, steady progress";
+"onboarding.onboardingRiskMediumDesc" = "Balanced risk and growth";
+"onboarding.onboardingRiskHighDesc" = "Higher volatility for higher potential";
+"onboarding.savingsEmergency" = "Savings and emergency buffer";
+"onboarding.overspendMost" = "Where do you overspend most?";
+"onboarding.creditCard" = "Credit Card";
+
+"onboarding.debtSubtitle" = "We use this to balance payoff strategy with savings goals.";
+"onboarding.personalInfoSubtitle" = "We use this to personalize your financial assistant.";
+
+"onboarding.stepTracker" = "STEP %1$d OF %2$d";
+
+"onboarding.employmentSubtitle" = "This helps us estimate realistic monthly cash flow.";
+
+"onboarding.savingsSubtitle" = "A quick view of your safety net today.";
+"onboarding.emergencyMonths" = "%1$d months";
+"onboarding.knowledgeSubtitle" = "We'll adjust guidance depth and language to match.";
+"onboarding.shortTermGoal" = "Your short-term goal";
+"onboarding.shortTermSubtitle" = "Pick one quickly or write your own.";
+"onboarding.suggestionEmergencyFund" = "Build a %1$@1,000 emergency fund";
+"onboarding.suggestionPayOffCreditCard" = "Pay off a credit card";
+"onboarding.suggestionSaveLaptop" = "Save for a new laptop";
+"onboarding.suggestionSaveTrip" = "Save for a trip";
+"onboarding.suggestionReduceOverspending" = "Reduce monthly overspending";
+"onboarding.longTermSubtitle" = "This guides strategic recommendations over time.";
+"onboarding.pickUpToWeakness" = "Pick up to %1$d.";
+"onboarding.pickUpToHobbies" = "Choose up to %1$d, or add your own.";
+"onboarding.selectedCount" = "%1$d/%2$d selected";
+
+"onboarding.riskSubtitle" = "We'll keep recommendations aligned with your comfort level.";

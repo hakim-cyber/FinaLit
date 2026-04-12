@@ -11,11 +11,11 @@ struct OnboardingKnowledgeLevelView: View {
     var body: some View {
         OnboardingStepScaffold(
             page: .knowledgeLevel,
-            title: "How would you rate your financial knowledge?",
-            subtitle: "We'll adjust guidance depth and language to match.",
+            title: String(localized: "onboarding.rateKnowledge"),
+            subtitle: String(localized: "onboarding.knowledgeSubtitle"),
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
-            primaryTitle: "Finish Setup",
+            primaryTitle: String(localized: "onboarding.finishSetup"),
             isPrimaryEnabled: true,
             onPrimaryTap: {
                 Task {
@@ -25,8 +25,8 @@ struct OnboardingKnowledgeLevelView: View {
         ) {
             VStack(spacing: 10) {
                 KnowledgeLevelCard(
-                    title: "Beginner",
-                    description: "Simple, practical next steps",
+                    title: String(localized: "onboarding.knowledgeBeginner"),
+                    description: String(localized: "onboarding.knowledgeBeginnerDesc"),
                     level: 0.33,
                     isSelected: viewModel.knowledgeLevel == .beginner
                 ) {
@@ -35,8 +35,8 @@ struct OnboardingKnowledgeLevelView: View {
                 }
 
                 KnowledgeLevelCard(
-                    title: "Intermediate",
-                    description: "Balanced insights with more detail",
+                    title: String(localized: "onboarding.knowledgeIntermediate"),
+                    description: String(localized: "onboarding.knowledgeIntermediateDesc"),
                     level: 0.66,
                     isSelected: viewModel.knowledgeLevel == .intermediate
                 ) {
@@ -45,8 +45,8 @@ struct OnboardingKnowledgeLevelView: View {
                 }
 
                 KnowledgeLevelCard(
-                    title: "Advanced",
-                    description: "Higher detail and analytical trade-offs",
+                    title: String(localized: "onboarding.knowledgeAdvanced"),
+                    description: String(localized: "onboarding.knowledgeAdvancedDesc"),
                     level: 1.0,
                     isSelected: viewModel.knowledgeLevel == .advanced
                 ) {

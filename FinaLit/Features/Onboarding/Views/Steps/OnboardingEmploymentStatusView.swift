@@ -14,8 +14,8 @@ struct OnboardingEmploymentStatusView: View {
 
         OnboardingStepScaffold(
             page: .employmentStatus,
-            title: "What's your employment status?",
-            subtitle: "This helps us estimate realistic monthly cash flow.",
+            title: String(localized: "onboarding.whatIsEmploymentStatus"),
+            subtitle: String(localized: "onboarding.employmentSubtitle"),
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
             primaryTitle: String(localized: "profile.continueAction"),

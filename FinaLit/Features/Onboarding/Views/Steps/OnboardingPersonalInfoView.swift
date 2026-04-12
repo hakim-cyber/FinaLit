@@ -10,7 +10,7 @@ struct OnboardingPersonalInfoView: View {
     @Environment(Coordinator<OnboardingPages>.self) private var coordinator
 
     private let countries = [
-        "Azerbaijan", "Turkey", "United States", "Canada", "United Kingdom", "Germany"
+        String(localized: "onboarding.countryAzerbaijan"), String(localized: "onboarding.countryTurkey"), String(localized: "onboarding.countryUS"), String(localized: "onboarding.countryCanada"), String(localized: "onboarding.countryUK"), String(localized: "onboarding.countryGermany")
     ]
 
     var body: some View {
@@ -18,8 +18,8 @@ struct OnboardingPersonalInfoView: View {
 
         OnboardingStepScaffold(
             page: .personalInfo,
-            title: "Tell us about you",
-            subtitle: "We use this to personalize your financial assistant.",
+            title: String(localized: "onboarding.tellUsAboutYou"),
+            subtitle: String(localized: "onboarding.personalInfoSubtitle"),
             errorMessage: viewModel.errorMessage,
             isLoading: viewModel.isLoading,
             primaryTitle: String(localized: "profile.continueAction"),
