@@ -111,7 +111,7 @@ struct FinancialProfileEditView: View {
 
                     ForEach(RiskTolerance.allCases) { option in
                         ProfileSettingsSelectableRow(
-                            title: option.rawValue,
+                            title: option.localizedName,
                             subtitle: option.description,
                             isSelected: riskTolerance == option,
                             accent: option == .low ? .green : (option == .medium ? .orange : .red)

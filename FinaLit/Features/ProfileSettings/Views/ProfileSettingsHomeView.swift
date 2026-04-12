@@ -30,7 +30,7 @@ struct ProfileSettingsHomeView: View {
     @State private var reauthPassword = ""
 
     private var appVersion: String {
-        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? String(localized: "profile.unknown")
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "0"
         return "v\(version) (\(build))"
     }
@@ -46,10 +46,10 @@ struct ProfileSettingsHomeView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 18) {
-                    SettingsSectionCard(title: "PROFILE") {
+                    SettingsSectionCard(title: String(localized: "profile.profileSection")) {
                         SettingsActionRow(
-                            title: "Personal Info",
-                            subtitle: "Name, age, country, employment",
+                            title: String(localized: "profile.personalInfoTitle"),
+                            subtitle: String(localized: "profile.personalInfoSub"),
                             icon: "person.text.rectangle.fill",
                             action: { coordinator.push(.personalInfo) }
                         )
@@ -59,7 +59,7 @@ struct ProfileSettingsHomeView: View {
 
                         SettingsActionRow(
                             title: String(localized: "profile.financialProfile"),
-                            subtitle: "Income, expenses, savings, debt, risk",
+                            subtitle: String(localized: "profile.financialProfileSub"),
                             icon: "chart.line.uptrend.xyaxis",
                             action: { coordinator.push(.financialProfile) }
                         )
@@ -68,17 +68,17 @@ struct ProfileSettingsHomeView: View {
                             .overlay(ProfileSettingsPalette.border)
 
                         SettingsActionRow(
-                            title: "Goals",
-                            subtitle: "Narrative short and long-term goals",
+                            title: String(localized: "profile.goalsTitle"),
+                            subtitle: String(localized: "profile.goalsSub"),
                             icon: "target",
                             action: { coordinator.push(.goals) }
                         )
                     }
 
-                    SettingsSectionCard(title: "LEARNING") {
+                    SettingsSectionCard(title: String(localized: "profile.learningSection")) {
                         SettingsLanguageMenuRow(
-                            title: "Content Language",
-                            subtitle: "Lessons, quizzes, weeks, daily tips, and translated Firebase content",
+                            title: String(localized: "profile.contentLanguage"),
+                            subtitle: String(localized: "profile.learningLanguageSub"),
                             value: learningContentLabel,
                             icon: "globe",
                             options: learningOptions
@@ -89,10 +89,10 @@ struct ProfileSettingsHomeView: View {
                         }
                     }
 
-                    SettingsSectionCard(title: "APP & ACCOUNT") {
+                    SettingsSectionCard(title: String(localized: "profile.appAndAccountSection")) {
                         SettingsValueRow(
-                            title: "App Version",
-                            subtitle: "Build information",
+                            title: String(localized: "profile.appVersionTitle"),
+                            subtitle: String(localized: "profile.appVersionSub"),
                             value: appVersion,
                             icon: "info.circle.fill"
                         )
@@ -101,8 +101,8 @@ struct ProfileSettingsHomeView: View {
                             .overlay(ProfileSettingsPalette.border)
 
                         SettingsActionRow(
-                            title: "Forgot Password",
-                            subtitle: "Send reset link to \(session.user?.email ?? "your email")",
+                            title: String(localized: "profile.forgotPasswordTitle"),
+                            subtitle: "\(String(localized: "profile.sendResetLinkTo")) \(session.user?.email ?? String(localized: "profile.yourEmail"))",
                             icon: "key.fill",
                             isLoading: isSendingPasswordReset,
                             action: sendPasswordReset
@@ -112,27 +112,27 @@ struct ProfileSettingsHomeView: View {
                             .overlay(ProfileSettingsPalette.border)
 
                         SettingsActionRow(
-                            title: "Privacy Policy",
-                            subtitle: "How your data is used and protected",
+                            title: String(localized: "profile.privacyPolicy"),
+                            subtitle: String(localized: "profile.privacyPolicySub"),
                             icon: "hand.raised.fill",
-                            action: { openLegalLink(AppLegalLinks.privacyPolicyURL, name: "Privacy Policy") }
+                            action: { openLegalLink(AppLegalLinks.privacyPolicyURL, name: String(localized: "profile.privacyPolicy")) }
                         )
 
                         Divider()
                             .overlay(ProfileSettingsPalette.border)
 
                         SettingsActionRow(
-                            title: "Terms of Use",
-                            subtitle: "Rules and conditions for using FinaLit",
+                            title: String(localized: "profile.termsOfUse"),
+                            subtitle: String(localized: "profile.termsOfUseSub"),
                             icon: "doc.text.fill",
-                            action: { openLegalLink(AppLegalLinks.termsOfUseURL, name: "Terms of Use") }
+                            action: { openLegalLink(AppLegalLinks.termsOfUseURL, name: String(localized: "profile.termsOfUse")) }
                         )
                     }
 
-                    SettingsSectionCard(title: "SECURITY") {
+                    SettingsSectionCard(title: String(localized: "profile.securitySection")) {
                         SettingsActionRow(
-                            title: "Sign Out",
-                            subtitle: "Log out on this device",
+                            title: String(localized: "profile.signOutTitle"),
+                            subtitle: String(localized: "profile.signOutSub"),
                             icon: "rectangle.portrait.and.arrow.right",
                             action: { showSignOutConfirmation = true }
                         )
@@ -141,8 +141,8 @@ struct ProfileSettingsHomeView: View {
                             .overlay(ProfileSettingsPalette.border)
 
                         SettingsActionRow(
-                            title: "Delete Account",
-                            subtitle: "Permanently remove account and app data",
+                            title: String(localized: "profile.deleteAccount"),
+                            subtitle: String(localized: "profile.deleteAccountSub"),
                             icon: "trash.fill",
                             isLoading: isDeletingAccount,
                             isDestructive: true,
@@ -205,8 +205,8 @@ struct ProfileSettingsHomeView: View {
     private func sendPasswordReset() {
         guard let email = session.user?.email, !email.isEmpty else {
             presentFeedback(
-                title: localized("Reset unavailable"),
-                message: localized("No email address is available for this account.")
+                title: String(localized: "profile.resetUnavailable"),
+                message: String(localized: "profile.noEmailAccount")
             )
             return
         }
@@ -218,13 +218,13 @@ struct ProfileSettingsHomeView: View {
             isSendingPasswordReset = false
 
             if let error = authViewModel.errorMessage, !error.isEmpty {
-                presentFeedback(title: localized("Reset failed"), message: error)
+                presentFeedback(title: String(localized: "profile.resetFailed"), message: error)
                 return
             }
 
             presentFeedback(
-                title: localized("Reset email sent"),
-                message: authViewModel.successMessage ?? localized("Check your inbox for reset instructions.")
+                title: String(localized: "profile.resetEmailSent"),
+                message: authViewModel.successMessage ?? String(localized: "profile.checkInbox")
             )
         }
     }
@@ -242,7 +242,7 @@ struct ProfileSettingsHomeView: View {
                     showReauthSheet = true
                     return
                 }
-                presentFeedback(title: localized("Delete failed"), message: error)
+                presentFeedback(title: String(localized: "profile.deleteFailed"), message: error)
                 return
             }
 
@@ -259,8 +259,8 @@ struct ProfileSettingsHomeView: View {
 
             guard isVerified else {
                 presentFeedback(
-                    title: localized("Verification failed"),
-                    message: authViewModel.errorMessage ?? localized("Please try again.")
+                    title: String(localized: "profile.verificationFailed"),
+                    message: authViewModel.errorMessage ?? String(localized: "profile.pleaseTryAgain")
                 )
                 return
             }
@@ -274,8 +274,8 @@ struct ProfileSettingsHomeView: View {
     private func openLegalLink(_ url: URL?, name: String) {
         guard let url else {
             presentFeedback(
-                title: localized("%@ unavailable", name),
-                message: localized("Link is not configured.")
+                title: String(format: NSLocalizedString("profile.urlUnavailable", comment:""), name),
+                message: String(localized: "profile.linkNotConfigured")
             )
             return
         }
@@ -284,8 +284,8 @@ struct ProfileSettingsHomeView: View {
             if !accepted {
                 Task { @MainActor in
                     presentFeedback(
-                        title: localized("%@ unavailable", name),
-                        message: localized("Unable to open this link right now.")
+                        title: String(format: NSLocalizedString("profile.urlUnavailable", comment:""), name),
+                        message: String(localized: "profile.unableToOpenLink")
                     )
                 }
             }
@@ -316,7 +316,7 @@ struct ProfileSettingsHomeView: View {
                         .font(.system(size: 13))
                         .foregroundStyle(ProfileSettingsPalette.muted)
 
-                    SecureField("Current password", text: $reauthPassword)
+                    SecureField(String(localized: "profile.currentPassword"), text: $reauthPassword)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .settingsInputStyle()
@@ -328,7 +328,7 @@ struct ProfileSettingsHomeView: View {
                                     .progressViewStyle(.circular)
                                     .tint(AppTheme.inverseText)
                             }
-                            Text(isReauthenticating ? localized("Verifying...") : localized("Verify & Delete"))
+                            Text(isReauthenticating ? String(localized: "profile.verifying") : String(localized: "profile.verifyAndDelete"))
                         }
                     }
                     .buttonStyle(AppFilledButtonStyle(tone: .danger))

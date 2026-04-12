@@ -32,8 +32,8 @@ struct PersonalInfoEditView: View {
 
     var body: some View {
         ProfileSettingsFormScaffold(
-            title: "Personal Info",
-            subtitle: "Keep your identity and lifestyle context up to date.",
+            title: String(localized: "profile.personalInfoTitle"),
+            subtitle: String(localized: "profile.personalInfoEditSubtitle"),
             errorMessage: errorMessage,
             successMessage: successMessage,
             isLoading: isSaving,
@@ -53,7 +53,7 @@ struct PersonalInfoEditView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(L10n.Profile.emailDisplayOnly)
                         .settingsFieldLabelStyle()
-                    Text(session.user?.email ?? "No email")
+                    Text(session.user?.email ?? String(localized: "profile.noEmail"))
                         .font(.system(size: 15))
                         .foregroundStyle(AppTheme.textSecondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -93,7 +93,7 @@ struct PersonalInfoEditView: View {
 
                     ForEach(EmploymentStatus.allCases) { status in
                         ProfileSettingsSelectableRow(
-                            title: status.rawValue,
+                            title: status.localizedName,
                             subtitle: status.description,
                             isSelected: employmentStatus == status,
                             accent: ProfileSettingsPalette.accent

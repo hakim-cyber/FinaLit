@@ -31,7 +31,7 @@ struct OnboardingEmploymentStatusView: View {
             VStack(spacing: 10) {
                 ForEach(EmploymentStatus.allCases) { status in
                     SelectableRowCard(
-                        title: status.rawValue,
+                        title: status.localizedName,
                         subtitle: status.description,
                         isSelected: viewModel.employmentStatus == status,
                         accent: OnboardingPalette.accent,

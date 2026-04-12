@@ -29,8 +29,8 @@ struct NarrativeGoalsEditView: View {
 
     var body: some View {
         ProfileSettingsFormScaffold(
-            title: "Goals",
-            subtitle: "These narrative goals feed AI context and recommendations.",
+            title: String(localized: "profile.goalsTitle"),
+            subtitle: String(localized: "profile.goalsEditSubtitle"),
             errorMessage: errorMessage,
             successMessage: successMessage,
             isLoading: isSaving,

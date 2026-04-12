@@ -13,16 +13,26 @@ enum EmploymentStatus: String, Codable, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    
+    var localizedName: String {
+        switch self {
+        case .student: return String(localized: "profile.employmentStudent")
+        case .employed: return String(localized: "profile.employmentEmployed")
+        case .freelancer: return String(localized: "profile.employmentFreelancer")
+        case .businessOwner: return String(localized: "profile.employmentBusinessOwner")
+        }
+    }
+
     var description: String {
         switch self {
         case .student:
-            return "Currently studying, no regular full-time income"
+            return String(localized: "profile.employmentStudentDesc")
         case .employed:
-            return "Working full-time or part-time with a fixed salary"
+            return String(localized: "profile.employmentEmployedDesc")
         case .freelancer:
-            return "Self-employed with variable or project-based income"
+            return String(localized: "profile.employmentFreelancerDesc")
         case .businessOwner:
-            return "Owns or runs a business with business income"
+            return String(localized: "profile.employmentBusinessOwnerDesc")
         }
     }
 }

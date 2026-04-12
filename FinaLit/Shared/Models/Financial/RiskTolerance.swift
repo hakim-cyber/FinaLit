@@ -12,11 +12,20 @@ enum RiskTolerance: String, Codable, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    
+    var localizedName: String {
+        switch self {
+        case .low: return String(localized: "profile.riskLow")
+        case .medium: return String(localized: "profile.riskMedium")
+        case .high: return String(localized: "profile.riskHigh")
+        }
+    }
+
     var description: String {
         switch self {
-        case .low: return "I prefer safety over growth"
-        case .medium: return "I'm okay with some risk for better returns"
-        case .high: return "I chase high returns and accept losses"
+        case .low: return String(localized: "profile.riskLowDesc")
+        case .medium: return String(localized: "profile.riskMediumDesc")
+        case .high: return String(localized: "profile.riskHighDesc")
         }
     }
 }
