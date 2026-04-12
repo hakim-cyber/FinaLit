@@ -29,7 +29,7 @@ struct DayRowCard: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 6) {
-                    Text(day.isReflection ? "Reflection Day" : "Day \(day.dayNumber)")
+                    Text(day.isReflection ? String(localized: "learning.reflectionDay") : "\(String(localized: "learning.dayPrefix")) \(day.dayNumber)")
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(isLocked ? AppTheme.textTertiary : AppTheme.textPrimary)
                     if day.isReflection {
@@ -40,11 +40,11 @@ struct DayRowCard: View {
 
                 if !isLocked && !day.isReflection {
                     HStack(spacing: 10) {
-                        StatusDot(done: lessonDone, label: "Lesson")
-                        StatusDot(done: quizDone, label: "Quiz")
+                        StatusDot(done: lessonDone, label: String(localized: "learning.lesson"))
+                        StatusDot(done: quizDone, label: String(localized: "learning.quiz"))
                     }
                 } else if day.isReflection {
-                    Text(isLocked ? "Complete all days first" : "Write your week reflection")
+                    Text(isLocked ? String(localized: "learning.completeDaysFirst") : String(localized: "learning.writeWeekReflection"))
                         .font(.system(size: 11))
                         .foregroundStyle(AppTheme.textSecondary)
                 }
@@ -52,7 +52,7 @@ struct DayRowCard: View {
                 if let score = progress?.quizScore,
                    let total = progress?.totalQuestions,
                    quizDone {
-                    Text("\(score)/\(total) correct")
+                    Text("\(score)/\(total) \(String(localized: "learning.correctSuffix"))")
                         .font(.system(size: 11))
                         .foregroundStyle(progress?.isPassed == true ? AppTheme.success : AppTheme.danger)
                 }

@@ -42,9 +42,9 @@ struct ReflectionView: View {
                     }
 
                     VStack(spacing: 10) {
-                        ReflectionPrompt(number: "01", text: "What concept stuck with you most this week?")
-                        ReflectionPrompt(number: "02", text: "Did you change any financial decision based on what you learned?")
-                        ReflectionPrompt(number: "03", text: "What will you do differently going forward?")
+                        ReflectionPrompt(number: "01", text: String(localized: "learning.conceptStuck"))
+                        ReflectionPrompt(number: "02", text: String(localized: "learning.changeDecision"))
+                        ReflectionPrompt(number: "03", text: String(localized: "learning.doDifferently"))
                     }
 
                     VStack(alignment: .leading, spacing: 8) {

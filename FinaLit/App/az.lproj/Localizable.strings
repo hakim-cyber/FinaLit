@@ -328,3 +328,44 @@
 "main.insightSolidEmergencyMessage" = "Yığımlarınız 3 aylıq xərclərinizdən çoxunu qarşılayır. Maliyyə baxımından stabilsiniz.";
 "main.insightSpendingDropPrefix" = "Xərcləriniz keçən ayla müqayisədə";
 "main.insightSpendingDropSuffix" = "azalıb. Yaxşı nizam-intizam.";
+
+"learning.reflectionDay" = "Düşüncə Günü";
+"learning.dayPrefix" = "Gün";
+"learning.lesson" = "Dərs";
+"learning.quiz" = "Sınaq";
+"learning.completeDaysFirst" = "Əvvəlcə bütün günləri tamamlayın";
+"learning.writeWeekReflection" = "Həftəlik düşüncənizi yazın";
+"learning.correctSuffix" = "düzgün";
+"learning.readMore" = "Daha çox oxu ↓";
+"learning.showLess" = "Daha az göstər ↑";
+"learning.correct" = "Düzgündür!";
+"learning.notQuite" = "Tam olaraq yox";
+"learning.yourCurriculum" = "Sizin tədris planınız";
+"learning.seeResults" = "Nəticələrə bax";
+"learning.continueBtn" = "Davam et";
+"learning.readThis" = "Bunu oxudum";
+"learning.readThisCheck" = "Bunu oxudum ✓";
+"learning.retakeQuiz" = "Sınağı yenidən ver →";
+"learning.continueToQuiz" = "Sınağa davam et →";
+"learning.nextQuestion" = "Növbəti sual →";
+"learning.seeResultsArrow" = "Nəticələrə bax →";
+"learning.conceptStuck" = "Bu həftə yadınızda ən çox hansı anlayış qaldı?";
+"learning.doDifferently" = "Gələcəkdə fərqli nə edəcəksiniz?";
+"learning.changeDecision" = "Öyrəndiklərinizə əsasən hansısa maliyyə qərarınızı dəyişdinizmi?";
+"learning.correctAnswer" = "Düzgün cavab";
+"learning.yourAnswer" = "Sizin cavabınız";
+
+"learning.weekPrefixUpper" = "HƏFTƏ";
+"learning.lessons" = "Dərslər";
+"learning.quizzes" = "Sınaqlar";
+"learning.avgScore" = "Ortalama nəticə";
+"learning.level" = "Səviyyə";
+
+"learning.weekHistory" = "Həftə tarixçəsi";
+"learning.yourReflections" = "Düşüncələriniz";
+"learning.dayCompleteNextDayUnlocked" = "Gün tamamlandı — Növbəti gün kiliddən çıxdı";
+"learning.keepStudying" = "Öyrənməyə davam edin — Alınacaq!";
+"learning.lessonsRead" = "Oxunmuş Dərslər";
+"learning.quizzesDone" = "Həll Edilmiş Sınaqlar";
+"learning.dayStreak" = "Ardıcıl Günlər";
+"learning.avgQuizScore" = "Ortalama Sınaq Nəticəsi";

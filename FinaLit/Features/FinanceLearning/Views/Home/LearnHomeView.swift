@@ -27,7 +27,7 @@ struct LearnHomeView: View {
                         .onTapGesture { coordinator.push(.progress) }
 
                     VStack(alignment: .leading, spacing: 12) {
-                        AppSectionHeader(title: "Your curriculum")
+                        AppSectionHeader(title:"learning.yourCurriculum")
                             .padding(.horizontal,20)
 
                         if let errorMessage = learnVM.errorMessage,

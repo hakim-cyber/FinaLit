@@ -10,13 +10,13 @@ struct StatsStrip: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            StatCell(value: "\(summary.totalLessonsRead)", label: "Lessons")
+            StatCell(value: "\(summary.totalLessonsRead)", label: String(localized: "learning.lessons"))
             Divider().frame(height: 30).background(AppTheme.separator)
-            StatCell(value: "\(summary.totalQuizzesDone)", label: "Quizzes")
+            StatCell(value: "\(summary.totalQuizzesDone)", label: String(localized: "learning.quizzes"))
             Divider().frame(height: 30).background(AppTheme.separator)
-            StatCell(value: String(format: "%.0f%%", summary.averageQuizScore), label: "Avg Score")
+            StatCell(value: String(format: "%.0f%%", summary.averageQuizScore), label: String(localized: "learning.avgScore"))
             Divider().frame(height: 30).background(AppTheme.separator)
-            StatCell(value: summary.learningLevel.rawValue, label: "Level", small: true)
+            StatCell(value: summary.learningLevel.rawValue, label: String(localized: "learning.level"), small: true)
         }
         .appSurface(.primary, padding: 16, cornerRadius: AppTheme.CornerRadius.large)
         .padding(.horizontal, 20)

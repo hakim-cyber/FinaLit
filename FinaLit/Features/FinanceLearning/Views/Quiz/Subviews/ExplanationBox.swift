@@ -16,7 +16,7 @@ struct ExplanationBox: View {
                 .foregroundStyle(isCorrect ? AppTheme.success : AppTheme.danger)
 
             VStack(alignment: .leading, spacing: 6) {
-                Text(isCorrect ? "Correct!" : "Not quite")
+                Text(isCorrect ? String(localized: "learning.correct") : String(localized: "learning.notQuite"))
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(isCorrect ? AppTheme.success : AppTheme.danger)
                 Text(explanation)

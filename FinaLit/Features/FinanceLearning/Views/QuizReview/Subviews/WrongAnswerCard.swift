@@ -18,14 +18,14 @@ struct WrongAnswerCard: View {
 
             if let userIndex, userIndex < question.options.count {
                 AnswerRow(
-                    label: "Your answer",
+                    label: String(localized: "learning.yourAnswer"),
                     text: question.options[userIndex],
                     correct: false
                 )
             }
 
             AnswerRow(
-                label: "Correct answer",
+                label: String(localized: "learning.correctAnswer"),
                 text: question.options[safe: question.correctIndex] ?? "",
                 correct: true
             )

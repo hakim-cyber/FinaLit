@@ -22,25 +22,25 @@ struct LearningProgressView: View {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                         ProgressStatCard(
                             value: "\(summary.totalLessonsRead)",
-                            label: "Lessons Read",
+                            label: String(localized: "learning.lessonsRead"),
                             icon: "book.fill",
                             tone: .accent
                         )
                         ProgressStatCard(
                             value: "\(summary.totalQuizzesDone)",
-                            label: "Quizzes Done",
+                            label: String(localized: "learning.quizzesDone"),
                             icon: "checkmark.circle.fill",
                             tone: .success
                         )
                         ProgressStatCard(
                             value: "\(summary.currentStreak)",
-                            label: "Day Streak",
+                            label: String(localized: "learning.dayStreak"),
                             icon: "flame.fill",
                             tone: .orange
                         )
                         ProgressStatCard(
                             value: String(format: "%.0f%%", summary.averageQuizScore),
-                            label: "Avg Quiz Score",
+                            label: String(localized: "learning.avgQuizScore"),
                             icon: "chart.bar.fill",
                             tone: .warning
                         )
@@ -48,7 +48,7 @@ struct LearningProgressView: View {
                     .padding(.horizontal, 20)
 
                     VStack(alignment: .leading, spacing: 12) {
-                        AppSectionHeader(title: "Week history")
+                        AppSectionHeader(title: L10n.Learning.weekHistory)
                             .padding(.horizontal,20)
 
                         ForEach(learnVM.weekProgressList) { weekProgress in
@@ -61,7 +61,7 @@ struct LearningProgressView: View {
 
                     if !learnVM.reflections.isEmpty {
                         VStack(alignment: .leading, spacing: 12) {
-                            AppSectionHeader(title: "Your reflections")
+                            AppSectionHeader(title: L10n.Learning.yourReflections)
 
                             ForEach(learnVM.reflections) { reflection in
                                 ReflectionHistoryCard(reflection: reflection)

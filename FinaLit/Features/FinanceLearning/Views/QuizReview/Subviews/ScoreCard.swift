@@ -21,7 +21,7 @@ struct ScoreCard: View {
                 Text("\(score)/\(total)")
                     .font(.system(size: 56, weight: .medium))
                     .foregroundStyle(AppTheme.textPrimary)
-                Text("\(percentage)% correct")
+                Text("\(percentage)% \(String(localized: "learning.correctSuffix"))")
                     .font(.system(size: 14))
                     .foregroundStyle(passed ? AppTheme.success : AppTheme.danger)
             }
@@ -30,7 +30,7 @@ struct ScoreCard: View {
                 Circle()
                     .fill(passed ? AppTheme.success : AppTheme.danger)
                     .frame(width: 8, height: 8)
-                Text(passed ? "Day Complete — Next day unlocked" : "Keep studying — You'll get it!")
+                Text(passed ? String(localized: "learning.dayCompleteNextDayUnlocked") : String(localized: "learning.keepStudying"))
                     .font(.system(size: 12))
                     .foregroundStyle(passed ? AppTheme.success : AppTheme.danger)
             }

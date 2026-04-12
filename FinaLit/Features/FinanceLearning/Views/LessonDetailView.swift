@@ -34,14 +34,14 @@ struct LessonDetailView: View {
 
     private var primaryButtonTitle: String {
         if hasCompletedQuiz {
-            return "Retake Quiz →"
+            return String(localized: "learning.retakeQuiz")
         }
 
         if hasReadLesson {
-            return "Continue to Quiz →"
+            return String(localized: "learning.continueToQuiz")
         }
 
-        return "I've read this ✓"
+        return String(localized: "learning.readThisCheck")
     }
 
     private var localizedLesson: Lesson? {

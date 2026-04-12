@@ -104,7 +104,7 @@ struct QuizView: View {
                                 Text(
                                     learnVM.isSubmitting && isLastQuestion
                                         ? "Loading Results..."
-                                        : (isLastQuestion ? "See Results →" : "Next Question →")
+                                        : (isLastQuestion ? String(localized: "learning.seeResultsArrow") : String(localized: "learning.nextQuestion"))
                                 )
                                 .font(.system(size: 16))
 

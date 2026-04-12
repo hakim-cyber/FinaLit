@@ -38,7 +38,7 @@ struct DailyTipCard: View {
                     .transition(.opacity.combined(with: .move(edge: .top)))
             }
 
-            Button(expanded ? "Show less ↑" : "Read more ↓") {
+            Button(expanded ? String(localized: "learning.showLess") : String(localized: "learning.readMore")) {
                 withAnimation(.easeInOut(duration: 0.2)) { expanded.toggle() }
             }
             .font(AppTheme.Typography.caption)

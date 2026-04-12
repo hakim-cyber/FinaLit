@@ -328,3 +328,44 @@
 "main.insightSolidEmergencyMessage" = "Your savings cover more than 3 months of expenses. You're financially stable.";
 "main.insightSpendingDropPrefix" = "Your expenses dropped";
 "main.insightSpendingDropSuffix" = "from last month. Good discipline.";
+
+"learning.reflectionDay" = "Reflection Day";
+"learning.dayPrefix" = "Day";
+"learning.lesson" = "Lesson";
+"learning.quiz" = "Quiz";
+"learning.completeDaysFirst" = "Complete all days first";
+"learning.writeWeekReflection" = "Write your week reflection";
+"learning.correctSuffix" = "correct";
+"learning.readMore" = "Read more ↓";
+"learning.showLess" = "Show less ↑";
+"learning.correct" = "Correct!";
+"learning.notQuite" = "Not quite";
+"learning.yourCurriculum" = "Your curriculum";
+"learning.seeResults" = "See Results";
+"learning.continueBtn" = "Continue";
+"learning.readThis" = "I've read this";
+"learning.readThisCheck" = "I've read this ✓";
+"learning.retakeQuiz" = "Retake Quiz →";
+"learning.continueToQuiz" = "Continue to Quiz →";
+"learning.nextQuestion" = "Next Question →";
+"learning.seeResultsArrow" = "See Results →";
+"learning.conceptStuck" = "What concept stuck with you most this week?";
+"learning.doDifferently" = "What will you do differently going forward?";
+"learning.changeDecision" = "Did you change any financial decision based on what you learned?";
+"learning.correctAnswer" = "Correct answer";
+"learning.yourAnswer" = "Your answer";
+
+"learning.weekPrefixUpper" = "WEEK";
+"learning.lessons" = "Lessons";
+"learning.quizzes" = "Quizzes";
+"learning.avgScore" = "Avg Score";
+"learning.level" = "Level";
+
+"learning.weekHistory" = "Week history";
+"learning.yourReflections" = "Your reflections";
+"learning.dayCompleteNextDayUnlocked" = "Day Complete — Next day unlocked";
+"learning.keepStudying" = "Keep studying — You'll get it!";
+"learning.lessonsRead" = "Lessons Read";
+"learning.quizzesDone" = "Quizzes Done";
+"learning.dayStreak" = "Day Streak";
+"learning.avgQuizScore" = "Avg Quiz Score";
